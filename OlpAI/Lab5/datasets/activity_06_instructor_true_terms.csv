@@ -1,0 +1,8 @@
+term,true_effect,note_vi
+x1,+1.5 linear,Biến có tác động tuyến tính dương.
+x2,-2.0 linear,Biến có tác động tuyến tính âm.
+x3*x4,+0.8 interaction,Tác động của x3 phụ thuộc vào x4.
+sin(1.6*x5),+1.0 nonlinear sine,Quan hệ phi tuyến tuần hoàn nhẹ.
+x6^2,+0.6 quadratic,Quan hệ bậc hai.
+ReLU(x7-0.2),-1.2 hinge/ReLU,Quan hệ dạng gãy khúc giống ReLU.
+x8-x12,irrelevant noise features,Các biến nhiễu để kiểm tra chọn đặc trưng.

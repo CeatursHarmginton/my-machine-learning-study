@@ -1,0 +1,35 @@
+dataset,term,true_coefficient,is_true_signal,note
+B_marketing_sales,Intercept,22000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,tv_spend,2.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,search_ads_spend,5.2,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,social_media_spend,3.8,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,email_spend,1.4,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,conversion_rate,220000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,repeat_customer_rate,55000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,competitor_price_index,-28000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,seasonality_index,27000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,holiday_period,9500.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,sales_team_size,700.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,customer_satisfaction,1800.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,product_price,-850.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,tv_x_holiday,180.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,visits_x_conversion,55.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,channel_Online,9000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,channel_Retail,-3000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,channel_Hybrid,6000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,region_North,2500.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,region_South,-1500.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,region_Central,0.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,region_Coastal,4000.0,True,"Data-generating effect; categorical effects are relative to implicit zero coding, not a dropped-reference OLS parameter."
+B_marketing_sales,month,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,website_visits,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,discount_rate,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,social_x_search,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_01,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_02,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_03,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_04,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_05,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_06,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_07,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
+B_marketing_sales,marketing_noise_08,0.0,False,Not a direct term in the data-generating formula; may still correlate with true predictors.
