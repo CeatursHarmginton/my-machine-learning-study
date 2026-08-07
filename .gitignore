@@ -2,3 +2,52 @@
 .venv/ 
 venv/ 
 __pycache__/ 
+
+# === [Monorepo Manager] Auto-managed patterns ===
+# Dataset files
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.npy
+*.npz
+*.hdf5
+**/data/
+**/dataset/
+**/datasets/
+**/images/
+**/train/
+**/test/
+**/val/
+**/validation/
+
+# Model files
+*.pth
+*.pt
+*.onnx
+*.ckpt
+*.safetensors
+*.pb
+*.tflite
+*.keras
+*.h5
+*.bin
+*.pkl
+*.joblib
+
+# Cache & temporary
+**/__pycache__/
+**/.ipynb_checkpoints/
+**/outputs/
+**/results/
+**/.cache/
+**/wandb/
+**/runs/
+**/logs/
+.venv/
+venv/
+env/
+
+# Manager state
+Manager Projects/.monorepo_state.json
+# === [/Monorepo Manager] ===
