@@ -241,6 +241,14 @@ def scan_projects(root: Path, state: MonorepoState) -> list[ProjectInfo]:
         hf_dataset = proj_state.get("hf_dataset_repo") if proj_state else None
         hf_model = proj_state.get("hf_model_repo") if proj_state else None
 
+        if status == ProjectStatus.UNCHANGED:
+            if files.dataset_count and not hf_dataset:
+                status = ProjectStatus.CHANGED
+                changed_files.append("~ HuggingFace dataset upload missing")
+            if files.model_count and not hf_model:
+                status = ProjectStatus.CHANGED
+                changed_files.append("~ HuggingFace model upload missing")
+
         projects.append(ProjectInfo(
             name=name,
             rel_path=rel_path,

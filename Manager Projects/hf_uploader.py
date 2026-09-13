@@ -11,6 +11,7 @@ import zipfile
 import tempfile
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 
 from rich.progress import (
     Progress,
@@ -87,6 +88,18 @@ class HFUploader:
         slug = re.sub(r"[\s_]+", "-", slug)
         return slug.strip("-") or "project"
 
+    @classmethod
+    def zip_filename(cls, project: ProjectInfo, label: str) -> str:
+        return f"{cls._slugify(project.name)}-{label}.zip"
+
+    @staticmethod
+    def download_url(repo_id: str, repo_type: str, filename: str) -> str:
+        prefix = "datasets/" if repo_type == "dataset" else ""
+        return (
+            f"https://huggingface.co/{prefix}{quote(repo_id, safe='/')}"
+            f"/resolve/main/{quote(filename)}?download=true"
+        )
+
     def _ensure_repo(self, repo_id: str, repo_type: str) -> str:
         """Create the HF repo if it doesn't already exist."""
         try:
@@ -115,9 +128,8 @@ class HFUploader:
              than Python for many small files.
           2. Fall back to Python ``zipfile`` with smart compression.
         """
-        slug = self._slugify(project.name)
         tmp_dir = tempfile.mkdtemp(prefix="monorepo_")
-        zip_path = Path(tmp_dir) / f"{slug}-{label}.zip"
+        zip_path = Path(tmp_dir) / self.zip_filename(project, label)
 
         total = len(file_list)
         if total == 0:
@@ -383,6 +395,9 @@ class HFUploader:
                     )
                 console.print(
                     f"  [green]✅ Uploaded {zip_name} ({size_mb:.1f} MB)[/green]"
+                )
+                console.print(
+                    f"  [cyan]⬇ Download: {self.download_url(repo_id, repo_type, zip_name)}[/cyan]"
                 )
             else:
                 self.api.upload_file(

@@ -222,6 +222,7 @@ class MonorepoUI:
         table.add_column("Project", style="bold white")
         table.add_column("GitHub", justify="center", width=8)
         table.add_column("HF Dataset", style="yellow", min_width=20)
+        table.add_column("Download", style="cyan", min_width=30)
         table.add_column("HF Model", style="red", min_width=20)
 
         for proj_name, info in results.items():
@@ -229,6 +230,7 @@ class MonorepoUI:
                 proj_name,
                 "✅" if info.get("github") else "⏭️",
                 info.get("hf_dataset") or "—",
+                info.get("hf_dataset_download") or "—",
                 info.get("hf_model") or "—",
             )
 

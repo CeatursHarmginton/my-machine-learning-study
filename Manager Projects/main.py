@@ -126,9 +126,20 @@ def main():
                         if repo_id:
                             results[proj.rel_path]["hf_dataset"] = repo_id
                             proj.hf_dataset_repo = repo_id
+                            if use_zip:
+                                zip_name = hf.zip_filename(proj, "dataset")
+                                results[proj.rel_path]["hf_dataset_download"] = (
+                                    hf.download_url(repo_id, "dataset", zip_name)
+                                )
                             ui.log_success(
                                 f"Datasets → [link=https://huggingface.co/datasets/{repo_id}]{repo_id}[/link]"
                             )
+                            if use_zip:
+                                ui.log_success(
+                                    "Download → "
+                                    f"[link={results[proj.rel_path]['hf_dataset_download']}]"
+                                    f"{results[proj.rel_path]['hf_dataset_download']}[/link]"
+                                )
                     except Exception as exc:
                         ui.log_error(
                             f"Dataset upload failed for {proj.name}: {exc}"
@@ -189,12 +200,19 @@ def main():
         ui.log_step("💾 Saving State")
 
         for proj in selected:
-            state.update_project(
-                proj.rel_path,
-                proj.source_hashes,
-                hf_dataset_repo=proj.hf_dataset_repo,
-                hf_model_repo=proj.hf_model_repo,
-            )
+            dataset_ok = not proj.files.dataset_count or bool(proj.hf_dataset_repo)
+            model_ok = not proj.files.model_count or bool(proj.hf_model_repo)
+            if dataset_ok and model_ok:
+                state.update_project(
+                    proj.rel_path,
+                    proj.source_hashes,
+                    hf_dataset_repo=proj.hf_dataset_repo,
+                    hf_model_repo=proj.hf_model_repo,
+                )
+            else:
+                ui.log_warning(
+                    f"State not saved for {proj.name}: HuggingFace upload incomplete."
+                )
 
         state.save()
         ui.log_success("State saved.")
