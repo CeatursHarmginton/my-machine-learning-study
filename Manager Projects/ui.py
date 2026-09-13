@@ -81,9 +81,9 @@ class MonorepoUI:
                 str(idx),
                 status_text,
                 proj.rel_path,
-                str(len(proj.files.source)),
-                str(len(proj.files.dataset)),
-                str(len(proj.files.model)),
+                str(proj.files.source_count),
+                str(proj.files.dataset_count),
+                str(proj.files.model_count),
                 str(len(proj.changed_files)),
             )
 
@@ -107,9 +107,9 @@ class MonorepoUI:
             icon = "🆕" if p.status == ProjectStatus.NEW else "📝"
             label = (
                 f"{icon} {p.rel_path}  "
-                f"({len(p.files.source)} src, "
-                f"{len(p.files.dataset)} data, "
-                f"{len(p.files.model)} model)"
+                f"({p.files.source_count} src, "
+                f"{p.files.dataset_count} data, "
+                f"{p.files.model_count} model)"
             )
             choices.append({"name": label, "value": p.rel_path})
 
@@ -131,30 +131,30 @@ class MonorepoUI:
 
             if proj.files.source:
                 branch = tree.add(
-                    f"[green]📄 Source ({len(proj.files.source)} files) → GitHub[/green]"
+                    f"[green]📄 Source ({proj.files.source_count} files) → GitHub[/green]"
                 )
                 for f in proj.files.source[:5]:
                     branch.add(f"[dim]{f}[/dim]")
-                if len(proj.files.source) > 5:
-                    branch.add(f"[dim]… +{len(proj.files.source) - 5} more[/dim]")
+                if proj.files.source_count > 5:
+                    branch.add(f"[dim]… +{proj.files.source_count - 5} more[/dim]")
 
             if proj.files.dataset:
                 branch = tree.add(
-                    f"[yellow]📊 Dataset ({len(proj.files.dataset)} files) → HuggingFace Dataset[/yellow]"
+                    f"[yellow]📊 Dataset ({proj.files.dataset_count} files) → HuggingFace Dataset[/yellow]"
                 )
                 for f in proj.files.dataset[:5]:
                     branch.add(f"[dim]{f}[/dim]")
-                if len(proj.files.dataset) > 5:
-                    branch.add(f"[dim]… +{len(proj.files.dataset) - 5} more[/dim]")
+                if proj.files.dataset_count > 5:
+                    branch.add(f"[dim]… +{proj.files.dataset_count - 5} more[/dim]")
 
             if proj.files.model:
                 branch = tree.add(
-                    f"[red]🧠 Model ({len(proj.files.model)} files) → HuggingFace Model[/red]"
+                    f"[red]🧠 Model ({proj.files.model_count} files) → HuggingFace Model[/red]"
                 )
                 for f in proj.files.model[:5]:
                     branch.add(f"[dim]{f}[/dim]")
-                if len(proj.files.model) > 5:
-                    branch.add(f"[dim]… +{len(proj.files.model) - 5} more[/dim]")
+                if proj.files.model_count > 5:
+                    branch.add(f"[dim]… +{proj.files.model_count - 5} more[/dim]")
 
             self.console.print(tree)
             self.console.print()
@@ -175,9 +175,9 @@ class MonorepoUI:
     def confirm_publish(self, projects: list[ProjectInfo], use_zip: bool = True) -> bool:
         from InquirerPy import inquirer
 
-        total_src = sum(len(p.files.source) for p in projects)
-        total_data = sum(len(p.files.dataset) for p in projects)
-        total_model = sum(len(p.files.model) for p in projects)
+        total_src = sum(p.files.source_count for p in projects)
+        total_data = sum(p.files.dataset_count for p in projects)
+        total_model = sum(p.files.model_count for p in projects)
         upload_mode = "📦 ZIP archive" if use_zip else "📄 Individual files"
 
         summary = (

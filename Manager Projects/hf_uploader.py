@@ -108,10 +108,12 @@ class HFUploader:
         label: str,
         console=None,
     ) -> Optional[Path]:
-        """Create a zip archive of files with a Rich progress bar.
+        """Create a zip archive of files.
 
-        Uses ZIP_STORED for pre-compressed formats (images, model weights,
-        binary data) to avoid the 10–50× overhead of futile deflation.
+        Strategy:
+          1. Try native ``tar`` (Windows 10+ built-in) — 10–50× faster
+             than Python for many small files.
+          2. Fall back to Python ``zipfile`` with smart compression.
         """
         slug = self._slugify(project.name)
         tmp_dir = tempfile.mkdtemp(prefix="monorepo_")
@@ -122,7 +124,122 @@ class HFUploader:
             os.rmdir(tmp_dir)
             return None
 
-        # ── Zip with per-file progress bar ────────────────────────
+        # Resolve absolute paths and archive names
+        entries: list[tuple[Path, str]] = []
+        for rel_path in file_list:
+            filepath = self.root / rel_path
+            if not filepath.exists():
+                continue
+            try:
+                arcname = str(
+                    filepath.relative_to(project.abs_path)
+                ).replace("\\", "/")
+            except ValueError:
+                arcname = filepath.name
+            entries.append((filepath, arcname))
+
+        if not entries:
+            os.rmdir(tmp_dir)
+            return None
+        total = len(entries)
+
+        # ── Try native zip (via tar.exe or 7z) ───────────────────
+        if total >= 100:
+            native_ok = self._try_native_zip(
+                entries, project.abs_path, zip_path, label, total, console
+            )
+            if native_ok:
+                return zip_path
+
+        # ── Fallback: Python zipfile ──────────────────────────────
+        return self._python_zip(entries, zip_path, label, total, console)
+
+    def _try_native_zip(
+        self,
+        entries: list[tuple[Path, str]],
+        project_root: Path,
+        zip_path: Path,
+        label: str,
+        total: int,
+        console=None,
+    ) -> bool:
+        """Attempt to create zip using native tar.exe (Windows 10+).
+
+        Returns True if successful, False to trigger fallback.
+        """
+        import subprocess
+        import shutil
+
+        tar_bin = shutil.which("tar")
+        if not tar_bin:
+            return False
+
+        if console:
+            console.print(
+                f"  [dim]⚡ Using native tar for {total:,} files "
+                f"(~10× faster)[/dim]"
+            )
+
+        try:
+            # Write a file list (manifest) to avoid command-line length limits
+            manifest = zip_path.parent / "_manifest.txt"
+            with open(manifest, "w", encoding="utf-8") as fh:
+                for filepath, arcname in entries:
+                    # tar needs paths relative to the -C directory
+                    fh.write(arcname + "\n")
+
+            # tar -a -cf output.zip -C <project_root> -T manifest.txt
+            #   -a  = auto-detect archive format from extension (.zip)
+            #   -C  = change to project dir (so paths are relative)
+            #   -T  = read file list from manifest
+            with console.status(
+                f"[bold cyan]📦 Zipping {label} ({total:,} files) via tar…[/bold cyan]"
+            ) if console else _nullcontext():
+                result = subprocess.run(
+                    [
+                        tar_bin, "-a", "-cf", str(zip_path),
+                        "-C", str(project_root),
+                        "-T", str(manifest),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=600,  # 10 min max
+                )
+
+            manifest.unlink(missing_ok=True)
+
+            if result.returncode != 0:
+                if console:
+                    console.print(
+                        f"  [yellow]⚠ tar failed, falling back to Python zip[/yellow]"
+                    )
+                zip_path.unlink(missing_ok=True)
+                return False
+
+            if zip_path.exists() and zip_path.stat().st_size > 0:
+                size_mb = zip_path.stat().st_size / (1024 * 1024)
+                if console:
+                    console.print(
+                        f"  [green]✅ Zip ready: {zip_path.name} "
+                        f"({total:,} files, {size_mb:.1f} MB)[/green]"
+                    )
+                return True
+
+            return False
+
+        except Exception:
+            zip_path.unlink(missing_ok=True)
+            return False
+
+    def _python_zip(
+        self,
+        entries: list[tuple[Path, str]],
+        zip_path: Path,
+        label: str,
+        total: int,
+        console=None,
+    ) -> Optional[Path]:
+        """Create zip using Python zipfile with smart compression + progress."""
         progress = Progress(
             SpinnerColumn("dots"),
             TextColumn("[progress.description]{task.description}"),
@@ -141,35 +258,20 @@ class HFUploader:
             )
 
             with zipfile.ZipFile(zip_path, "w") as zf:
-                for rel_path in file_list:
-                    filepath = self.root / rel_path
-                    if not filepath.exists():
-                        progress.advance(task)
-                        continue
-
-                    # Archive path = relative to the project root
-                    try:
-                        arcname = str(
-                            filepath.relative_to(project.abs_path)
-                        ).replace("\\", "/")
-                    except ValueError:
-                        arcname = filepath.name
-
-                    # Smart compression: skip deflation for pre-compressed files
+                for filepath, arcname in entries:
                     ext = filepath.suffix.lower()
                     method = (
                         zipfile.ZIP_STORED
                         if ext in _PRECOMPRESSED_EXTS
                         else zipfile.ZIP_DEFLATED
                     )
-
                     zf.write(filepath, arcname, compress_type=method)
                     count += 1
                     progress.advance(task)
 
         if count == 0:
             zip_path.unlink(missing_ok=True)
-            os.rmdir(tmp_dir)
+            os.rmdir(zip_path.parent)
             return None
 
         size_mb = zip_path.stat().st_size / (1024 * 1024)
@@ -296,7 +398,7 @@ class HFUploader:
         except Exception as exc:
             if console:
                 console.print(f"  [red]⚠ Zip upload failed: {exc}[/red]")
-            return repo_id
+            raise
 
         finally:
             self._cleanup_zip(zip_path)
@@ -326,6 +428,8 @@ class HFUploader:
         ) if console else None
 
         ctx = progress if progress else _nullcontext()
+        failures: list[str] = []
+
         with ctx:
             task = progress.add_task(
                 f"📤 Uploading {repo_type} files", total=total
@@ -357,6 +461,7 @@ class HFUploader:
                         commit_message=f"Update {path_in_repo}",
                     )
                 except Exception as exc:
+                    failures.append(f"{path_in_repo}: {exc}")
                     if console:
                         console.print(
                             f"  [red]⚠ Failed: {path_in_repo} — {exc}[/red]"
@@ -364,6 +469,9 @@ class HFUploader:
 
                 if progress:
                     progress.advance(task)
+
+        if failures:
+            raise RuntimeError(f"{len(failures)} {repo_type} upload(s) failed")
 
         return repo_id
 

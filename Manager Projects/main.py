@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from config import ROOT_PATH, STATE_FILE, ProjectStatus
 from state import MonorepoState
-from scanner import scan_projects
+from scanner import scan_projects, materialize_project_files
 from git_manager import GitManager
 from hf_uploader import HFUploader
 from ui import MonorepoUI
@@ -67,17 +67,19 @@ def main():
             ui.log_warning("No projects selected. Exiting.")
             return
 
-        # ── 6. Show classification ───────────────────────────────
-        ui.log_step("📋 File Classification")
-        ui.show_classification(selected)
-
-        # ── 6b. Ask upload mode (zip vs individual) ──────────────
+        # ── 6. Ask upload mode (zip vs individual) ───────────────
         has_hf_files = any(
-            p.files.dataset or p.files.model for p in selected
+            p.files.dataset_count or p.files.model_count for p in selected
         )
         use_zip = True
         if has_hf_files:
             use_zip = ui.ask_zip_mode()
+
+        materialize_project_files(selected, ROOT_PATH)
+
+        # ── 6b. Show classification ──────────────────────────────
+        ui.log_step("📋 File Classification")
+        ui.show_classification(selected)
 
         # ── 7. Confirm ───────────────────────────────────────────
         if not ui.confirm_publish(selected, use_zip=use_zip):
@@ -187,17 +189,9 @@ def main():
         ui.log_step("💾 Saving State")
 
         for proj in selected:
-            current_hashes: dict[str, str] = {}
-            for filepath in proj.abs_path.rglob("*"):
-                if filepath.is_file():
-                    rel_str = str(
-                        filepath.relative_to(ROOT_PATH)
-                    ).replace("\\", "/")
-                    current_hashes[rel_str] = MonorepoState.compute_hash(filepath)
-
             state.update_project(
                 proj.rel_path,
-                current_hashes,
+                proj.source_hashes,
                 hf_dataset_repo=proj.hf_dataset_repo,
                 hf_model_repo=proj.hf_model_repo,
             )

@@ -59,28 +59,36 @@ def classify_file(filepath: Path, project_root: Path) -> FileType:
     return FileType.SOURCE
 
 
-def classify_project(project_path: Path, root_path: Path) -> ClassifiedFiles:
+def classify_project(
+    project_path: Path,
+    root_path: Path,
+    materialize_hf: bool = False,
+    sample_limit: int = 5,
+) -> ClassifiedFiles:
     """Walk the project and classify files into source / dataset / model.
 
     Uses os.walk with directory pruning so we never descend into dataset
-    directories (which can contain tens of thousands of image files).
-    Instead, dataset dirs are handled by a fast file-count helper.
+    directories while scanning project lists. Dataset dirs are counted with
+    os.scandir; full HF file lists are built only when uploading.
     """
     import os
 
     result = ClassifiedFiles()
+    result.materialized = materialize_hf
     ignored_lower = {d.lower() for d in IGNORED_DIRS}
     dataset_dirs_lower = {d.lower() for d in DATASET_DIRS}
 
     # ── Phase 1: collect dataset files from dataset directories ──
     def _collect_dataset_dir(dpath: Path):
-        """Recursively list every file inside a dataset directory."""
+        """Count or list every file inside a dataset directory."""
         try:
             for item in os.scandir(dpath):
                 if item.is_file(follow_symlinks=False):
                     fp = Path(item.path)
-                    rel_str = str(fp.relative_to(root_path)).replace("\\", "/")
-                    result.dataset.append(rel_str)
+                    result.dataset_count += 1
+                    if materialize_hf or len(result.dataset) < sample_limit:
+                        rel_str = str(fp.relative_to(root_path)).replace("\\", "/")
+                        result.dataset.append(rel_str)
                 elif item.is_dir(follow_symlinks=False):
                     if item.name.lower() not in ignored_lower:
                         _collect_dataset_dir(fp := Path(item.path))
@@ -118,10 +126,14 @@ def classify_project(project_path: Path, root_path: Path) -> ClassifiedFiles:
 
             if file_type == FileType.SOURCE:
                 result.source.append(rel_str)
+                result.source_count += 1
             elif file_type == FileType.DATASET:
-                result.dataset.append(rel_str)
+                result.dataset_count += 1
+                if materialize_hf or len(result.dataset) < sample_limit:
+                    result.dataset.append(rel_str)
             elif file_type == FileType.MODEL:
-                result.model.append(rel_str)
+                result.model_count += 1
+                if materialize_hf or len(result.model) < sample_limit:
+                    result.model.append(rel_str)
 
     return result
-

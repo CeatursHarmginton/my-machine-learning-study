@@ -14,6 +14,7 @@ from config import (
     PROJECT_MARKERS,
     MODEL_EXTS,
     AMBIGUOUS_MODEL_EXTS,
+    DATASET_EXTS,
     DATASET_DIRS,
     ROOT_PATH,
 )
@@ -24,11 +25,12 @@ from state import MonorepoState
 # ── Helpers ───────────────────────────────────────────────────────────
 
 _IGNORED_LOWER = {d.lower() for d in IGNORED_DIRS}
+_DISCOVERY_SKIP_LOWER = _IGNORED_LOWER | {d.lower() for d in DATASET_DIRS}
 
 
 def _should_skip(dirname: str) -> bool:
     """Return True if this directory name should be skipped."""
-    return dirname.lower() in _IGNORED_LOWER or dirname.startswith(".")
+    return dirname.lower() in _DISCOVERY_SKIP_LOWER or dirname.startswith(".")
 
 
 def _is_python_package(path: Path) -> bool:
@@ -153,8 +155,8 @@ def _walk_source_files(project_path: Path, root: Path):
             fp = dp / fname
             ext = fp.suffix.lower()
 
-            # Skip model files — they go to HF, no need to hash
-            if ext in MODEL_EXTS or ext in AMBIGUOUS_MODEL_EXTS:
+            # Skip HF-bound files — they are not tracked in source state.
+            if ext in MODEL_EXTS or ext in AMBIGUOUS_MODEL_EXTS or ext in DATASET_EXTS:
                 continue
 
             rel_str = str(fp.relative_to(root)).replace("\\", "/")
@@ -190,7 +192,7 @@ def detect_changes(
 
     # Detect deleted files (only among previously hashed source files)
     for old_file in old_hashes:
-        if old_file not in current_hashes:
+        if _is_tracked_source_path(old_file) and old_file not in current_hashes:
             changed_files.append(f"- {old_file}")
 
     # Determine status
@@ -204,6 +206,15 @@ def detect_changes(
     return status, changed_files, current_hashes
 
 
+def _is_tracked_source_path(rel_path: str) -> bool:
+    """True for paths that belong in source hash state."""
+    parts = [p.lower() for p in rel_path.replace("\\", "/").split("/")]
+    if any(part in _SKIP_WALK_DIRS or part.startswith(".") for part in parts[:-1]):
+        return False
+    ext = Path(parts[-1]).suffix.lower()
+    return ext not in MODEL_EXTS and ext not in AMBIGUOUS_MODEL_EXTS and ext not in DATASET_EXTS
+
+
 # ── Public API ────────────────────────────────────────────────────────
 
 def scan_projects(root: Path, state: MonorepoState) -> list[ProjectInfo]:
@@ -215,7 +226,7 @@ def scan_projects(root: Path, state: MonorepoState) -> list[ProjectInfo]:
         rel_path = str(proj_path.relative_to(root)).replace("\\", "/")
         name = proj_path.name
 
-        status, changed_files, _ = detect_changes(proj_path, rel_path, state, root)
+        status, changed_files, source_hashes = detect_changes(proj_path, rel_path, state, root)
         files = classify_project(proj_path, root)
 
         # Retrieve existing HF repo mappings from state
@@ -230,8 +241,15 @@ def scan_projects(root: Path, state: MonorepoState) -> list[ProjectInfo]:
             status=status,
             files=files,
             changed_files=changed_files,
+            source_hashes=source_hashes,
             hf_dataset_repo=hf_dataset,
             hf_model_repo=hf_model,
         ))
 
     return projects
+
+
+def materialize_project_files(projects: list[ProjectInfo], root: Path) -> None:
+    """Populate full dataset/model file lists after the user selects projects."""
+    for project in projects:
+        project.files = classify_project(project.abs_path, root, materialize_hf=True)

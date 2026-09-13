@@ -31,6 +31,10 @@ class ClassifiedFiles:
     source: list = field(default_factory=list)    # relative paths (str)
     dataset: list = field(default_factory=list)
     model: list = field(default_factory=list)
+    source_count: int = 0
+    dataset_count: int = 0
+    model_count: int = 0
+    materialized: bool = False
 
 
 @dataclass
@@ -42,6 +46,7 @@ class ProjectInfo:
     status: ProjectStatus                           # NEW / CHANGED / UNCHANGED
     files: ClassifiedFiles = field(default_factory=ClassifiedFiles)
     changed_files: list = field(default_factory=list)  # list of changed relative paths
+    source_hashes: dict = field(default_factory=dict)
     hf_dataset_repo: Optional[str] = None
     hf_model_repo: Optional[str] = None
 
