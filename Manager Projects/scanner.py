@@ -25,7 +25,8 @@ from state import MonorepoState
 # ── Helpers ───────────────────────────────────────────────────────────
 
 _IGNORED_LOWER = {d.lower() for d in IGNORED_DIRS}
-_DISCOVERY_SKIP_LOWER = _IGNORED_LOWER | {d.lower() for d in DATASET_DIRS}
+_DATASET_DIRS_LOWER = {d.lower() for d in DATASET_DIRS}
+_DISCOVERY_SKIP_LOWER = _IGNORED_LOWER | _DATASET_DIRS_LOWER
 
 
 def _should_skip(dirname: str) -> bool:
@@ -82,7 +83,8 @@ def discover_projects(root: Path) -> list[Path]:
        and discard the children (absorb them).  This prevents Lab7 from
        exploding into 14 sub-projects when each notebook sits in its own
        folder.
-    4. If a directory is NOT a project but children were found → keep children.
+    4. If a directory owns a dataset dir plus child projects → keep the parent.
+    5. If a directory is NOT a project but children were found → keep children.
     """
 
     def _scan(directory: Path) -> list[Path]:
@@ -96,9 +98,15 @@ def discover_projects(root: Path) -> list[Path]:
 
         # Enumerate child directories
         subdirs: list[Path] = []
+        has_dataset_dir = False
         try:
             for item in sorted(directory.iterdir()):
-                if item.is_dir() and not _should_skip(item.name):
+                if not item.is_dir():
+                    continue
+                name_lower = item.name.lower()
+                if name_lower in _DATASET_DIRS_LOWER:
+                    has_dataset_dir = True
+                elif not _should_skip(item.name):
                     subdirs.append(item)
         except PermissionError:
             return []
@@ -114,9 +122,8 @@ def discover_projects(root: Path) -> list[Path]:
 
         this_is_project = is_project_dir(directory)
 
-        if this_is_project and child_projects:
-            # This directory IS a project AND has child projects →
-            # absorb children, keep only this as the project
+        if (this_is_project or has_dataset_dir) and child_projects:
+            # Parent owns project-level data; keep it with child source files.
             return [directory]
         elif this_is_project:
             # Leaf project, no children
