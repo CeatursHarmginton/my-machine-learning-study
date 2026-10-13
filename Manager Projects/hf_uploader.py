@@ -9,6 +9,7 @@ import os
 import re
 import zipfile
 import tempfile
+import unicodedata
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote
@@ -83,10 +84,23 @@ class HFUploader:
 
     @staticmethod
     def _slugify(name: str) -> str:
-        """Convert a project name to a URL-safe slug."""
-        slug = re.sub(r"[^\w\s-]", "", name.lower())
+        """Convert a project name to a URL-safe slug conforming to HuggingFace repo rules."""
+        # Normalize accented characters / unicode to ASCII
+        normalized = (
+            unicodedata.normalize("NFKD", name)
+            .encode("ascii", "ignore")
+            .decode("ascii")
+            .lower()
+        )
+        # Keep only alphanumeric, whitespace, and hyphens
+        slug = re.sub(r"[^\w\s-]", "", normalized)
+        # Replace whitespace and underscores with hyphen
         slug = re.sub(r"[\s_]+", "-", slug)
-        return slug.strip("-") or "project"
+        # HuggingFace forbids consecutive hyphens '--' or '..'
+        slug = re.sub(r"-+", "-", slug)
+        # Trim leading/trailing hyphens and limit length
+        slug = slug.strip("-")[:60].rstrip("-")
+        return slug or "project"
 
     @classmethod
     def zip_filename(cls, project: ProjectInfo, label: str) -> str:
