@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOLOv1 Interactive Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="brand">
+        <p class="eyebrow">Object Detection · S×S×(B·5+C)</p>
+        <h1>YOLOv1 Interactive Demo</h1>
+        <p class="lede">
+          Explore the 7×7 grid, two boxes per cell, class scores, and the five-term loss —
+          using the classic dog / bicycle / car scene.
+        </p>
+      </div>
+      <div class="controls" role="group" aria-label="View controls">
+        <button type="button" id="btn-pred" class="btn btn-primary is-active">Prediction</button>
+        <button type="button" id="btn-gt" class="btn">Ground Truth</button>
+        <button type="button" id="btn-auto" class="btn btn-accent">Auto-fill boxes</button>
+        <button type="button" id="btn-clear" class="btn btn-ghost">Clear predictions</button>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <div class="panel panel-image">
+        <div class="panel-bar">
+          <h2>Input image · 7×7 grid</h2>
+          <div class="tool-stack" id="edit-tools">
+            <div class="tool-row">
+              <span class="muted">Tool</span>
+              <button type="button" class="chip chip-tool is-active" data-tool="box">Draw box</button>
+              <button type="button" class="chip chip-tool" data-tool="class">Set class</button>
+            </div>
+            <div class="tool-row" id="box-picker">
+              <span class="muted">Box</span>
+              <button type="button" class="chip is-active" data-box="0">B1</button>
+              <button type="button" class="chip" data-box="1">B2</button>
+            </div>
+            <div class="tool-row" id="class-picker">
+              <span class="muted">Class</span>
+              <button type="button" class="chip chip-cls" data-class="0">Dog</button>
+              <button type="button" class="chip chip-cls" data-class="1">Bicycle</button>
+              <button type="button" class="chip chip-cls" data-class="2">Car</button>
+            </div>
+          </div>
+        </div>
+        <p class="hint" id="mode-hint">
+          Hover a cell to inspect neurons. Use <strong>Draw box</strong> to click-drag geometry,
+          or <strong>Set class</strong> to pick a box then assign dog / bicycle / car.
+        </p>
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <img id="sample-img" src="sample.jpeg" alt="Sample scene with dog, bicycle, and car" draggable="false" />
+            <canvas id="overlay"></canvas>
+            <div class="grid" id="grid"></div>
+            <div class="draw-rect" id="draw-rect" hidden></div>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="swatch dog"></i> Dog</span>
+          <span><i class="swatch bike"></i> Bicycle</span>
+          <span><i class="swatch car"></i> Car</span>
+          <span><i class="swatch b1"></i> Box 1</span>
+          <span><i class="swatch b2"></i> Box 2</span>
+        </div>
+      </div>
+
+      <div class="panel panel-neurons">
+        <div class="panel-bar">
+          <h2>Output tensor</h2>
+          <span class="badge" id="cell-badge">7 × 7 × 13</span>
+        </div>
+        <p class="hint">
+          Model prediction shape <strong>S×S×(B·5+C) = 7×7×13</strong>.
+          Click a spatial cell below, then inspect / edit its 13 channels
+          (B1, B2, classes).
+        </p>
+
+        <div class="tensor-map-wrap">
+          <div class="tensor-map-label">Spatial grid · click to select</div>
+          <div class="tensor-map" id="tensor-map" aria-label="7 by 7 output tensor spatial map"></div>
+        </div>
+
+        <div class="panel-bar compact channel-bar">
+          <h3>Channels at selected cell</h3>
+          <span class="badge subtle" id="channel-badge">—</span>
+        </div>
+        <div class="neuron-groups" id="neuron-groups">
+          <div class="neuron-group" data-group="b1">
+            <div class="group-head">
+              <span class="tag tag-b1">Box 1</span>
+              <span class="group-sub">5 · x y w h conf</span>
+            </div>
+            <div class="neuron-row" id="neurons-b1"></div>
+          </div>
+          <div class="neuron-group" data-group="b2">
+            <div class="group-head">
+              <span class="tag tag-b2">Box 2</span>
+              <span class="group-sub">5 · x y w h conf</span>
+            </div>
+            <div class="neuron-row" id="neurons-b2"></div>
+          </div>
+          <div class="neuron-group" data-group="cls">
+            <div class="group-head">
+              <span class="tag tag-cls">Classes</span>
+              <span class="group-sub">3 · dog bicycle car</span>
+            </div>
+            <div class="neuron-row" id="neurons-cls"></div>
+          </div>
+        </div>
+        <div class="tensor-note" id="tensor-note">
+          Full tensor: 49 cells × 13 channels = 637 values. Hover or click a cell to read its slice.
+        </div>
+      </div>
+    </section>
+
+    <section class="loss-section">
+      <div class="panel-bar">
+        <h2>YOLOv1 loss · five components</h2>
+        <span class="badge" id="loss-total">Total L = —</span>
+      </div>
+      <p class="hint">
+        Click a component to expand its formula and the live numbers from your prediction vs. ground truth
+        (λ<sub>coord</sub>=5, λ<sub>noobj</sub>=0.5).
+      </p>
+      <div class="loss-grid" id="loss-grid">
+        <button type="button" class="loss-card" data-loss="xy">
+          <span class="loss-idx">1</span>
+          <span class="loss-name">Coordinate (x, y)</span>
+          <span class="loss-val" id="loss-xy-val">—</span>
+        </button>
+        <button type="button" class="loss-card" data-loss="wh">
+          <span class="loss-idx">2</span>
+          <span class="loss-name">Size (√w, √h)</span>
+          <span class="loss-val" id="loss-wh-val">—</span>
+        </button>
+        <button type="button" class="loss-card" data-loss="obj">
+          <span class="loss-idx">3</span>
+          <span class="loss-name">Object confidence</span>
+          <span class="loss-val" id="loss-obj-val">—</span>
+        </button>
+        <button type="button" class="loss-card" data-loss="noobj">
+          <span class="loss-idx">4</span>
+          <span class="loss-name">No-object confidence</span>
+          <span class="loss-val" id="loss-noobj-val">—</span>
+        </button>
+        <button type="button" class="loss-card" data-loss="cls">
+          <span class="loss-idx">5</span>
+          <span class="loss-name">Classification</span>
+          <span class="loss-val" id="loss-cls-val">—</span>
+        </button>
+      </div>
+      <div class="loss-detail" id="loss-detail" hidden>
+        <h3 id="loss-detail-title"></h3>
+        <pre class="formula" id="loss-detail-formula"></pre>
+        <div class="calc" id="loss-detail-calc"></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>
+        Encoding: <code>x,y</code> relative to the cell; <code>w,h</code> relative to the image;
+        confidence ≈ P(object)·IoU. Classes: dog, bicycle, car.
+      </p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>N-gram Next-Word Prediction — Interactive Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">NLP Project 1 · Statistical Language Models</p>
+      <h1>How N-gram Next-Word Prediction Works</h1>
+      <p class="lede">
+        Explore Jane Austen’s <em>Emma</em> (Gutenberg). Click any word to see its
+        conditional probability under an N-gram model, inspect the count equation,
+        then build a sentence by picking the model’s top suggestions.
+      </p>
+    </header>
+
+    <section class="controls" aria-label="Model order">
+      <div class="control-label">
+        <span>Context length</span>
+        <strong id="order-caption">N = 2 · bigram · uses 1 previous word</strong>
+      </div>
+      <div class="n-buttons" role="group" aria-label="Choose N">
+        <button type="button" class="n-btn" data-n="1">1</button>
+        <button type="button" class="n-btn is-active" data-n="2">2</button>
+        <button type="button" class="n-btn" data-n="3">3</button>
+        <button type="button" class="n-btn" data-n="4">4</button>
+      </div>
+    </section>
+
+    <section class="equation-panel" id="equation-panel" aria-live="polite">
+      <p class="equation-hint" id="equation-hint">
+        Click a word in the sample paragraphs below. Probabilities come from the
+        <strong>full Emma novel</strong> (not just these three paragraphs).
+      </p>
+      <div class="equation" id="equation" hidden></div>
+      <p class="equation-note" id="equation-note" hidden></p>
+    </section>
+
+    <section class="corpus" aria-label="Training paragraphs">
+      <div class="section-head">
+        <h2>Sample paragraphs (inspection view)</h2>
+        <p id="corpus-stats">Loading full-corpus model…</p>
+        <p>Click any word to see its next-word probability under the full-corpus N-gram model.</p>
+      </div>
+      <div class="legend">
+        <span><i class="swatch-hist"></i>history (N−1)</span>
+        <span><i class="swatch-target"></i>selected word</span>
+      </div>
+      <div id="paragraphs"></div>
+      <div id="float-layer" class="float-layer" aria-hidden="true"></div>
+    </section>
+
+    <section class="predictor" aria-label="Next word prediction">
+      <div class="section-head">
+        <h2>Next-word prediction</h2>
+        <p>
+          Start from the five most frequent words in <em>Emma</em>. Each choice appends a token and refreshes
+          the top-five continuations from the full-corpus model (history length up to
+          <span id="hist-len">1</span>).
+        </p>
+      </div>
+
+      <div class="sequence-box">
+        <div class="sequence-meta">
+          <span>Generated sequence</span>
+          <button type="button" id="clear-seq" class="text-btn">Clear</button>
+        </div>
+        <div id="sequence" class="sequence" aria-label="Selected words">
+          <span class="sequence-placeholder">Choose a starting word below…</span>
+        </div>
+        <p class="history-line" id="history-line">History for prediction: <em>(empty — showing unigram frequencies)</em></p>
+      </div>
+
+      <div class="suggestions-label">Top 5 candidates</div>
+      <div id="suggestions" class="suggestions" role="list"></div>
+    </section>
+
+    <footer class="footer">
+      <p>Source: NLTK Gutenberg · Jane Austen, <em>Emma</em>. Probabilities use maximum-likelihood estimation (MLE).</p>
+    </footer>
+  </div>
+
+  <script src="corpus-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

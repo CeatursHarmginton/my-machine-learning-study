@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dự đoán từ tiếp theo bằng N-gram — Demo tương tác</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">NLP Project 1 · Mô hình ngôn ngữ thống kê</p>
+      <h1>Cách dự đoán từ tiếp theo bằng N-gram hoạt động</h1>
+      <p class="lede">
+        Khám phá <em>Emma</em> của Jane Austen (Gutenberg). Nhấp bất kỳ từ nào để xem
+        xác suất có điều kiện dưới mô hình N-gram, kiểm tra phương trình số đếm,
+        rồi dựng câu bằng cách chọn các gợi ý top của mô hình.
+      </p>
+    </header>
+
+    <section class="controls" aria-label="Bậc mô hình">
+      <div class="control-label">
+        <span>Độ dài ngữ cảnh</span>
+        <strong id="order-caption">N = 2 · bigram · dùng 1 từ trước</strong>
+      </div>
+      <div class="n-buttons" role="group" aria-label="Chọn N">
+        <button type="button" class="n-btn" data-n="1">1</button>
+        <button type="button" class="n-btn is-active" data-n="2">2</button>
+        <button type="button" class="n-btn" data-n="3">3</button>
+        <button type="button" class="n-btn" data-n="4">4</button>
+      </div>
+    </section>
+
+    <section class="equation-panel" id="equation-panel" aria-live="polite">
+      <p class="equation-hint" id="equation-hint">
+        Nhấp một từ trong các đoạn mẫu bên dưới. Xác suất lấy từ
+        <strong>toàn bộ tiểu thuyết Emma</strong> (không chỉ ba đoạn này).
+      </p>
+      <div class="equation" id="equation" hidden></div>
+      <p class="equation-note" id="equation-note" hidden></p>
+    </section>
+
+    <section class="corpus" aria-label="Đoạn văn huấn luyện">
+      <div class="section-head">
+        <h2>Đoạn mẫu (chế độ kiểm tra)</h2>
+        <p id="corpus-stats">Đang tải mô hình toàn corpus…</p>
+        <p>Nhấp bất kỳ từ nào để xem xác suất từ tiếp theo dưới mô hình N-gram toàn corpus.</p>
+      </div>
+      <div class="legend">
+        <span><i class="swatch-hist"></i>lịch sử (N−1)</span>
+        <span><i class="swatch-target"></i>từ được chọn</span>
+      </div>
+      <div id="paragraphs"></div>
+      <div id="float-layer" class="float-layer" aria-hidden="true"></div>
+    </section>
+
+    <section class="predictor" aria-label="Dự đoán từ tiếp theo">
+      <div class="section-head">
+        <h2>Dự đoán từ tiếp theo</h2>
+        <p>
+          Bắt đầu từ năm từ xuất hiện nhiều nhất trong <em>Emma</em>. Mỗi lựa chọn thêm một token và làm mới
+          năm tiếp nối hàng đầu từ mô hình toàn corpus (độ dài lịch sử tối đa
+          <span id="hist-len">1</span>).
+        </p>
+      </div>
+
+      <div class="sequence-box">
+        <div class="sequence-meta">
+          <span>Chuỗi đã sinh</span>
+          <button type="button" id="clear-seq" class="text-btn">Xóa</button>
+        </div>
+        <div id="sequence" class="sequence" aria-label="Các từ đã chọn">
+          <span class="sequence-placeholder">Chọn một từ bắt đầu bên dưới…</span>
+        </div>
+        <p class="history-line" id="history-line">Lịch sử để dự đoán: <em>(trống — đang hiện tần suất unigram)</em></p>
+      </div>
+
+      <div class="suggestions-label">Top 5 ứng viên</div>
+      <div id="suggestions" class="suggestions" role="list"></div>
+    </section>
+
+    <footer class="footer">
+      <p>Nguồn: NLTK Gutenberg · Jane Austen, <em>Emma</em>. Xác suất dùng ước lượng hợp lý cực đại (MLE).</p>
+    </footer>
+  </div>
+
+  <script src="corpus-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
