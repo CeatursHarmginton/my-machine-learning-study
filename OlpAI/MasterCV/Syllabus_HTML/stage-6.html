@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 6 (Tuần 19–24): Video Không-Thời Gian, 3D Geometry &amp; Luyện Đề 6 Giờ — MasterCV Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link active"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 6 · Tuần 19 – 24 · Chiều Thời Gian, Hình Học Không Gian &amp; Tổng Duyệt Đề Thi Mở</div>
+        <h1 class="hero-title">Hiểu Video Không-Thời Gian, Đa Vết Quỹ Đạo, Hình Học 3D &amp; Mô Phỏng Phòng Thi 6 Giờ</h1>
+        <p class="hero-desc">
+          Chặng cuối cùng mở rộng toàn bộ hệ thống mô-đun 2D của 5 giai đoạn trước sang <strong>chiều thứ tư (Thời gian <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span>)</strong> và <strong>hình học chiếu 3D</strong>: triển khai cực nhanh bằng <code>torchvision.models.video</code>, HuggingFace <code>VideoMAE</code>, <code>OpenCV RANSAC</code>, <code>torchvision.ops</code> + <code>scipy.optimize.linear_sum_assignment</code>, đồng thời nắm trọn bản tự build toán học bên dưới (TSM 0-FLOP, cầu nối SlowFast, mặt nạ ống 90%, ghép cặp 2 pha qua che khuất và DLT + SVD). Ba tuần cuối rèn bản lĩnh giải <strong>3 Đề Thi Mở 6 Giờ</strong> từ con số 0.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/9 mục</span>
+          <span class="meta-pill"><strong>Hợp nhất toàn hệ thống:</strong> Giai đoạn 0 → Giai đoạn 5 nâng lên <code>(B, C, T, H, W)</code></span>
+          <span class="meta-pill"><strong>Đấu trường chính:</strong> Kaggle DFL Bundesliga · NFL Tracking · IMC 2024 · IOAI 2025/2026</span>
+        </div>
+      </section>
+
+      <!-- ================= WEEK 19 ================= -->
+      <article class="week-block" id="week-19">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 19 · Tầng 01 (Video Clip Sampler) &amp; Tầng 02 (Temporal Shift &amp; SlowFast)</div>
+            <h3>Biểu Diễn Chuyển Động Video: Mạng Video 3D Có Sẵn, Temporal Shift (TSM) &amp; Kiến Trúc Hai Tốc Độ SlowFast</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Data &amp; Validation</span>
+            <span class="mod-badge mod-2">02 · Backbone &amp; Neck</span>
+            <span class="mode-tag mode-kaggle">torchvision.video + Tự Build TSM/SlowFast</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Vì sao trung bình cộng khung hình 2D thất bại trên hành động đảo chiều?</strong> Nếu chỉ lấy trung bình đặc trưng độc lập của từng khung hình tĩnh, mô hình không thể phân biệt <em>"Mở cửa"</em> với <em>"Đóng cửa"</em> hay <em>"Chuyền bóng đi"</em> với <em>"Đỡ bóng lại"</em>. Khi vào phòng thi, bạn có thể gọi ngay <code>r3d_18</code> / <code>mc3_18</code> / <code>swin3d_t</code> của <code>torchvision.models.video</code> làm baseline 10 phút, hoặc gắn mô-đun dịch kênh <strong>TSM (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mi>t</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t-1, t+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6984em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>)</strong> tốn 0 tham số vào bất kỳ mạng 2D mạnh nào của Giai đoạn 1 &amp; 5!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/dfl-bundesliga-data-shootout" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Video Competition · Fast Event Spotting</span>
+                  <span class="arena-title">DFL - Bundesliga Data Shootout</span>
+                  <span class="arena-subtitle">Identify plays based upon video footage</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/dfl-bundesliga-data-shootout.jpg" alt="DFL - Bundesliga Data Shootout" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phát hiện chính xác thời điểm Chuyền bóng (Pass), Tranh chấp (Challenge) và Ném biên trên video bóng đá thực tế diễn ra trong tích tắc 0.2 giây!</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/datasets/matthewjansen/ucf101-action-recognition" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Benchmark Dataset · 101 Actions</span>
+                  <span class="arena-title">UCF101 — Human Action Recognition</span>
+                  <span class="arena-subtitle">13,320 realistic action videos collected from YouTube across 101 action categories</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/ucf101-action-recognition.jpg" alt="UCF101 — Human Action Recognition" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Tập chuẩn 13.320 video kiểm chứng chia GroupKFold theo mã gốc video (chống rò rỉ các đoạn cắt cùng 1 clip!) và đối sánh 2D Mean vs 3D/TSM vs SlowFast.</span>
+                <span class="arena-cta">Mở Dataset trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Khởi tạo nhanh mạng Video 3D / Spatiotemporal Transformer tiền huấn luyện Kinetics-400 từ <code>torchvision.models.video</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>video_torchvision_library.py — Baseline Nhận Diện Hành Động Bằng Swin3D / MC3 Có Sẵn</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/video_torchvision_library.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/video_torchvision_library.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>temporal_shift</code> (biến mọi mạng 2D thành mạng Video 0 tham số) &amp; cầu nối ngang <code>TimeToChannelLateral</code> của kiến trúc SlowFast (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mn>8</mn><mo separator="true">,</mo><mi>β</mi><mo>=</mo><mn>1</mn><mi mathvariant="normal">/</mi><mn>8</mn></mrow><annotation encoding="application/x-tex">\alpha = 8, \beta = 1/8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">8</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/8</span></span></span></span>)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p><strong>Cơ chế cốt lõi:</strong> (1) <strong>TSM</strong> dịch <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>8</mn></mrow><annotation encoding="application/x-tex">1/8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/8</span></span></span></span> số kênh từ tương lai <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6984em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> về hiện tại và <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mn>8</mn></mrow><annotation encoding="application/x-tex">1/8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/8</span></span></span></span> số kênh từ quá khứ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6984em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> lên hiện tại mà không tốn thêm phép nhân ma trận nào. (2) <strong>SlowFast</strong> tách luồng Slow (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">T_S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> thưa, nhiều kênh <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> bắt ngữ nghĩa tĩnh) và luồng Fast (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><msub><mi>T</mi><mi>S</mi></msub></mrow><annotation encoding="application/x-tex">\alpha T_S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> dày đặc, ít kênh <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">\beta C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">βC</span></span></span></span> bắt đạo hàm chuyển động nhanh), truyền thông tin ngang qua tích chập thời gian <code>Conv3d</code> có bước nhảy <code>stride=(alpha, 1, 1)</code>:</p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/backbones/tsm_and_slowfast.py — Zero-FLOP TSM &amp; SlowFast Lateral Connection</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/backbones/tsm_and_slowfast.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/backbones/tsm_and_slowfast.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 19:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s6-1" /><span>Triển khai pipeline đọc clip đa tốc độ an toàn (xử lý mượt cả video cực ngắn thiếu frame bằng lặp biên) kết hợp <code>swin3d_t</code> hoặc 2D Backbone gắn <code>temporal_shift</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s6-2" /><span>Thực nghiệm trên Kaggle <em>DFL Bundesliga</em> hoặc <em>UCF101</em> (chia Validation theo mã video gốc chống rò rỉ), chứng minh vượt trội so với trung bình cộng khung hình 2D.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 20 ================= -->
+      <article class="week-block" id="week-20">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 20 · Tầng 01 (90% Tube Masking) &amp; Tầng 02 (Asymmetric Spatiotemporal ViT)</div>
+            <h3>Tự Giám Sát Trên Video Ít Nhãn: HuggingFace VideoMAE &amp; Cơ Chế Che Ống 90% Chống Rò Rỉ Thời Gian</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Data &amp; Validation</span>
+            <span class="mod-badge mod-2">02 · Backbone &amp; Neck</span>
+            <span class="mode-tag mode-kaggle">transformers VideoMAE + Tự Build Tube Mask</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Vì sao Random Masking 75% thất bại trên Video?</strong> Nếu che ngẫu nhiên độc lập trên từng khung hình, một ô bị che tại <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x, y, t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span> gần như chắc chắn vẫn lộ diện ở <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x, y, t-1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span> hoặc <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x, y, t+1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span> — mạng sẽ copy pixel lân cận (<em>Temporal Information Leakage</em>) thay vì học quy luật động học! <strong>VideoMAE (Tong et al., NeurIPS 2022)</strong> chiếu cùng một mặt nạ không gian 2D xuyên suốt toàn bộ trục thời gian với tỷ lệ che <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mn>90</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">\rho = 90\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ρ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">90%</span></span></span></span>, chỉ đưa <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">10\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">10%</span></span></span></span> khối nhìn thấy vào ViT Encoder (giảm chi phí bậc hai xuống <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>0.1</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>=</mo><mrow><mn mathvariant="bold">1</mn><mi mathvariant="bold">/</mi><mn mathvariant="bold">100</mn></mrow></mrow><annotation encoding="application/x-tex">(0.1)^2 = \mathbf{1/100}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0.1</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathbf">1/100</span></span></span></span></span> lần!).
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/datasets/matthewjansen/ucf101-action-recognition" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Data-Efficient Video SSL · Kaggle</span>
+                  <span class="arena-title">UCF101 — Human Action Recognition</span>
+                  <span class="arena-subtitle">13,320 realistic action videos collected from YouTube across 101 action categories</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/ucf101-action-recognition.jpg" alt="UCF101 — Human Action Recognition" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Kiểm chứng sức mạnh VideoMAE khi tập dữ liệu mục tiêu chỉ có vài trăm đến vài nghìn video: fine-tune <code>MCG-NJU/videomae-base</code> hội tụ cực nhanh!</span>
+                <span class="arena-cta">Mở Dataset trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/asl-signs" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Gesture &amp; Temporal Competition</span>
+                  <span class="arena-title">Google - Isolated Sign Language Recognition</span>
+                  <span class="arena-subtitle">Enhance PopSign&#x27;s educational games for learning ASL</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/asl-signs.jpg" alt="Google - Isolated Sign Language Recognition" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Bài toán nhận diện ngôn ngữ ký hiệu đòi hỏi nắm bắt tinh tế quỹ đạo bàn tay và biểu cảm khuôn mặt xuyên suốt chuỗi thời gian.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Fine-tune hoặc tiền huấn luyện <code>VideoMAEForVideoClassification</code> / <code>VideoMAEForPreTraining</code> bằng thư viện <code>transformers</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>videomae_hf_library.py — Fine-Tune VideoMAE Có Sẵn Từ HuggingFace Transformers</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/videomae_hf_library.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/videomae_hf_library.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết bộ sinh mặt nạ ống <code>generate_spatiotemporal_tube_mask</code> (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mn>0.90</mn></mrow><annotation encoding="application/x-tex">\rho = 0.90</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ρ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.90</span></span></span></span>), lọc <code>visible_tokens</code> &amp; hàm tái tạo chuẩn hóa cục bộ <code>NormalizedTubeMSELoss</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p><strong>Chuẩn hóa cục bộ từng khối lập phương (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>16</mn><mo>×</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">2 \times 16 \times 16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">16</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">16</span></span></span></span>):</strong> Chuẩn hóa <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi mathvariant="bold">p</mi><mo>~</mo></mover><mi>k</mi></msub><mo>=</mo><mfrac><mrow><msub><mi mathvariant="bold">p</mi><mi>k</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>k</mi></msub></mrow><mrow><msub><mi>σ</mi><mi>k</mi></msub><mo>+</mo><mi>ϵ</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\tilde{\mathbf{p}}_k = \frac{\mathbf{p}_k - \mu_k}{\sigma_k + \epsilon}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8757em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6813em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">p</span></span><span style="top:-3.3634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">~</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3053em;vertical-align:-0.4509em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8544em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0359em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mbin mtight">+</span><span class="mord mathnormal mtight">ϵ</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathbf mtight">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight"><span class="mord mathnormal mtight">μ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4509em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> trước khi tính MSE trên các khối bị che buộc Decoder phải khôi phục tương phản cạnh sắc nét thay vì chỉ đoán màu nền trung bình mờ nhạt:</p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/losses/videomae_scratch.py — 90% Tube Masking &amp; Per-Cube Normalized MSE Loss</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/losses/videomae_scratch.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/losses/videomae_scratch.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 20:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s6-3" /><span>Kiểm chứng bằng code: đối chiếu ma trận mặt nạ của <code>generate_spatiotemporal_tube_mask</code> bảo đảm cùng tọa độ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>h</mi><mo separator="true">,</mo><mi>w</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(h, w)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose">)</span></span></span></span> có trạng thái che đồng nhất trên mọi lát thời gian <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>t</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup></mrow><annotation encoding="application/x-tex">t&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7519em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s6-4" /><span>Fine-tune <code>VideoMAEForVideoClassification</code> (kết hợp LoRA ở Tuần 18 nếu tập nhỏ) trên bài toán nhận diện hành động/cử chỉ Kaggle, so sánh tốc độ hội tụ với mô hình khởi tạo ngẫu nhiên.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 21 ================= -->
+      <article class="week-block" id="week-21">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 21 · Tầng 05 (Đa Vết Quỹ Đạo ByteTrack &amp; Hình Học Chiếu 3D Đa Góc Nhìn)</div>
+            <h3>Multi-Object Tracking (ByteTrack) &amp; Ước Lượng Ma Trận Phối Cảnh Homography Bằng RANSAC + SVD</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">OpenCV + torchvision + SciPy Hungarian</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Hai bài toán suy luận thực tế kinh điển:</strong> (1) Khi đếm xe qua vạch hay theo dõi cầu thủ va chạm, đếm độc lập từng khung sẽ lặp 1 vật thể 30 lần/giây — cần <strong>ByteTrack</strong> giữ lại cả các hộp điểm thấp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>∈</mo><mo stretchy="false">[</mo><mn>0.1</mn><mo separator="true">,</mo><mn>0.5</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">s \in [0.1, 0.5)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">0.1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.5</span><span class="mclose">)</span></span></span></span> lúc bị che khuất để nối liền mạch ID! (2) Khi quy chiếu tọa độ người chơi từ camera nghiêng xuống mặt sân phẳng 2D hoặc ghép ảnh đa góc nhìn chứa 60% cặp nhiễu sai, bạn cần <strong>Homography + RANSAC</strong>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/nfl-player-contact-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Sports Analytics · Tracking &amp; Homography</span>
+                  <span class="arena-title">1st and Future - Player Contact Detection</span>
+                  <span class="arena-subtitle">Detect Player Contacts from Sensor and Video Data</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/nfl-player-contact-detection.jpg" alt="1st and Future - Player Contact Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Theo dõi quỹ đạo vận động viên bị che khuất dày đặc qua thời gian và ánh xạ phối cảnh Homography giữa camera góc nghiêng với tọa độ mặt sân 2D!</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/image-matching-challenge-2024" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle 3D Geometry Flagship · CVPR</span>
+                  <span class="arena-title">Image Matching Challenge 2024 - Hexathlon</span>
+                  <span class="arena-subtitle">Reconstruct 3D scenes from 2D images over six different domains</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/image-matching-challenge-2024.jpg" alt="Image Matching Challenge 2024 - Hexathlon" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Ghép điểm đặc trưng cục bộ kết hợp lọc ngoại lai RANSAC để khôi phục ma trận hình học và tư thế camera 3D chính xác.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Ghép quỹ đạo Hungarian bằng <code>scipy.optimize.linear_sum_assignment</code> + <code>box_iou</code> &amp; ước lượng Homography bằng <code>cv2.findHomography</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>tracking_homography_library.py — Faster R-CNN + Hungarian SciPy &amp; OpenCV USAC_MAGSAC</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/tracking_homography_library.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/tracking_homography_library.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt ghép cặp 2 pha của <code>ByteTrack</code> (cứu hộp bị che khuất) &amp; giải <code>Homography</code> bằng Chuẩn hóa Hartley + Phân rã SVD + vòng lặp RANSAC</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p><strong>Bản chất toán học cần nắm chắc cho câu hỏi tự luận / đề mở:</strong> (1) <strong>ByteTrack</strong> tách hộp điểm cao (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\ge 0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>) ghép ở Pha 1, sau đó lấy các quỹ đạo chưa có cặp ghép tiếp với hộp điểm thấp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>0.1</mn><mo separator="true">,</mo><mn>0.5</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">[0.1, 0.5)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">0.1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.5</span><span class="mclose">)</span></span></span></span> ở Pha 2 nhờ thuật toán Hungarian. (2) <strong>Normalized DLT</strong> bắt buộc dịch tâm và chuẩn hóa khoảng cách trung bình về <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>2</mn></msqrt></mrow><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1328em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width='400em' height='1.08em' viewBox='0 0 400000 1080' preserveAspectRatio='xMinYMin slice'><path d='M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span> trước khi lấy vector kỳ dị phải cuối cùng của <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>SVD</mtext><mo stretchy="false">(</mo><mi>A</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{SVD}(A)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">SVD</span></span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mclose">)</span></span></span></span> để không bị suy biến số học:</p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/inference/bytetrack_and_ransac_scratch.py — ByteTrack 2-Stage &amp; Normalized DLT + RANSAC</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/inference/bytetrack_and_ransac_scratch.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/inference/bytetrack_and_ransac_scratch.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 21:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s6-5" /><span>Chạy thử nghiệm so sánh theo dõi 1 pha (chỉ giữ hộp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\ge 0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>) với <code>bytetrack_two_stage_step</code> trên đoạn video đông người giao cắt để quan sát số lần đứt gãy ID giảm mạnh.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s6-6" /><span>Kiểm thử hàm <code>estimate_homography_ransac</code> trên tập điểm nhiễu chứa <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">60\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">60%</span></span></span></span> cặp ghép sai (Outliers), đối chiếu sai số ma trận <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi></mrow><annotation encoding="application/x-tex">H</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span></span></span></span> với <code>cv2.findHomography</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEKS 22 - 24 ================= -->
+      <article class="week-block" id="week-22-24">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 22 – 24 · Tổng Duyệt Thực Chiến Chế Độ Thi Thật (3 × 6 Giờ Bấm Giờ Nghiêm Ngặt)</div>
+            <h3>Chiến Thuật Phân Bổ 360 Phút Phòng Thi, Hợp Nhất Ensemble Đa Kiến Trúc &amp; 3 Đề Mở Toàn Diện</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01</span>
+            <span class="mod-badge mod-2">02</span>
+            <span class="mod-badge mod-3">03</span>
+            <span class="mod-badge mod-4">04</span>
+            <span class="mod-badge mod-5">05</span>
+            <span class="mode-tag mode-kaggle">Full 6-Hour Olympiad Simulation</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Kỷ luật Vàng quyết định Huy chương trong 360 phút phòng thi:</strong> Tuyệt đối không dành 4 giờ đầu để lắp một mô hình khổng lồ chưa từng nộp thử! Hãy tuân thủ chặt chẽ mốc phân bổ thời gian dưới đây khi làm bài trên Google Colab / Kaggle:
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mốc Thời Gian</th>
+                  <th>Mục Tiêu Cốt Lõi</th>
+                  <th>Hành Động Cụ Thể Với Kho Mô-đun <code>mastercv/</code></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Phút 00 – 45</strong></td>
+                  <td>Khám Phá Dữ Liệu &amp; Chốt Validation</td>
+                  <td>Vẽ 32 ảnh mẫu + phân phối nhãn/kích thước; kiểm tra ảnh trùng lặp, mã nhóm, lệch miền; khóa cứng <code>validation.py</code> khớp 100% thước đo chấm thi.</td>
+                </tr>
+                <tr>
+                  <td><strong>Phút 45 – 95</strong></td>
+                  <td>Baseline Sống Còn + Lần Nộp Đầu Tiên</td>
+                  <td>Chạy 1 Fold nhanh bằng <code>VisionSystem</code> gọn nhất + xuất file nộp kiểm tra ngay định dạng cột, thứ tự ID, mã hóa RLE và khoảng giá trị hợp lệ trước phút 95!</td>
+                </tr>
+                <tr>
+                  <td><strong>Phút 95 – 240</strong></td>
+                  <td>Nâng Cấp Có Đối Chứng Theo Nút Thắt</td>
+                  <td>Phân tích 20 mẫu dự đoán sai nặng nhất trên tập Val (Error Analysis), gắn từng mô-đun đặc trị (Loss, Pooling, Multi-Scale, DINOv2, LoRA, Density...) — chỉ giữ thay đổi làm tăng Local OOF!</td>
+                </tr>
+                <tr>
+                  <td><strong>Phút 240 – 320</strong></td>
+                  <td>Đa Dạng Hóa Họ Kiến Trúc &amp; Hậu Xử Lý</td>
+                  <td>Huấn luyện thêm ít nhất 1 họ mạng khác thiên kiến quy nạp (VD: <code>ConvNeXt</code> cục bộ + <code>Swin / DINOv2</code> toàn cục) và bật mô-đun Tầng 05 (<code>SafeTTA</code>, <code>WBF</code>, <code>α-QE</code>, <code>MultiplierTuner</code>).</td>
+                </tr>
+                <tr>
+                  <td><strong>Phút 320 – 360</strong></td>
+                  <td>Hòa Trộn OOF Ensemble &amp; Kiểm Tra An Toàn</td>
+                  <td>Tối ưu trọng số phối hợp đa mô hình trên OOF (hoặc Rank Averaging cho ROC-AUC/mAP), quét sạch lỗi <code>NaN / Inf / thiếu dòng</code> và đóng gói mã nguồn tái lập 100%.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 style="margin:22px 0 10px;">Kho Đề Thi Thực Chiến Bấm Giờ 6 Tiếng (Chọn 3 Đề Chưa Từng Xem Lời Giải):</h4>
+          <div class="practice-arena">
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2025" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Đợt Mô Phỏng 1 (Tuần 22) · IOAI Official</span>
+                  <span class="arena-title">IOAI 2025 Official Tasks (Beijing, China)</span>
+                  <span class="arena-subtitle">Official competition tasks and datasets from the 2nd International Olympiad in Artificial Intelligence</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2025.jpg" alt="IOAI 2025 Official Tasks (Beijing, China)" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Giải trọn vẹn 1 đề chính thức của IOAI 2025 trên Colab/Kaggle trong đúng 360 phút bấm giờ nghiêm ngặt không xem lời giải.</span>
+                <span class="arena-cta">Mở Kho Đề IOAI 2025 ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2026" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Đợt Mô Phỏng 2 (Tuần 23) · IOAI Official</span>
+                  <span class="arena-title">IOAI 2026 Official Tasks &amp; Preparation (Astana)</span>
+                  <span class="arena-subtitle">Official preparation materials and tasks for the 3rd International Olympiad in Artificial Intelligence</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2026.jpg" alt="IOAI 2026 Official Tasks &amp; Preparation (Astana)" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Rèn phản xạ với thế hệ đề thi mới nhất kết hợp Foundation Models, suy luận không nhãn và đánh giá độ bền vững ngoại miền.</span>
+                <span class="arena-cta">Mở Kho Đề IOAI 2026 ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/iwildcam2022-fgvc9" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Đợt Mô Phỏng 3 (Tuần 24) · Kaggle FGVC Blind Test</span>
+                  <span class="arena-title">iWildCam 2022 - FGVC9</span>
+                  <span class="arena-subtitle">Count the number of animals in a sequence of images</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/iwildcam2022-fgvc9.jpg" alt="iWildCam 2022 - FGVC9" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Bài kiểm tra tổng lực cuối khóa hội tụ cả Lệch miền bẫy ảnh mới, Mất cân bằng đuôi dài, Vật thể nhỏ ban đêm và Đếm số lượng cá thể!</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Tìm trọng số Ensemble tối ưu trên OOF bằng <code>scipy.optimize.minimize</code> (SLSQP) &amp; chốt chặn kiểm tra an toàn file nộp cuối giờ</span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>oof_ensemble_and_guard_library.py — Tối Ưu Trọng Số Đa Mô Hình &amp; Chốt Chặn An Toàn Trước Khi Nộp</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/oof_ensemble_and_guard_library.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/oof_ensemble_and_guard_library.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết bộ hiệu chuẩn nhiệt độ đa mô hình <code>TemperatureLogOddsBlender</code> &amp; hòa trộn thứ hạng <code>rank_average_ensemble</code> (khi mỗi mô hình lệch thang xác suất)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p><strong>Vì sao trung bình cộng xác suất dễ thua Hòa trộn Logit hiệu chuẩn nhiệt độ hoặc Rank Averaging?</strong> Một mạng ViT có thể xuất xác suất rất tự tin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.99</mn></mrow><annotation encoding="application/x-tex">0.99</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.99</span></span></span></span> trong khi mạng ConvNeXt có Label Smoothing chỉ xuất <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.82</mn></mrow><annotation encoding="application/x-tex">0.82</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.82</span></span></span></span> — trung bình cộng trực tiếp khiến mạng tự tin quá mức nuốt chửng mạng còn lại! Hiệu chuẩn nhiệt độ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">T_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> trong không gian Logit trước khi trộn hoặc chuyển sang thứ hạng bách phân vị (cho các thước đo AUC / AP) giải quyết triệt để độ lệch thang đo:</p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/inference/calibrated_ensemble_scratch.py — Temperature-Scaled Logit Blend &amp; Percentile Rank Blend</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/inference/calibrated_ensemble_scratch.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/inference/calibrated_ensemble_scratch.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Về Đích Toàn Khóa (Tuần 22 – 24):</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s6-7" /><span><strong>[Mô Phỏng 6 Giờ Lần 1 — Tuần 22]</strong> Giải trọn vẹn Đề số 1 từ con số 0 trong đúng 360 phút, nộp lần đầu trước phút 95 và hoàn thiện pipeline đạt ngưỡng huy chương.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s6-8" /><span><strong>[Mô Phỏng 6 Giờ Lần 2 — Tuần 23]</strong> Giải trọn vẹn Đề số 2 thuộc nhóm bài toán khác hẳn Đề 1 (Dense Prediction / Foundation Steering / Metric Retrieval) kèm phân tích lỗi OOF.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s6-9" /><span><strong>[Mô Phỏng 6 Giờ Lần 3 — Tuần 24]</strong> Hoàn thành Đề Mở Tổng Hợp cuối khóa, áp dụng Ensemble đa họ kiến trúc + kiểm tra <code>verify_submission_integrity</code>, sẵn sàng bước vào OLP AI, VOAI và IOAI!</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-5.html" class="btn">← Trước: Giai đoạn 5 (DINOv2, CLIP, Diffusion &amp; LoRA)</a>
+        <a href="./index.html" class="btn btn-primary">↺ Quay Về Trang Tổng Quan &amp; Bộ Chẩn Đoán Đề Thi</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

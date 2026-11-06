@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 3 (Tuần 9–11): Dense Retrieval, Hybrid RRF &amp; RAG — MasterNLP Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <line x1="8" y1="7" x2="16" y2="7"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </span>
+          <span>MasterNLP Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles NLP &amp; LLMs cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterCV/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterCV (Thị giác)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Biểu diễn, Loss &amp; Đa nhiệm</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–8</span><span>GĐ 2: CRF, Nested NER &amp; QA</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link active"><span class="nav-badge">T9–11</span><span>GĐ 3: Dense Retrieval &amp; RAG</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Seq2Seq, SimCLS &amp; Audio</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: LLM, LoRA, DPO &amp; Surgery</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: OOD, Ensemble &amp; Thi 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()" title="Đặt lại tiến độ">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 3 · Tuần 9 – 11 · Không Gian Metric, Truy Xuất Lai &amp; RAG (100% Chuẩn OlpAI'25)</div>
+        <h1 class="hero-title">Tìm Kiếm Lai <code>gensim</code> BM25 + <code>sklearn</code> KNN, RRF Reranking &amp; Hậu Kiểm Ảo Giác NLI</h1>
+        <p class="hero-desc">
+          Trong môi trường thi OlpAI'25 <strong>không cài sẵn <code>faiss</code>, <code>rank_bm25</code> hay <code>sentence-transformers</code></strong>, nhiều thí sinh lúng túng khi gặp đề truy xuất hàng trăm nghìn điều luật/tài liệu. Giai đoạn 3 chỉ cho bạn cách dựng trọn vẹn hệ thống <strong>Hybrid RAG 3 tầng chuẩn mực</strong> chỉ bằng <code>gensim</code>, <code>scikit-learn</code> và <code>transformers</code> có sẵn!
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/6 mục</span>
+          <span class="meta-pill"><strong>Thư viện OlpAI'25:</strong> <code>gensim</code> · <code>sklearn.neighbors</code> · <code>transformers</code></span>
+          <span class="meta-pill"><strong>Đấu trường:</strong> Quora Pairs · Learning Equality · LLM Science Exam · USPTO</span>
+        </div>
+      </section>
+
+      <!-- WEEK 9 -->
+      <article class="week-block" id="week-9">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 09 · Tầng 02 &amp; Tầng 04 (Lexical BM25 vs Contrastive Bi-Encoder)</div>
+            <h3>Okapi BM25 Bằng <code>gensim</code> &amp; Học Đối Tương Phản <code>infonce_loss</code> (7 Dòng) Bằng <code>transformers</code> Thuần</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Encoder &amp; Context</span>
+            <span class="mod-badge mod-4">04 · Loss &amp; Alignment</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Mẹo vàng phòng thi OlpAI'25:</strong> Thư viện <code>gensim</code> trong danh sách chính thức đã tích hợp sẵn <code>OkapiBM25Model</code> tốc độ Cython, còn một Bi-Encoder thực chất chỉ là <code>AutoModel + MeanPooling + F.normalize</code> viết trong đúng 7 dòng!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/quora-question-pairs" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Semantic Equivalence</span>
+                  <span class="arena-title">Quora Question Pairs</span>
+                  <span class="arena-subtitle">Can you identify question pairs that have the same intent?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/quora-question-pairs.jpg" alt="Quora Question Pairs" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Hơn 400.000 cặp câu hỏi kiểm chứng sức mạnh của Bi-Encoder huấn luyện bằng infonce_loss.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/learning-equality-curriculum-recommendations" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Multilingual Topic Retrieval</span>
+                  <span class="arena-title">Learning Equality - Curriculum Recommendations</span>
+                  <span class="arena-subtitle">Enhance learning by matching K-12 content to target topics</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/learning-equality-curriculum-recommendations.jpg" alt="Learning Equality - Curriculum Recommendations" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đối sánh tài liệu học tập đa ngôn ngữ với cây chủ đề chuẩn bằng Retriever + Reranker.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Kết hợp điểm mạnh của BM25 và Dense Vector:</strong> BM25 bắt chính xác tuyệt đối số hiệu điều khoản và từ hiếm, còn Bi-Encoder huấn luyện bằng InfoNCE phá bỏ hình nón hẹp (Anisotropy) để bắt câu đồng nghĩa khác từ vựng:
+              <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi mathvariant="script">L</mi><mtext>InfoNCE</mtext></msub><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mi>B</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><mi>log</mi><mo>⁡</mo><mfrac><mrow><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>cos</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>q</mi><mi>i</mi></msub><mo separator="true">,</mo><msubsup><mi>d</mi><mi>i</mi><mo>+</mo></msubsup><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mi>τ</mi><mo stretchy="false">)</mo></mrow><mrow><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>cos</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>q</mi><mi>i</mi></msub><mo separator="true">,</mo><msubsup><mi>d</mi><mi>j</mi><mo>+</mo></msubsup><mo stretchy="false">)</mo><mi mathvariant="normal">/</mi><mi>τ</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{InfoNCE}} = -\frac{1}{B} \sum_{i=1}^B \log \frac{\exp(\cos(q_i, d_i^+) / \tau)}{\sum_{j=1}^B \exp(\cos(q_i, d_j^+) / \tau)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">InfoNCE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.1354em;vertical-align:-1.307em;"></span><span class="mord">−</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8723em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2777em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4885em;"><span style="top:-2.1288em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9812em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4358em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mop">cos</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8115em;"><span style="top:-2.4231em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.1031em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">+</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.413em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">exp</span><span class="mopen">(</span><span class="mop">cos</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8115em;"><span style="top:-2.4231em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.1031em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">+</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2769em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.307em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Dựng chỉ mục <code>OkapiBM25Model</code> từ <code>gensim</code> &amp; Hàm nhúng câu 7 dòng bằng <code>transformers</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>bm25_biencoder_lib.py — 100% Thư Viện Có Sẵn Trong OlpAI&#x27;25</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/bm25_biencoder_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/bm25_biencoder_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>SimpleBM25</code> (17 dòng) &amp; hàm đối tương phản <code>infonce_loss</code> (7 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> 7 dòng <code>infonce_loss</code> là toàn bộ trái tim toán học của DPR, SimCSE, BGE và CLIP — thuộc lòng hàm này giúp bạn huấn luyện mọi bộ truy xuất từ con số 0:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/losses/infonce.py — SimpleBM25 &amp; InfoNCE Đối Tương Phản Tối Giản</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/losses/infonce.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/losses/infonce.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n3-1" /><span>Đối chứng Recall@50 trên <em>Learning Equality</em> giữa <code>gensim OkapiBM25Model</code> và Bi-Encoder huấn luyện bằng <code>infonce_loss</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n3-2" /><span>Khảo sát nhiệt độ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>0.02</mn><mo separator="true">,</mo><mn>0.05</mn><mo separator="true">,</mo><mn>0.2</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\tau \in \{0.02, 0.05, 0.2\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord">0.02</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.05</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0.2</span><span class="mclose">}</span></span></span></span> trên <em>Quora Question Pairs</em> chỉ dùng <code>transformers</code> + <code>torch</code> thuần.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 10 -->
+      <article class="week-block" id="week-10">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 10 · Tầng 01 &amp; Tầng 05 (Hard Negatives, Hybrid RRF &amp; Cross-Encoder)</div>
+            <h3>Truy Xuất <code>NearestNeighbors</code>, Hợp Nhất Hạng <code>rrf_fuse</code> (9 Dòng) &amp; Cross-Encoder <code>transformers</code></h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Tokenizer &amp; Split</span>
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Thay thế hoàn toàn <code>faiss</code> và <code>CrossEncoder</code> ngoài luồng:</strong> Dùng <code>sklearn.neighbors.NearestNeighbors(metric="cosine")</code> (hoặc tích ma trận <code>Q @ D.T</code> trên PyTorch) để lấy Top-50 ứng viên, hợp nhất với BM25 qua 9 dòng <code>rrf_fuse</code>, rồi truyền cặp <code>(query, doc)</code> thẳng vào <code>AutoModelForSequenceClassification</code>!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/kaggle-llm-science-exam" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Wikipedia Retrieval + Science QA</span>
+                  <span class="arena-title">Kaggle - LLM Science Exam</span>
+                  <span class="arena-subtitle">Use LLMs to answer difficult science questions</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/kaggle-llm-science-exam.jpg" alt="Kaggle - LLM Science Exam" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Truy xuất kiến thức khoa học từ hàng triệu đoạn văn bản chấm theo MAP@3.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/uspto-explainable-ai" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Precision Patent Search</span>
+                  <span class="arena-title">USPTO - Explainable AI for Patent Professionals</span>
+                  <span class="arena-subtitle">Help patent professionals understand AI results through a familiar query language</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/uspto-explainable-ai.jpg" alt="USPTO - Explainable AI for Patent Professionals" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Truy vấn tập bằng sáng chế khổng lồ kết hợp ký hiệu phân loại và ngữ nghĩa.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Reciprocal Rank Fusion (RRF):</strong> Cộng nghịch đảo thứ hạng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mtext>RRF</mtext></msub><mo stretchy="false">(</mo><mi>d</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mo>∑</mo><mi>m</mi></msub><mfrac><msub><mi>w</mi><mi>m</mi></msub><mrow><mn>60</mn><mo>+</mo><msub><mi>r</mi><mi>m</mi></msub><mo stretchy="false">(</mo><mi>d</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">s_{\text{RRF}}(d) = \sum_m \frac{w_m}{60 + r_m(d)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">RRF</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">d</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.27em;vertical-align:-0.52em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0017em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7115em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">60</span><span class="mbin mtight">+</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:-0.0278em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">d</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4101em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:-0.0269em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> giúp kết hợp mượt mà BM25 và Cosine KNN mà không cần chuẩn hóa biên độ điểm.</li>
+            <li><strong>Khử nhiễu False Negatives trong 2 dòng:</strong> Loại bỏ mọi ứng viên có điểm Cross-Encoder <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.92</mn><mo>⋅</mo><mi>s</mi><mo stretchy="false">(</mo><mi>q</mi><mo separator="true">,</mo><msup><mi>d</mi><mo>+</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\ge 0.92 \cdot s(q, d^+)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.92</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0213em;vertical-align:-0.25em;"></span><span class="mord mathnormal">s</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7713em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">+</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> trước khi đưa vào tập mẫu âm khó huấn luyện vòng 2.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Truy xuất Cosine bằng <code>sklearn.neighbors.NearestNeighbors</code> &amp; Chấm chéo bằng <code>AutoModelForSequenceClassification</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>knn_rerank_lib.py — Không Cần Cài Đặt FAISS Hay Sentence-Transformers</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/knn_rerank_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/knn_rerank_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>rrf_fuse</code> (9 dòng) &amp; lọc mẫu âm sạch <code>clean_hard_negatives</code> (4 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Hợp nhất danh sách xếp hạng từ khóa và ngữ nghĩa bằng 9 dòng RRF luôn đem lại mức tăng Recall@20 ổn định nhất trên mọi đề RAG:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/inference/rrf.py — Hợp Nhất Hạng Nghịch Đảo &amp; Lọc False Negatives</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/inference/rrf.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/inference/rrf.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n3-3" /><span>Chạy đường ống <code>(BM25 + sklearn KNN) → rrf_fuse → cross_rerank</code> nâng cao MAP@3 trên <em>Kaggle LLM Science Exam</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n3-4" /><span>Huấn luyện vòng 2 Bi-Encoder với mẫu âm khó đã lọc qua <code>clean_hard_negatives</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 11 -->
+      <article class="week-block" id="week-11">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 11 · Tầng 01 &amp; Tầng 05 (Structure-Aware RAG &amp; Hallucination Verification)</div>
+            <h3>Phân Mảnh Gắn Tiêu Đề Phân Cấp, Đọc Hiểu Trắc Nghiệm &amp; Chốt Chặn Ảo Giác Bằng NLI</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Tokenizer &amp; Split</span>
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Tổng quát hóa bằng biểu thức chính quy <code>split_pat</code>:</strong> Hàm <code>structured_chunk</code> cho phép truyền bất kỳ mẫu tiêu đề nào (<code>Điều \d+</code>, <code>Section \d+</code>, tiêu đề Markdown <code>#</code>) để tự động đính ngữ cảnh cha vào từng mảnh văn bản con!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/kaggle-llm-science-exam" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Context-Grounded Multiple Choice</span>
+                  <span class="arena-title">Kaggle - LLM Science Exam</span>
+                  <span class="arena-subtitle">Use LLMs to answer difficult science questions</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/kaggle-llm-science-exam.jpg" alt="Kaggle - LLM Science Exam" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đưa các đoạn bằng chứng hàng đầu vào đầu đọc trắc nghiệm DeBERTa-v3.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/learning-equality-curriculum-recommendations" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Hierarchical Context</span>
+                  <span class="arena-title">Learning Equality - Curriculum Recommendations</span>
+                  <span class="arena-subtitle">Enhance learning by matching K-12 content to target topics</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/learning-equality-curriculum-recommendations.jpg" alt="Learning Equality - Curriculum Recommendations" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Tiêm đường dẫn phân cấp vào từng mảnh văn bản trước khi mã hóa vector.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Kiểm định NLI chống bịa đặt:</strong> Mọi câu trả lời sinh ra phải đạt <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>max</mi><mo>⁡</mo></mrow><mi>k</mi></msub><mi>P</mi><mo stretchy="false">(</mo><mtext>entailment</mtext><mo>∣</mo><msub><mtext>chunk</mtext><mi>k</mi></msub><mo separator="true">,</mo><mtext>claim</mtext><mo stretchy="false">)</mo><mo>≥</mo><mi>γ</mi></mrow><annotation encoding="application/x-tex">\max_k P(\text{entailment} \mid \text{chunk}_k, \text{claim}) \ge \gamma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mop">max</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord">entailment</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord text"><span class="mord">chunk</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">claim</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span></span></span></span> trước khi xuất kết quả cuối cùng.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Đầu đọc <code>AutoModelForMultipleChoice</code> &amp; Bộ kiểm chứng logic <code>NLI</code> trong <code>transformers</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>rag_reader_lib.py — Đọc Hiểu Trắc Nghiệm &amp; Kiểm Chứng Bằng Chứng</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/rag_reader_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/rag_reader_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>structured_chunk</code> (14 dòng) &amp; <code>nli_support_score</code> (6 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Giữ nguyên tiêu đề Điều/Khoản/Mục ở đầu mỗi đoạn cắt giúp bộ truy xuất không bao giờ mất ngữ cảnh pháp lý hay khoa học:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/inference/rag_guard.py — Phân Mảnh Có Cấu Trúc &amp; Chốt Chặn NLI</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/inference/rag_guard.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/inference/rag_guard.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n3-5" /><span>Ghép nối Top-5 đoạn văn từ RRF vào <code>AutoModelForMultipleChoice</code> giải trọn vẹn đề <em>Kaggle LLM Science Exam</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n3-6" /><span>Dùng hàm 6 dòng <code>nli_support_score</code> phát hiện và loại bỏ các câu trả lời ảo giác không có căn cứ.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-2.html" class="btn">← Giai đoạn 2: CRF, Nested NER &amp; QA</a>
+        <a href="./stage-4.html" class="btn btn-primary">Tiếp theo: Giai đoạn 4 (Tuần 12–14) — Seq2Seq, SimCLS &amp; Audio →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

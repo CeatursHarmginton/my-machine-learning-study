@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 2 (Tuần 5–7): Metric Learning, Siêu Cầu &amp; Truy Xuất Tập Mở — MasterCV Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link active"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 2 · Tuần 5 – 7 · Hình Học Không Gian Nhúng Tập Mở</div>
+        <h1 class="hero-title">Deep Metric Learning, Gom Cụm Bất Biến &amp; Truy Xuất Quy Mô Lớn</h1>
+        <p class="hero-desc">
+          Tháo bỏ đầu phân loại Softmax tập đóng của Giai đoạn 1, chúng ta giữ lại <code>TorchvisionPyramidBackbone</code> và chiếu toàn bộ biểu diễn lên <strong>mặt cầu đơn vị <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">S</mi><mrow><mi>d</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbb{S}^{d-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbb">S</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span></strong>. Mỗi tuần cung cấp ngay giải pháp thực chiến với <code>torch.nn</code> / <code>scikit-learn</code> / <code>scipy</code> (100% có sẵn trong OlpAI'25) và phần tự build toán học ẩn gọn bên dưới.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/6 mục</span>
+          <span class="meta-pill"><strong>Kế thừa từ:</strong> <code>TimmMultiScaleBackbone</code> (GĐ 1) + <code>GroupSplit</code> (GĐ 0)</span>
+          <span class="meta-pill"><strong>Đấu trường:</strong> Kaggle Happywhale · Shopee · Google Landmark · IOAI 2025</span>
+        </div>
+      </section>
+
+      <!-- ================= WEEK 5 ================= -->
+      <article class="week-block" id="week-5">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 05 · Tầng 01 (PK Sampler), Tầng 03 &amp; Tầng 04 (Angular Margin)</div>
+            <h3>Hình Học Siêu Cầu <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">S</mi><mrow><mi>d</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbb{S}^{d-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbb">S</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>: Batch-Hard Triplet, CosFace &amp; Sub-center ArcFace</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Data &amp; Validation</span>
+            <span class="mod-badge mod-4">04 · Loss &amp; Optimization</span>
+            <span class="mode-tag mode-kaggle">torch.nn + PKSampler + Tự Build</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Bước tiến từ Giai đoạn 1:</strong> Softmax thường chỉ tách các lớp bằng siêu phẳng nên khoảng cách nội lớp rất loãng. Áp đặt lề góc địa trắc <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>⋅</mo><mi>cos</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>θ</mi><mi>y</mi></msub><mo>+</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">s \cdot \cos(\theta_y + m)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mop">cos</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span> trên mặt cầu <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∥</mi><mover accent="true"><mi>z</mi><mo>^</mo></mover><msub><mi mathvariant="normal">∥</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\|\hat{z}\|_2 = 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∥</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mord"><span class="mord">∥</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> giúp nhận diện hàng vạn cá thể chưa từng xuất hiện lúc huấn luyện!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/happy-whale-and-dolphin" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Flagship Competition · Open-Set ID</span>
+                  <span class="arena-title">Happywhale - Whale and Dolphin Identification</span>
+                  <span class="arena-subtitle">Identify whales and dolphins by unique characteristics</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/happy-whale-and-dolphin.jpg" alt="Happywhale - Whale and Dolphin Identification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Định danh 15.587 cá thể cá voi/cá heo qua vây lưng kèm lớp mở <code>new_individual</code> (chấm điểm MAP@5).</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2025" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Official IOAI 2025 Task · Cross-Style Matching</span>
+                  <span class="arena-title">Restroom Icon Matching (IOAI 2025)</span>
+                  <span class="arena-subtitle">Official competition tasks and datasets from the 2nd International Olympiad in Artificial Intelligence</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2025.jpg" alt="IOAI 2025 Official Tasks (Beijing, China)" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đề thi Olympic AI Quốc tế 2025: Ghép cặp biểu tượng cùng phong cách thiết kế trên tập ký hiệu hoàn toàn mới ở tập Test.</span>
+                <span class="arena-cta">Mở kho đề IOAI 2025 ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Sử dụng <code>PKSampler</code> tổng quát &amp; <code>nn.TripletMarginWithDistanceLoss</code> chuẩn của PyTorch</span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>metric_learning_torch_lib.py — PKSampler &amp; Cosine Triplet Loss Có Sẵn Trong PyTorch</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/metric_learning_torch_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/metric_learning_torch_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>SubCenterArcFaceHead</code>, <code>PKSampler</code> &amp; <code>OnlineBatchHardTripletLoss</code> (tránh nổ đạo hàm <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>NaN</mtext></mrow><annotation encoding="application/x-tex">\text{NaN}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">NaN</span></span></span></span></span> tại <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">d</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Khi nào cần tự build?</strong> Bảng thư viện chuẩn OlpAI'25 không cài sẵn các gói Metric Learning ngoài luồng — chỉ cần 30 dòng PyTorch dưới đây để làm chủ cả Sub-center ArcFace lẫn Online Batch-Hard Triplet ổn định dưới AMP:
+              </p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/heads/arcface_and_triplet.py — Tự Cài Đặt Sub-center ArcFace &amp; Batch-Hard Triplet</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/heads/arcface_and_triplet.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/heads/arcface_and_triplet.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 5:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s2-1" /><span>Huấn luyện <code>SubCenterArcFace</code> trên Kaggle <em>Happywhale</em> hoặc bài <em>Restroom Icon Matching</em> của IOAI 2025.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s2-2" /><span>Đối chiếu <code>OnlineBatchHardTripletLoss</code> tự viết với <code>BatchHardMiner</code> của thư viện và xác nhận không bị <code>NaN</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 6 ================= -->
+      <article class="week-block" id="week-6">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 06 · Tầng 03 (Spatial Feature Aggregation)</div>
+            <h3>Gom Cụm Đặc Trưng Kháng Nhiễu Nền: GeM Pooling, Whitening &amp; NetVLAD</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-3">03 · Pooling &amp; Head</span>
+            <span class="mode-tag mode-kaggle">torch.nn + sklearn PCA + Tự Build</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Khắc phục điểm yếu pha loãng nền của Global Average Pooling:</strong> Khi vật thể chỉ chiếm 30% khung hình trên nền sặc sỡ hoặc bị che khuất, <strong>Generalized Mean Pooling (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold">f</mi><mtext>GeM</mtext></msub></mrow><annotation encoding="application/x-tex">\mathbf{f}_{\text{GeM}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.10903em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">GeM</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)</strong> và <strong>NetVLAD</strong> tập trung năng lượng vào vùng kích hoạt cao mà vẫn giữ đạo hàm trơn.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/shopee-product-matching" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Product Retrieval</span>
+                  <span class="arena-title">Shopee - Price Match Guarantee</span>
+                  <span class="arena-subtitle">Determine if two products are the same by their images</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/shopee-product-matching.jpg" alt="Shopee - Price Match Guarantee" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Tìm cùng mặt hàng bất chấp khung viền quảng cáo, chữ chèn đè và nền chụp khác nhau (chấm điểm Instance-level F1).</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/google-universal-image-embedding" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Research Competition · 64-D Descriptor</span>
+                  <span class="arena-title">Google Universal Image Embedding</span>
+                  <span class="arena-subtitle">Create image representations that work across many visual domains</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/google-universal-image-embedding.jpg" alt="Google Universal Image Embedding" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Nén biểu diễn đa lĩnh vực xuống đúng vector 64 chiều bằng GeM Neck + PCA Whitening để chấm mAP@5.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Kết hợp song song <code>Avg + Max Pool</code> bằng <code>torch.nn</code> &amp; chuẩn hóa trắng <code>sklearn.decomposition.PCA</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>pooling_and_whitening_lib.py — CatAvgMaxNeck Tổng Quát &amp; PCA Whitening (scikit-learn)</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/pooling_and_whitening_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/pooling_and_whitening_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>GeMPooling</code> (học tham số mũ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span>) &amp; <code>DifferentiableNetVLAD</code> (chuẩn hóa kép Intra-Norm + Global L2)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/heads/gem_and_netvlad.py — GeM Pooling &amp; NetVLAD Khả Vi Hoàn Chỉnh</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/heads/gem_and_netvlad.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/heads/gem_and_netvlad.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 6:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s2-3" /><span>So sánh trực tiếp <code>GAP</code>, <code>GeMPooling</code> và <code>DifferentiableNetVLAD</code> trên Kaggle <em>Shopee Product Matching</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s2-4" /><span>Kết hợp <code>GeMPooling</code> + <code>PCA Whitening</code> nén đặc trưng xuống 64-D trên bài <em>Universal Image Embedding</em>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 7 ================= -->
+      <article class="week-block" id="week-7">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 07 · Tầng 05 (Truy Xuất Ma Trận &amp; Hậu Xử Lý Đồ Thị Láng Giềng)</div>
+            <h3>Tìm Kiếm Láng Giềng Tốc Độ Cao, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>-Query Expansion &amp; <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>-Reciprocal Re-ranking</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">sklearn / SciPy + Tự Build Rerank</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Khai thác cấu trúc đa tạp của tập Gallery mà không cần train lại mô hình:</strong> Hậu xử lý vector bằng mở rộng truy vấn <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>-QE và kiểm tra láng giềng thuận nghịch hai chiều <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>-Reciprocal giúp cộng ngay <strong>+4% đến +9% mAP</strong> ở phút chót.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/landmark-retrieval-2021" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Grand Challenge · mAP@100</span>
+                  <span class="arena-title">Google Landmark Retrieval 2021</span>
+                  <span class="arena-subtitle">Given an image, can you find all of the same landmarks in a dataset?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/landmark-retrieval-2021.jpg" alt="Google Landmark Retrieval 2021" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Truy xuất địa danh toàn cầu dưới điều kiện ngày/đêm, sương mù và góc chụp cực đoan trên kho ảnh khổng lồ.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · 105k Catalog Items</span>
+                  <span class="arena-title">H&amp;M Personalized Fashion Recommendations</span>
+                  <span class="arena-subtitle">Provide product recommendations based on previous purchases</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/h-and-m-personalized-fashion-recommendations.jpg" alt="H&amp;M Personalized Fashion Recommendations" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Ứng dụng chỉ mục tìm kiếm <code>NearestNeighbors</code> / Chunked Cosine Search trên hơn 105.000 sản phẩm thời trang.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Truy xuất Top-K Cosine chuẩn xác bằng <code>sklearn.neighbors.NearestNeighbors</code> &amp; <code>scipy.spatial.distance.cdist</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>sklearn_scipy_search.py — Tìm Top-K Láng Giềng Với scikit-learn &amp; SciPy (Chuẩn OlpAI'25)</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/sklearn_scipy_search.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/sklearn_scipy_search.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>chunked_cosine_topk_search</code> (nhân ma trận theo khối thẳng trên PyTorch), <code>alpha_query_expansion</code> &amp; <code>mutual_jaccard_rerank</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/inference/retrieval_postproc.py — Chunked Cosine Search, α-QE &amp; Reciprocal Rerank</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/inference/retrieval_postproc.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/inference/retrieval_postproc.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 7:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s2-5" /><span>Áp dụng <code>alpha_query_expansion</code> + <code>reciprocal_jaccard_rerank</code> không cần train lại mô hình, đo mức tăng mAP/F1 trên tập Val.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s2-6" /><span>Hoàn thiện chuỗi khép kín Giai đoạn 2 trên Kaggle <em>Shopee</em> hoặc <em>Happywhale</em> (kèm ngưỡng nhận diện thực thể mới <code>new_individual</code>).</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-1.html" class="btn">← Trước: Giai đoạn 1 (Inductive Bias, Loss &amp; MTL)</a>
+        <a href="./stage-3.html" class="btn btn-primary">Tiếp theo: Giai đoạn 3 (Tuần 8–11) — Dense Prediction &amp; Đếm Mật Độ →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

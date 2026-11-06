@@ -1,0 +1,19 @@
+baselines/                     # Kho Baseline cơ bản tối giản & EDA chữ đa năng (0 dòng vẽ biểu đồ)
+├── cv_eda_and_config.py       # @dataclass CFG, seed_everything() & quick_cv_eda() cho mọi bài ảnh
+├── basic_cnn_scratch.py       # SimpleCNN 3 khối cơ bản nhất tự viết bằng PyTorch thuần
+├── image_cls_baseline.py      # Phân loại ảnh khép kín A–Z: TransformDataset -> ResNet18 -> submission.csv
+├── csv_image_dataset.py       # CSVImageDataset (đọc nhãn từ train.csv) & tóm tắt F1 từng lớp
+├── video_crnn_baseline.py     # Video 16 khung cv2 + CRNN (ResNet18 + LSTM) -> submission.zip (OlpAI SLR)
+├── video_eda_and_meanpool.py  # quick_video_eda() đo độ dài khung & FrameMeanBaseline tối giản
+├── det_fasterrcnn_baseline.py # Faster R-CNN khép kín A–Z + quy đổi tọa độ gốc -> submission.csv
+└── det_box_eda_and_iou.py     # quick_bbox_eda() bắt hộp suy biến & hàm box_iou_np / greedy_nms_np
+
+mastercv/                      # Khung 5 tầng mô-đun nâng cao cho Giai đoạn 0–6 (100% thư viện chuẩn OlpAI'25)
+├── core/
+│   ├── pipeline.py            # VisionSystem, train_epoch() & eval_epoch() tổng quát 32 dòng
+│   └── validation.py          # make_cv_folds() cho Stratified, Group & Leave-One-Domain-Out
+├── data/                      # v2.MixUp/CutMix, MixCutCollator, PKSampler, density_map, tube_mask
+├── backbones/                 # TorchvisionPyramid, ConvNeXtBlock, FPN, MixStyle, DINOv2, inject_lora, TSM
+├── heads/                     # GeM, NetVLAD, SubCenterArcFace, PatchCoreBank, TipAdapter
+├── losses/                    # Focal, LogitAdjust, pcgrad_step, batch_hard_triplet, edge_bce_iou, energy_ood
+└── inference/                 # tune_multipliers, predict_tta, alpha_qe, jaccard_rerank, rle_encode, wbf_fuse

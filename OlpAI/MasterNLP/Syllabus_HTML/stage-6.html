@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 6 (Tuần 19–24): OOD, Ensemble Đa Tokenizer &amp; Chiến Thuật 6 Giờ — MasterNLP Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <line x1="8" y1="7" x2="16" y2="7"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </span>
+          <span>MasterNLP Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles NLP &amp; LLMs cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterCV/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterCV (Thị giác)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Biểu diễn, Loss &amp; Đa nhiệm</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–8</span><span>GĐ 2: CRF, Nested NER &amp; QA</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T9–11</span><span>GĐ 3: Dense Retrieval &amp; RAG</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Seq2Seq, SimCLS &amp; Audio</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: LLM, LoRA, DPO &amp; Surgery</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link active"><span class="nav-badge">T19–24</span><span>GĐ 6: OOD, Ensemble &amp; Thi 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()" title="Đặt lại tiến độ">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 6 · Tuần 19 – 24 · Chống Nhiễu, Hợp Nhất Đa Tokenizer &amp; Chiến Thuật 6 Giờ (Chuẩn OlpAI'25)</div>
+        <h1 class="hero-title">Phòng Thủ Unicode/OOD, Ensemble Ký Tự 16 Dòng, Gom Lô Tăng Tốc 4x &amp; Tổng Duyệt Đề Mở</h1>
+        <p class="hero-desc">
+          Giai đoạn cuối cùng tinh gọn mọi kỹ thuật dứt điểm huy chương thành các đoạn code 10–16 dòng sắc bén nhất dùng thuần <code>numpy</code>, <code>scipy</code>, <code>sklearn</code>, <code>xgboost</code>, <code>catboost</code> và <code>transformers</code>: lọc bẫy ký tự đồng hình, chiếu xác suất về mảng ký tự bằng <code>np.diff</code> chỉ trong 16 dòng, tối ưu điểm cắt QWK và kiểm tra an toàn file nộp bài.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/9 mục</span>
+          <span class="meta-pill"><strong>Thư viện OlpAI'25:</strong> <code>unicodedata</code> · <code>scipy</code> · <code>sklearn</code> · <code>xgboost</code></span>
+          <span class="meta-pill"><strong>Đấu trường:</strong> Quora Insincere · Essay Scoring 2.0 · IOAI 2024–2026</span>
+        </div>
+      </section>
+
+      <!-- WEEK 19 -->
+      <article class="week-block" id="week-19">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 19 · Tầng 01 &amp; Tầng 04 (Adversarial Unicode Defense, Domain Shift &amp; OOD)</div>
+            <h3>Phòng Thủ Ký Tự Đồng Hình (Homoglyphs), Căn Chỉnh Deep CORAL 5 Dòng &amp; Năng Lượng OOD 1 Dòng</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Tokenizer &amp; Split</span>
+            <span class="mod-badge mod-4">04 · Loss &amp; Alignment</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>2 dòng làm sạch bảo vệ mọi mô hình NLP:</strong> Xóa ký tự vô hình Zero-Width + chuẩn hóa <code>NFKC</code> cho phân loại câu, hoặc dùng <code>clean_homoglyphs</code> bảo toàn 1-đối-1 độ dài chuỗi cho bài toán chấm vị trí ký tự!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/quora-insincere-questions-classification" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Noisy Adversarial Text</span>
+                  <span class="arena-title">Quora Insincere Questions Classification</span>
+                  <span class="arena-subtitle">Detect toxic content to improve online conversations</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/quora-insincere-questions-classification.jpg" alt="Quora Insincere Questions Classification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Hơn 1,3 triệu câu hỏi thực tế chứa ký tự biến tấu — bài chuẩn kiểm chứng chuẩn hóa Unicode & Homoglyph.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/jigsaw-unintended-bias-in-toxicity-classification" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Distribution Shift</span>
+                  <span class="arena-title">Jigsaw Unintended Bias in Toxicity Classification</span>
+                  <span class="arena-subtitle">Detect toxicity across a diverse range of conversations</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/jigsaw-unintended-bias-in-toxicity-classification.jpg" alt="Jigsaw Unintended Bias in Toxicity Classification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đánh giá độ bền vững của mô hình khi phân phối ngôn từ dịch chuyển trên tập kiểm tra.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Bắt mẫu ngoài phân phối (OOD):</strong> Kết hợp khoảng cách Mahalanobis co rút <code>LedoitWolf</code> trên vector ẩn với điểm năng lượng tự do 1 dòng <code>-temp * torch.logsumexp(logits / temp, dim=-1)</code>.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Làm sạch <code>clean_unicode</code> (2 dòng) &amp; Phát hiện ngoại lai bằng <code>LedoitWolf</code> của <code>sklearn</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>unicode_ood_lib.py — Tiền Xử Lý Chống Nhiễu &amp; Ước Lượng Mahalanobis</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/unicode_ood_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/unicode_ood_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>clean_homoglyphs</code>, <code>deep_coral_loss</code> (5 dòng) &amp; <code>free_energy_ood</code> (1 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> 3 hàm siêu ngắn này bảo vệ mô hình trước tấn công ký tự đồng hình, lệch miền không nhãn và mẫu lạ ngoài danh mục:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/losses/robust_ood.py — Lá Chắn Đồng Hình, Deep CORAL &amp; Năng Lượng Tự Do</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/losses/robust_ood.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/losses/robust_ood.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n6-1" /><span>Kiểm chứng lá chắn <code>clean_unicode</code> + <code>clean_homoglyphs</code> trên văn bản nhiễu của <em>Quora Insincere Questions</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n6-2" /><span>Đánh giá AUROC phát hiện mẫu lạ bằng <code>fit_mahalanobis_ood</code> và <code>free_energy_ood</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 20 -->
+      <article class="week-block" id="week-20">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 20 · Tầng 05 (Cross-Tokenizer Ensemble &amp; Knowledge Distillation)</div>
+            <h3>16 Dòng Vector Hóa <code>char_span_ensemble</code> Hợp Nhất Mọi Bộ Tách Từ &amp; Chưng Cất 6 Dòng</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+            <span class="mode-tag mode-kaggle">Kỹ Thuật Huy Chương Vàng</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Mẹo NumPy cực kỳ đáng nhớ:</strong> Thay vì viết vòng lặp <code>while</code> dễ sai chỉ số biên khi gom các ký tự vượt ngưỡng thành khoảng <code>(start, end)</code>, 1 dòng <code>edges = np.flatnonzero(np.diff(np.r_[False, mask, False]))</code> tìm ra toàn bộ cặp điểm đầu-cuối <code>zip(edges[0::2], edges[1::2])</code> chính xác tuyệt đối!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/nbme-score-clinical-patient-notes" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Cross-Tokenizer Span Ensemble</span>
+                  <span class="arena-title">NBME - Score Clinical Patient Notes</span>
+                  <span class="arena-subtitle">Identify Key Phrases in Patient Notes from Medical Licensing Exams</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/nbme-score-clinical-patient-notes.jpg" alt="NBME - Score Clinical Patient Notes" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Kết hợp DeBERTa-v3 + RoBERTa bằng chiếu xác suất cấp độ ký tự — kỹ thuật cốt lõi giành Huy chương Vàng.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/feedback-prize-effectiveness" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Multi-Family Distillation</span>
+                  <span class="arena-title">Feedback Prize - Predicting Effective Arguments</span>
+                  <span class="arena-subtitle">Rate the effectiveness of argumentative writing elements from students grade 6-12</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/feedback-prize-effectiveness.jpg" alt="Feedback Prize - Predicting Effective Arguments" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Chưng cất dàn mô hình lớn xuống một mô hình suy luận tốc độ cao duy nhất.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Cross-Tokenizer Ensemble:</strong> Cộng xác suất token của <code>DeBERTa-v3</code> (SentencePiece), <code>RoBERTa</code> (Byte-BPE) và <code>PhoBERT</code> lên mảng ký tự chung độ dài <code>text_len</code> rồi cắt ngưỡng.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Hàm chưng cất tri thức <code>distill_loss</code> gọn trong 6 dòng PyTorch</span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>distill_lib.py — Truyền Thụ Phân Phối Mềm Giữa Teacher &amp; Student</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/distill_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/distill_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>char_span_ensemble</code> (16 dòng) dùng mẹo <code>np.flatnonzero(np.diff(...))</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Chỉ 16 dòng NumPy giúp hợp nhất mượt mà mọi mô hình khác bộ tách từ mà không bao giờ lệch chỉ số khoảng ký tự:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/inference/char_ensemble.py — Hợp Nhất Cấp Độ Ký Tự Ngắn Gọn &amp; Chuẩn Xác</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/inference/char_ensemble.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/inference/char_ensemble.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n6-3" /><span>Thuộc lòng mẹo <code>np.flatnonzero(np.diff(...))</code> trong <code>char_span_ensemble</code> và chạy hợp nhất <code>DeBERTa + RoBERTa</code> trên <em>NBME Clinical Notes</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n6-4" /><span>Chưng cất dàn Ensemble xuống 1 mô hình đơn bằng 6 dòng <code>distill_loss</code> trên <em>Feedback Prize Effectiveness</em>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 21 -->
+      <article class="week-block" id="week-21">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 21 · Tầng 01 &amp; Tầng 05 (High-Throughput Training &amp; Ordinal QWK Optimization)</div>
+            <h3>11 Dòng <code>LengthBatchSampler</code> Tăng Tốc 4x &amp; 11 Dòng <code>QWKRounder</code> Cho Chấm Điểm Thứ Bậc</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Tokenizer &amp; Split</span>
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Nhân 4 số lượng mô hình kịp thử nghiệm trong 6 giờ thi:</strong> Sắp xếp chỉ số theo độ dài trước khi cắt batch bằng 11 dòng <code>LengthBatchSampler</code> loại bỏ ~75% phép tính vô ích trên <code>[PAD]</code>!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/learning-agency-lab-automated-essay-scoring-2" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · 24,000 Essays QWK Metric</span>
+                  <span class="arena-title">Learning Agency Lab - Automated Essay Scoring 2.0</span>
+                  <span class="arena-subtitle">Improve upon essay scoring algorithms to improve student learning outcomes</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/learning-agency-lab-automated-essay-scoring-2.jpg" alt="Learning Agency Lab - Automated Essay Scoring 2.0" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Chấm điểm 24.000 bài luận dài đánh giá bằng Quadratic Weighted Kappa.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/llm-detect-ai-generated-text" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · High-Throughput Inference</span>
+                  <span class="arena-title">LLM - Detect AI Generated Text</span>
+                  <span class="arena-subtitle">Identify which essay was written by a large language model</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/llm-detect-ai-generated-text.jpg" alt="LLM - Detect AI Generated Text" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Môi trường giới hạn chặt thời gian chạy — nơi gom nhóm theo độ dài giúp nhân 3–4 tốc độ suy luận.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Tối ưu hóa trực tiếp QWK:</strong> Huấn luyện hồi quy liên tục rồi dùng <code>np.digitize</code> + <code>Nelder-Mead</code> trong <code>QWKRounder</code> tìm bộ điểm cắt tối ưu trên OOF.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Bật <code>group_by_length=True</code> trong <code>transformers.TrainingArguments</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>fast_trainer_lib.py — Gom Nhóm Độ Dài Tự Động</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/fast_trainer_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/fast_trainer_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>LengthBatchSampler</code> (11 dòng) &amp; <code>QWKRounder</code> (11 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Khi chạy vòng lặp tùy biến <code>train_epoch</code> hoặc tối ưu điểm cắt cho thang chấm thứ bậc Quadratic Weighted Kappa:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/inference/speed_qwk.py — Gom Lô Đồng Độ Dài &amp; Cắt Ngưỡng QWK Tối Ưu</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/inference/speed_qwk.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/inference/speed_qwk.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n6-5" /><span>Đo tốc độ 1 epoch khi gắn <code>batch_sampler=LengthBatchSampler(...)</code> vào <code>DataLoader</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n6-6" /><span>Chạy <code>Regression + QWKRounder</code> nâng cao điểm Quadratic Weighted Kappa trên <em>Automated Essay Scoring 2.0</em>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEKS 22-24 -->
+      <article class="week-block" id="week-22-24">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 22 – 24 · Tổng Duyệt Toàn Khóa · Chiến Thuật 360 Phút Đề Mở</div>
+            <h3>Kịch Bản Tác Chiến Phòng Thi 6 Giờ, Stacking Bằng <code>XGBoost</code> &amp; 3 Kỳ Thi Mô Phỏng IOAI</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+            <span class="mode-tag mode-kaggle">Tổng Duyệt OLP · VOAI · IOAI</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Chiến thuật phân bổ 360 phút chuẩn Olympic:</strong> Khóa chặt file nộp bài đầu tiên bằng <code>TF-IDF + Ridge</code> ngay ở phút thứ 45 trước khi đi sâu vào Transformer và Stacking!
+          </div>
+
+          <table class="res-table" style="margin:16px 0 22px;">
+            <thead>
+              <tr>
+                <th style="width:18%;">Khung Giờ</th>
+                <th style="width:28%;">Mục Tiêu Cốt Lõi</th>
+                <th style="width:54%;">Hành Động Cụ Thể Với Thư Viện OlpAI'25</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Phút 00 – 45</strong></td>
+                <td>Khám phá &amp; Khóa Fold</td>
+                <td>Đọc kỹ Metric; chạy <code>clean_unicode</code>; khóa 5-Fold bằng <code>make_group_folds</code>; nộp nháp <code>TF-IDF + Ridge</code> kiểm chứng luồng chấm.</td>
+              </tr>
+              <tr>
+                <td><strong>Phút 45 – 120</strong></td>
+                <td>Neural Baseline v1</td>
+                <td>Lắp khung từ Bộ Chẩn Đoán (<code>MaskPooler</code> / <code>LinearChainCRF</code> / <code>gensim BM25 + KNN</code> / <code>Seq2Seq</code> / <code>inject_lora</code>); bật <code>LengthBatchSampler</code> chạy xong Fold 0.</td>
+              </tr>
+              <tr>
+                <td><strong>Phút 120 – 240</strong></td>
+                <td>Ablation Giải Nút Thắt</td>
+                <td>Chỉ giữ nâng cấp làm tăng OOF thật: <code>FGMAttack</code>, <code>ccc_loss / asymmetric_focal_loss</code>, <code>TAPT MLM</code>, <code>rdrop_kl_loss</code> hoặc <code>procrustes_svd</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>Phút 240 – 315</strong></td>
+                <td>Đa Dạng Hóa Họ Mô Hình</td>
+                <td>Chạy mô hình thứ 2 khác họ từ vựng/kiến trúc (<code>DeBERTa-v3</code> + <code>RoBERTa/XLM-R</code> + đặc trưng thống kê đưa vào <code>XGBoost / CatBoost</code>).</td>
+              </tr>
+              <tr>
+                <td><strong>Phút 315 – 360</strong></td>
+                <td>Hậu Xử Lý &amp; Chốt An Toàn</td>
+                <td>Tối ưu ngưỡng <code>tune_thresholds</code> / <code>QWKRounder</code>; pha trộn <code>blend_logit</code> / <code>blend_rank</code> / <code>char_span_ensemble</code>; gọi <code>check_submission</code> trước khi nộp!</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2024" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Mock Contest #1 · IOAI 2024 Sofia</span>
+                  <span class="arena-title">IOAI 2024 Official Tasks &amp; Datasets</span>
+                  <span class="arena-subtitle">1st International Olympiad in Artificial Intelligence (Sofia, Bulgaria) — Ciphered Unknown Language NLP</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2024.jpg" alt="IOAI 2024 Official Tasks &amp; Datasets" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đề tổng duyệt số 1: Xử lý ngôn ngữ lạ bằng train_new_from_iterator + TAPT MLM + Fine-tune.</span>
+                <span class="arena-cta">Mở kho đề chính thức IOAI ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2025" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Mock Contest #2 · IOAI 2025 Beijing</span>
+                  <span class="arena-title">IOAI 2025 Official Tasks &amp; Datasets</span>
+                  <span class="arena-subtitle">2nd International Olympiad in Artificial Intelligence (Beijing, China) — Broken BERT Repair &amp; LLM Tasks</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2025.jpg" alt="IOAI 2025 Official Tasks &amp; Datasets" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đề tổng duyệt số 2: Phẫu thuật không gian nhúng procrustes_svd & can thiệp mô hình ngôn ngữ.</span>
+                <span class="arena-cta">Mở kho đề chính thức IOAI ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2026" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Mock Contest #3 · IOAI 2026 Astana</span>
+                  <span class="arena-title">IOAI 2026 Official Tasks &amp; Syllabus</span>
+                  <span class="arena-subtitle">3rd International Olympiad in Artificial Intelligence (Astana, Kazakhstan) — Sequence Ordering &amp; Audio-NLP</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2026.jpg" alt="IOAI 2026 Official Tasks &amp; Syllabus" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đề tổng duyệt số 3: Sắp xếp thứ tự chuỗi & giao thoa tín hiệu Tiếng nói - Ngôn ngữ.</span>
+                <span class="arena-cta">Mở kho đề chính thức IOAI ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Pha trộn <code>blend_logit</code>, <code>blend_rank</code> &amp; Stacking đa hệ bằng <code>XGBClassifier</code> (có sẵn trong OlpAI'25)</span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>blending_xgb_lib.py — Hợp Nhất TF-IDF + DeBERTa + XLM-R Chuẩn Thi Đấu</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/blending_xgb_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/blending_xgb_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt chốt chặn 15 dòng <code>check_submission</code> bắt trọn 6 lỗi gây 0 điểm oan</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Luôn chạy 15 dòng kiểm định này ở ô cuối cùng trước khi nộp bài trong mọi kỳ thi ẩn bảng điểm:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/inference/check_sub.py — Chốt Chặn An Toàn Tuyệt Đối Trước Giờ Nộp Bài</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/inference/check_sub.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/inference/check_sub.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n6-7" /><span><strong>[Mô Phỏng Đề Thi #1 — 6 Giờ Bấm Giờ]</strong> Giải trọn vẹn tác vụ NLP ngôn ngữ lạ từ kho <em>IOAI 2024</em> chỉ với các thư viện trong bảng OlpAI'25.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n6-8" /><span><strong>[Mô Phỏng Đề Thi #2 — 6 Giờ Bấm Giờ]</strong> Giải trọn vẹn tác vụ phẫu thuật mô hình &amp; LLM từ kho <em>IOAI 2025</em>, ghi nhật ký Local Validation từng bước.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n6-9" /><span><strong>[Mô Phỏng Đề Thi #3 — 6 Giờ Bấm Giờ]</strong> Giải trọn vẹn bài kết hợp Chuỗi / Âm thanh theo khung <em>IOAI 2026</em> kèm kiểm định <code>check_submission</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-5.html" class="btn">← Giai đoạn 5: LLM, LoRA, DPO &amp; Surgery</a>
+        <a href="./index.html" class="btn btn-primary">Hoàn Thành Toàn Khóa — Quay Về Trung Tâm Chẩn Đoán →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

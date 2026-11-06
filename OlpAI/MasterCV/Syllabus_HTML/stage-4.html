@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 4 (Tuần 12–14): Domain Shift, Open-Set OOD &amp; Phát Hiện Bất Thường — MasterCV Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link active"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 4 · Tuần 12 – 14 · Độ Bền Vững Khi Giả Định IID Bị Phá Vỡ</div>
+        <h1 class="hero-title">Lệch Phân Phối Miền (Domain Shift), Nhận Diện Tập Mở (OOD) &amp; Phát Hiện Dị Thường Không Nhãn Lỗi</h1>
+        <p class="hero-desc">
+          Giải quyết trực diện 3 kịch bản khiến mô hình rớt hạng sâu trên Private Leaderboard: <strong>(1) Tập Test khác thiết bị chụp / bệnh viện so với tập Train</strong>, <strong>(2) Tập Test lén trộn các lớp vật thể lạ ngoài tập nhãn</strong>, và <strong>(3) Tập Train chỉ có toàn sản phẩm chuẩn (0 ảnh lỗi) nhưng phải khoanh vùng chính xác từng vết nứt</strong>.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/6 mục</span>
+          <span class="meta-pill"><strong>Hợp nhất từ:</strong> <code>Leave-One-Domain-Out</code> (GĐ 0) + <code>MultiScaleBackbone</code> (GĐ 1) + <code>GPU Search</code> (GĐ 2)</span>
+          <span class="meta-pill"><strong>Đấu trường:</strong> Kaggle Camelyon · Happywhale OOD · MVTec AD · Stanford WILDS</span>
+        </div>
+      </section>
+
+      <!-- ================= WEEK 12 ================= -->
+      <article class="week-block" id="week-12">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 12 · Tầng 01 (Domain Augmentation), Tầng 02 &amp; Tầng 05 (Test-Time Adaptation)</div>
+            <h3>Domain Generalization &amp; Adaptation: FDA / Histogram Matching, MixStyle, Deep CORAL &amp; TENT</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Backbone &amp; Neck</span>
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">skimage + FFT FDA + Tự Build MixStyle/TENT</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Kích hoạt bộ chia <code>LeaveOneGroupOut</code> theo miền (Giai đoạn 0):</strong> Luôn tách hẳn một nguồn thu thập làm tập Validation ngoại miền trước khi đo hiệu quả của khớp phổ tần số thấp (FDA), trộn thống kê phong cách (MixStyle) hay thích nghi lúc chấm Test (TENT).
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/histopathologic-cancer-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Medical Competition · Stain Shift</span>
+                  <span class="arena-title">Histopathologic Cancer Detection</span>
+                  <span class="arena-subtitle">Identify metastatic tissue in histopathologic scans of lymph node sections</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/histopathologic-cancer-detection.jpg" alt="Histopathologic Cancer Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">220.025 ảnh vi thể hạch bạch huyết có độ lệch màu thuốc nhuộm H&amp;E mạnh giữa các phòng xét nghiệm (chấm ROC-AUC).</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://wilds.stanford.edu/" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Stanford Benchmark · Real Distribution Shifts</span>
+                  <span class="arena-title">Stanford WILDS Benchmark</span>
+                  <span class="arena-subtitle">Curated benchmark of real-world distribution shifts across hospitals, camera traps, and satellites</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/wilds_stanford_edu.jpg" alt="Stanford WILDS Benchmark" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Bộ chuẩn thế giới đánh giá trực tiếp độ sụt giảm hiệu năng giữa In-Distribution Val và Out-of-Distribution Test.</span>
+                <span class="arena-cta">Mở trang WILDS Stanford ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Khớp miền tức thì bằng <code>skimage.exposure.match_histograms</code>, <code>FFT FDA</code> (7 dòng) &amp; <code>AdaBN</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>domain_adaptation_skimage.py — Khớp Thống Kê Màu Bằng scikit-image, FFT &amp; AdaBN</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/domain_adaptation_skimage.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/domain_adaptation_skimage.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết tầng <code>MixStyle</code>, đảo đạo hàm <code>GradientReversalFn</code>, <code>DeepCORALLoss</code> &amp; <code>TentAdapter</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/backbones/domain_generalization.py — MixStyle, GRL, Deep CORAL &amp; TENT</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/backbones/domain_generalization.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/backbones/domain_generalization.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 12:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s4-1" /><span>Đánh giá <code>FDA</code> / <code>AdaBN</code> trên kịch bản lệch màu mô bệnh học Kaggle <em>Camelyon</em> hoặc <em>WILDS</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s4-2" /><span>Cắm <code>MixStyle</code> vào sau Stage 1–2 của Backbone và kiểm chứng mức tăng điểm trên miền ẩn hoàn toàn mới.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 13 ================= -->
+      <article class="week-block" id="week-13">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 13 · Tầng 04 &amp; Tầng 05 (Open-Set / Out-of-Distribution Rejection)</div>
+            <h3>Nhận Diện Tập Mở &amp; Dữ Liệu Ngoại Lai (OOD): Năng Lượng Tự Do Helmholtz &amp; Mahalanobis</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">sklearn LedoitWolf + Tự Build Energy OOD</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Vì sao <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi>max</mi><mo>⁡</mo></mrow><mi>c</mi></msub><mtext>Softmax</mtext><mo stretchy="false">(</mo><mi>z</mi><msub><mo stretchy="false">)</mo><mi>c</mi></msub></mrow><annotation encoding="application/x-tex">\max_c \text{Softmax}(z)_c</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mop">max</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">Softmax</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> luôn quá tự tin trên vật thể lạ?</strong> Vì Softmax triệt tiêu biên độ chung của vector logit! Kết hợp <strong>Năng lượng tự do Helmholtz <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false">(</mo><mi mathvariant="bold">x</mi><mo stretchy="false">)</mo><mo>=</mo><mo>−</mo><mi>T</mi><mi>log</mi><mo>⁡</mo><msub><mo>∑</mo><mi>c</mi></msub><msup><mi>e</mi><mrow><msub><mi>z</mi><mi>c</mi></msub><mi mathvariant="normal">/</mi><mi>T</mi></mrow></msup></mrow><annotation encoding="application/x-tex">E(\mathbf{x}) = -T \log \sum_c e^{z_c/T}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mopen">(</span><span class="mord mathbf">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1877em;vertical-align:-0.2997em;"></span><span class="mord">−</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0017em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.888em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.04398em;">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:-0.044em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mtight">/</span><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span></span></strong> và khoảng cách hiệp phương sai co rút <strong>Ledoit-Wolf Mahalanobis</strong> giúp phát hiện chính xác mẫu ngoại lai mà không cần sửa mạng.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/happy-whale-and-dolphin" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Open-Set Calibration · MAP@5</span>
+                  <span class="arena-title">Happywhale - Whale and Dolphin Identification</span>
+                  <span class="arena-subtitle">Identify whales and dolphins by unique characteristics</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/happy-whale-and-dolphin.jpg" alt="Happywhale - Whale and Dolphin Identification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Quyết định chính xác vị trí chèn nhãn cá thể lạ <code>new_individual</code> vào danh sách Top-5 dự đoán để nhảy vọt thứ hạng.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://github.com/Jingkang50/OpenOOD" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">OpenOOD v1.5 · AUROC &amp; FPR@95%TPR</span>
+                  <span class="arena-title">OpenOOD — Generalized OOD Detection Benchmark</span>
+                  <span class="arena-subtitle">Unified evaluation benchmark for Out-of-Distribution, Anomaly, and Open-Set Recognition</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_jingkang50_openood.jpg" alt="OpenOOD — Generalized OOD Detection Benchmark" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đánh giá khả năng phân biệt mẫu quen (ID) và mẫu lạ gần giống (Near-OOD) theo chuẩn chấm nghiên cứu quốc tế.</span>
+                <span class="arena-cta">Mở kho chuẩn OpenOOD ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Ước lượng hiệp phương sai chống suy biến bằng <code>sklearn.covariance.LedoitWolf</code> &amp; chấm <code>roc_auc_score</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>ood_mahalanobis_sklearn.py — Bộ Phát Hiện OOD Ổn Định Cao Bằng Ledoit-Wolf Của scikit-learn</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/ood_mahalanobis_sklearn.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/ood_mahalanobis_sklearn.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>helmholtz_energy_ood_score</code> &amp; Hàm mất mát ép biên năng lượng <code>EnergyBoundedMarginLoss</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/losses/energy_ood.py — Helmholtz Free Energy Score &amp; Outlier Exposure Loss</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/losses/energy_ood.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/losses/energy_ood.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 13:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s4-3" /><span>So sánh trực tiếp AUROC và FPR@95 giữa <code>MaxSoftmax</code>, <code>Helmholtz Energy</code> và <code>SklearnMahalanobisOOD</code> (giữ ẩn 20% lớp làm tập OOD).</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s4-4" /><span>Ứng dụng điểm tin cậy OOD tối ưu ngưỡng chèn nhãn thực thể mới trên bài toán tập mở.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 14 ================= -->
+      <article class="week-block" id="week-14">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 14 · Tầng 02 + 03 + 05 (Hợp Nhất Kiến Trúc Cho Bài Toán 0 Ảnh Lỗi)</div>
+            <h3>Phát Hiện &amp; Khoanh Vùng Dị Thường Công Nghiệp: PatchCore Coreset Memory Bank</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Backbone &amp; Neck</span>
+            <span class="mod-badge mod-3">03 · Pooling &amp; Head</span>
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">torchvision + sklearn + Tự Build PatchCore</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Khi tập Train chỉ có 200 ảnh đạt chuẩn (0 ảnh lỗi):</strong> Đừng train Autoencoder tái tạo ảnh! Ghép <strong>Đặc trưng đóng băng Layer 2 + Layer 3 của Backbone (Tuần 1)</strong> với <strong>Tìm kiếm khoảng cách k-NN trên kho nhớ Coreset (Tuần 7)</strong> đạt ngay &gt;99% AUROC trong chưa tới 1 phút!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/datasets/ipythonx/mvtec-ad" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Dataset · 15 Industrial Categories</span>
+                  <span class="arena-title">MVTec AD — Industrial Anomaly Detection</span>
+                  <span class="arena-subtitle">High-resolution industrial inspection dataset with pixel-precise defect masks across 15 categories</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/mvtec-ad.jpg" alt="MVTec AD — Industrial Anomaly Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Ốc vít, bo mạch, thấu kính, viên thuốc: Tập Train chỉ chứa mẫu lành, tập Test chấm đồng thời Image AUROC và Pixel Mask AUROC!</span>
+                <span class="arena-cta">Mở Dataset trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/severstal-steel-defect-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Industrial Challenge · Unsupervised Test</span>
+                  <span class="arena-title">Severstal: Steel Defect Detection</span>
+                  <span class="arena-subtitle">Can you detect and classify defects in steel?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/severstal-steel-defect-detection.jpg" alt="Severstal: Steel Defect Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Thử thách tự tạo: Chỉ lấy các tấm thép không khuyết tật làm tập nhớ chuẩn, dùng PatchCore xuất bản đồ nhiệt dò tìm vết rỗ bề mặt!</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Dựng nhanh kho đặc trưng <code>PatchCore</code> bằng <code>create_feature_extractor</code> (<code>torchvision</code>) + <code>NearestNeighbors</code> (<code>sklearn</code>)</span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>patchcore_tv_sklearn.py — PatchCore Chuẩn OlpAI'25 Bằng torchvision + scikit-learn</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/patchcore_tv_sklearn.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/patchcore_tv_sklearn.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết trọn vẹn <code>PatchCoreAnomalySystem</code> + <code>greedy_kcenter_coreset</code> trong 45 dòng PyTorch thuần (0 phụ thuộc ngoài!)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/heads/patchcore_scratch.py — PatchCore Hoàn Chỉnh Chạy Mượt Trong Mọi Phòng Thi Offline</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/heads/patchcore_scratch.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/heads/patchcore_scratch.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 14:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s4-5" /><span>Chạy thử nghiệm <code>PatchCore</code> trên ít nhất 3 danh mục của bộ dữ liệu Kaggle <em>MVTec AD</em> (VD: <code>bottle</code>, <code>hazelnut</code>, <code>transistor</code>), đạt Image AUROC &gt; 0.97.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s4-6" /><span>Đối chứng <code>PatchCoreAnomalySystem</code> tự viết 45 dòng với thư viện chuẩn về cả tốc độ suy luận lẫn Pixel Mask AUROC.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-3.html" class="btn">← Trước: Giai đoạn 3 (Dense Prediction &amp; Đếm Mật Độ)</a>
+        <a href="./stage-5.html" class="btn btn-primary">Tiếp theo: Giai đoạn 5 (Tuần 15–18) — DINOv2, CLIP, Diffusion &amp; LoRA →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phần Cơ Bản &amp; Kho Baseline Tối Giản — MasterCV Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link active"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()" title="Đặt lại tiến độ">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Phần Cơ Bản · Nhập Môn &amp; Kho Baseline Tối Giản Cho Mọi Bài Toán</div>
+        <h1 class="hero-title">Kho Baseline Computer Vision Cơ Bản Nhất &amp; EDA Ngắn Gọn Đa Năng</h1>
+        <p class="hero-desc">
+          Trước khi đụng tới các kỹ thuật nâng cao ở Giai đoạn 0–6, mục này cung cấp <strong>những khuôn mẫu Baseline cơ bản nhất, ngắn gọn nhất</strong> (không vẽ biểu đồ rườm rà, chỉ ~40–58 dòng/file chạy thẳng một mạch từ đọc dữ liệu đến xuất <code>submission.csv</code> / <code>.zip</code>), kết hợp các hàm <strong>EDA chữ 10 dòng dùng chung cho mọi định dạng đề thi</strong> (cả thư mục <code>ImageFolder</code> lẫn bảng <code>train.csv</code>).
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/6 mục</span>
+          <span class="meta-pill"><strong>100% Thư Viện Chuẩn OlpAI'25:</strong> <code>torch</code> · <code>torchvision</code> · <code>cv2</code> · <code>sklearn</code> · <code>PIL</code></span>
+          <span class="meta-pill"><strong>Triết lý:</strong> EDA chữ 10 dòng (không vẽ vời) + 1 File Baseline khép kín cho mỗi dạng bài</span>
+        </div>
+      </section>
+
+      <!-- ================= BASE 1 ================= -->
+      <article class="week-block" id="base-1">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Bài Cơ Bản 01 · Thiết Lập Đề Bài &amp; EDA Ngắn Gọn Phù Hợp Mọi Bài Toán</div>
+            <h3>Cấu Hình <code>@dataclass CFG</code>, Cố Định <code>SEED</code> &amp; Hàm <code>quick_cv_eda</code> 15 Dòng Không Cần Vẽ Hình</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Config &amp; Universal EDA</span>
+            <span class="mode-tag mode-kaggle">Dùng Chung Folder &amp; CSV</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Thay thế hoàn toàn code vẽ lưới ảnh dài dòng bằng 1 hàm <code>quick_cv_eda</code> duy nhất:</strong> Nhận trực tiếp danh sách đường dẫn ảnh (từ thư mục hoặc cột <code>image_id</code> trong CSV) và in ngay 4 thông số quyết định cách chọn <code>CFG</code>: tổng số mẫu, số ảnh hỏng, hệ màu (<code>RGB / L / RGBA</code>), phân vị kích thước <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>W</mi><mo separator="true">,</mo><mi>H</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(W, H)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mclose">)</span></span></span></span> và độ lệch lớp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>min</mi><mo>⁡</mo><mo separator="true">,</mo><mi>max</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(\min, \max)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mop">min</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">max</span><span class="mclose">)</span></span></span></span>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/cassava-leaf-disease-classification" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Dữ Liệu Bảng CSV</span>
+                  <span class="arena-title">Cassava Leaf Disease Classification</span>
+                  <span class="arena-subtitle">Identify the type of disease present on a Cassava Leaf image</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/cassava-leaf-disease-classification.jpg" alt="Cassava Leaf Disease Classification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Kiểm tra nhanh 21.397 ảnh và tỷ lệ lệch giữa 5 lớp bệnh bằng đúng 1 dòng gọi quick_cv_eda.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/datasets/apollo2506/eurosat-dataset" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Benchmark · Dữ Liệu Thư Mục Lớp</span>
+                  <span class="arena-title">EuroSAT Dataset</span>
+                  <span class="arena-subtitle">Land Use and Land Cover Classification with Sentinel-2</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/eurosat-dataset.jpg" alt="EuroSAT Dataset" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Tập ảnh 10 lớp kích thước 64×64 gọn nhẹ để thử nghiệm mạng SimpleCNN cơ bản tự viết từ đầu.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Đọc kết quả EDA để chỉnh <code>CFG</code> trong 10 giây:</strong> Nếu <code>class_min_max</code> chênh lệch lớn (VD: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>300</mn></mrow><annotation encoding="application/x-tex">300</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">300</span></span></span></span> so với <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12.000</mn></mrow><annotation encoding="application/x-tex">12.000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">12.000</span></span></span></span>), bật trọng số nghịch đảo tần suất lớp; nếu <code>modes</code> lẫn ảnh xám <code>L</code> hoặc <code>RGBA</code>, bắt buộc ép <code>.convert("RGB")</code> khi đọc ảnh.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Khuôn Mẫu Cơ Bản Nhất</span>
+            <span>Khung <code>@dataclass CFG</code>, <code>seed_everything</code> &amp; hàm <code>quick_cv_eda</code> dùng cho mọi bài ảnh</span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/cv_eda_and_config.py — CFG Chuẩn & EDA Ngắn Gọn Không Cần Vẽ Biểu Đồ</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/cv_eda_and_config.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/cv_eda_and_config.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build Cơ Bản</span>
+                <span class="scratch-btn-label">Tự viết mạng <code>SimpleCNN</code> 3 khối tích chập tối giản bằng PyTorch thuần (22 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Khi nào cần dùng?</strong> Khi bạn muốn kiểm tra nhanh luồng dữ liệu <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>B</mi><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mi>H</mi><mo separator="true">,</mo><mi>W</mi><mo stretchy="false">)</mo><mo>→</mo><mo stretchy="false">(</mo><mi>B</mi><mo separator="true">,</mo><mi>C</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(B, 3, H, W) \to (B, C)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mclose">)</span></span></span></span> hoặc khi đề bài yêu cầu tự xây dựng mạng CNN cơ sở không dùng trọng số tiền huấn luyện:
+              </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/basic_cnn_scratch.py — Mạng SimpleCNN Tối Giản 22 Dòng</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/basic_cnn_scratch.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/basic_cnn_scratch.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="b0-1" /><span>Chạy thử <code>quick_cv_eda</code> trên một tập ảnh bất kỳ để lấy ngay thông số kích thước, kênh màu và tỷ lệ lệch nhãn trong 1 giây.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= BASE 2 ================= -->
+      <article class="week-block" id="base-2">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Bài Cơ Bản 02 · Baseline Phân Loại Ảnh Cơ Bản Nhất (Trọn Gói 1 File)</div>
+            <h3><code>TransformDataset</code> → <code>ResNet18</code> → Lưu <code>best_model.pth</code> (Early Stopping) → Xuất <code>submission.csv</code></h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Image Classification</span>
+            <span class="mode-tag mode-kaggle">Khuôn Mẫu Tủ Cơ Bản Nhất</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Đúng một file khép kín duy nhất cho mọi bài Phân loại ảnh:</strong> Giữ lại đúng phần cốt lõi nhất trong phong cách code của bạn — bọc <code>TransformDataset</code> sau <code>random_split</code>, cân bằng trọng số lớp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>c</mi></msub><mo>=</mo><mfrac><msub><mi>N</mi><mtext>train</mtext></msub><mrow><mi>C</mi><mo>⋅</mo><msub><mi>N</mi><mi>c</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">w_c = \frac{N_{\text{train}}}{C \cdot N_c}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3335em;vertical-align:-0.4451em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8884em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">C</span><span class="mbin mtight">⋅</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:-0.109em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4101em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.334em;"><span style="top:-2.357em;margin-left:-0.109em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">train</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4451em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> trên tập Train, gắn đầu <code>ResNet18</code>, lặp epoch lưu <code>best_model.pth</code> kèm <code>PATIENCE</code> và xuất thẳng <code>./outputs/submission.csv</code>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/plant-pathology-2021-fgvc8" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Phân Loại Ảnh</span>
+                  <span class="arena-title">Plant Pathology 2021 - FGVC8</span>
+                  <span class="arena-subtitle">Identify the category of foliar diseases in apple trees</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/plant-pathology-2021-fgvc8.jpg" alt="Plant Pathology 2021 - FGVC8" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Áp dụng trực tiếp file image_cls_baseline.py để có ngay file submission.csv chuẩn mực đầu tiên.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/dog-breed-identification" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Classic · Phân Loại 120 Lớp (CSV)</span>
+                  <span class="arena-title">Dog Breed Identification</span>
+                  <span class="arena-subtitle">Determine the breed of a dog in an image</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/dog-breed-identification.jpg" alt="Dog Breed Identification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đề bài cấp nhãn qua bảng labels.csv — chỉ cần hoán đổi lớp CSVImageDataset ở phần mở rộng bên dưới là chạy khớp 100%.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Hai cấu trúc dữ liệu duy nhất bạn sẽ gặp:</strong> (1) Chia sẵn thư mục theo tên lớp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> dùng luôn <code>datasets.ImageFolder</code> + <code>TransformDataset</code> ở Bước 1; (2) Để chung ảnh trong 1 thư mục kèm tệp <code>train.csv</code> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> dùng lớp <code>CSVImageDataset</code> 18 dòng ở Bước 2.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Khuôn Mẫu Cơ Bản Nhất</span>
+            <span>Pipeline Phân loại ảnh trọn gói từ chia tập, huấn luyện <code>ResNet18</code> đến xuất <code>submission.csv</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/image_cls_baseline.py — Baseline Phân Loại Ảnh Khép Kín Cơ Bản Nhất</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/image_cls_baseline.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/image_cls_baseline.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build Dataset CSV &amp; Báo Cáo Lỗi</span>
+                <span class="scratch-btn-label">Lớp <code>CSVImageDataset</code> (cho đề thi cấp bảng <code>train.csv</code>) &amp; tóm tắt độ chính xác từng lớp bằng chữ</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Linh hoạt cho mọi đề bài:</strong> Khi đề không chia thư mục con theo lớp, thay <code>ImageFolder</code> bằng <code>CSVImageDataset</code> dưới đây và gọi <code>print_cls_summary</code> để xem lớp nào đang có F1 thấp nhất mà không cần vẽ ma trận màu:
+              </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/csv_image_dataset.py — Đọc Ảnh Từ Bảng CSV & Báo Cáo F1 Từng Lớp Ngắn Gọn</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/csv_image_dataset.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/csv_image_dataset.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="b0-2" /><span>Thuộc lòng cấu trúc <code>TransformDataset</code> + vòng lặp lưu <code>best_model.pth</code> trong <code>image_cls_baseline.py</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="b0-3" /><span>Biết cách chuyển đổi linh hoạt giữa <code>ImageFolder</code> và <code>CSVImageDataset</code> tùy định dạng thư mục đề cho.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= BASE 3 ================= -->
+      <article class="week-block" id="base-3">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Bài Cơ Bản 03 · Baseline Phân Loại Video Cơ Bản Nhất (Chuẩn OlpAI SLR)</div>
+            <h3>Đọc Video <code>cv2</code> Lấy Mẫu 16 Khung → Mạng <code>CRNN</code> (<code>ResNet18 + LSTM</code>) → Nén <code>submission.zip</code></h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Video CRNN Baseline</span>
+            <span class="mode-tag mode-kaggle">Chuẩn Đề Thi OlpAI SLR</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Cô đọng trọn bộ Baseline Video ký hiệu/hành động trong 1 file dễ nhớ:</strong> Đọc khung hình bằng <code>cv2.VideoCapture</code>, đưa mọi video dài ngắn khác nhau về đúng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">T = 16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">16</span></span></span></span> khung (lặp khung cuối nếu thiếu, <code>linspace</code> nếu thừa), đi qua <code>ResNet18 + LSTM</code>, chọn checkpoint theo <code>Macro-F1</code> và đóng gói <code>submission.zip</code>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/asl-signs" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Sign Language</span>
+                  <span class="arena-title">Google - Isolated Sign Language Recognition</span>
+                  <span class="arena-subtitle">Classify isolated American Sign Language signs</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/asl-signs.jpg" alt="Google - Isolated Sign Language Recognition" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Bài toán nhận diện ký hiệu cô lập sát với cấu trúc xử lý chuỗi khung hình và chấm điểm Macro-F1 của OlpAI SLR.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/datasets/matthewjansen/ucf101-action-recognition" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Benchmark · 101 Hành Động Video</span>
+                  <span class="arena-title">UCF101 Action Recognition</span>
+                  <span class="arena-subtitle">13,320 videos across 101 human action categories</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/ucf101-action-recognition.jpg" alt="UCF101 Action Recognition" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Tập video tiêu chuẩn để chạy hàm quick_video_eda kiểm tra phân phối độ dài khung hình và huấn luyện CRNN.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Gộp chiều <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>B</mi><mo>⋅</mo><mi>T</mi><mo separator="true">,</mo><mi>C</mi><mo separator="true">,</mo><mi>H</mi><mo separator="true">,</mo><mi>W</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(B \cdot T, C, H, W)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mclose">)</span></span></span></span> trong 2 dòng:</strong> Cho phép tận dụng trực tiếp mọi mạng CNN 2D có sẵn của <code>torchvision</code> làm bộ trích xuất đặc trưng từng khung hình trước khi đưa chuỗi <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>B</mi><mo separator="true">,</mo><mi>T</mi><mo separator="true">,</mo><mn>512</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(B, T, 512)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">512</span><span class="mclose">)</span></span></span></span> vào <code>nn.LSTM</code>.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Khuôn Mẫu Cơ Bản Nhất</span>
+            <span>Đọc 16 khung <code>OpenCV</code>, huấn luyện <code>CRNN</code> theo <code>Macro-F1</code> &amp; nén thẳng <code>submission.zip</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/video_crnn_baseline.py — Baseline Video CRNN Khép Kín Chuẩn OlpAI SLR</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/video_crnn_baseline.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/video_crnn_baseline.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · EDA Video &amp; Baseline Gộp Trung Bình</span>
+                <span class="scratch-btn-label">Hàm <code>quick_video_eda</code> (đo phân vị số khung hình) &amp; mô hình <code>FrameMeanBaseline</code> (không cần LSTM)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Mẹo chọn <code>target_frames</code> và đối chứng nhanh:</strong> Gọi <code>quick_video_eda</code> để biết trung vị độ dài video trong đề và phát hiện tệp hỏng; nếu hành động tĩnh đơn giản, <code>FrameMeanBaseline</code> (chỉ lấy trung bình <code>feat.mean(dim=1)</code>) còn hội tụ nhanh hơn cả LSTM:
+              </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/video_eda_and_meanpool.py — EDA Độ Dài Video Ngắn Gọn & Mô Hình Gộp Trung Bình Khung</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/video_eda_and_meanpool.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/video_eda_and_meanpool.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="b0-4" /><span>Nắm vững hàm <code>load_video_tensor</code> (tách 3 bước đọc, lấy mẫu, chuẩn hóa) chuẩn hóa mọi clip bất kỳ về tensor <code>(16, 3, 224, 224)</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="b0-5" /><span>Chạy kiểm thử <code>CRNN</code> + quy trình ghi <code>submission.csv</code> nén vào <code>submission.zip</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= BASE 4 ================= -->
+      <article class="week-block" id="base-4">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Bài Cơ Bản 04 · Baseline Phát Hiện Vật Thể Cơ Bản Nhất (Object Detection)</div>
+            <h3><code>DetectionDataset</code> Đồng Bộ Tọa Độ → <code>Faster R-CNN</code> → Xuất <code>PredictionString</code></h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Faster R-CNN Baseline</span>
+            <span class="mode-tag mode-kaggle">Khoanh Vùng Hộp Bao</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Baseline cơ bản nhất cho mọi đề khoanh vùng tọa độ vật thể:</strong> Nhóm bảng nhãn theo <code>image_id</code>, co giãn hộp bao <code>[x_min, y_min, x_max, y_max]</code> theo đúng tỷ lệ ảnh, đưa qua <code>fasterrcnn_resnet50_fpn</code> (nhớ <code>num_classes = số_lớp_vật_thể + 1</code> cho lớp nền <code>0</code>) và nhân ngược tỷ lệ gốc khi xuất <code>submission.csv</code>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/global-wheat-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Object Detection</span>
+                  <span class="arena-title">Global Wheat Detection</span>
+                  <span class="arena-subtitle">Can you help identify wheat heads using image analysis?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/global-wheat-detection.jpg" alt="Global Wheat Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đề bài chuẩn 1 lớp vật thể (num_classes = 2) để thực hành xuất chuỗi kết quả PredictionString.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/rsna-pneumonia-detection-challenge" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Medical Detection · Ảnh X-quang</span>
+                  <span class="arena-title">RSNA Pneumonia Detection Challenge</span>
+                  <span class="arena-subtitle">Locate lung opacities on chest radiographs</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/rsna-pneumonia-detection-challenge.jpg" alt="RSNA Pneumonia Detection Challenge" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Thực hành chạy quick_bbox_eda kiểm tra mật độ hộp bao trên mỗi ảnh và chọn ngưỡng lọc score_thr.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Khuôn Mẫu Cơ Bản Nhất</span>
+            <span><code>DetectionDataset</code>, <code>build_fasterrcnn</code>, huấn luyện 1 epoch &amp; quy đổi hộp gốc xuất <code>submission.csv</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/det_fasterrcnn_baseline.py — Baseline Phát Hiện Vật Thể Tối Giản Với Faster R-CNN</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/det_fasterrcnn_baseline.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/det_fasterrcnn_baseline.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · EDA Hộp Bao &amp; Tự Build IoU / NMS</span>
+                <span class="scratch-btn-label">Hàm <code>quick_bbox_eda</code> (bắt hộp suy biến <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>≤</mo><mn>0</mn><mo separator="true">,</mo><mi>h</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w \le 0, h \le 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>) &amp; tự viết <code>box_iou_np</code> + <code>greedy_nms_np</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Luôn chạy <code>quick_bbox_eda</code> trước khi train Detection:</strong> Chỉ cần 1 hộp bị lỗi <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>max</mi><mo>⁡</mo></msub><mo>≤</mo><msub><mi>x</mi><mi>min</mi><mo>⁡</mo></msub></mrow><annotation encoding="application/x-tex">x_{\max} \le x_{\min}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">m</span><span class="mtight">a</span><span class="mtight">x</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3175em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">m</span><span class="mtight">i</span><span class="mtight">n</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> trong bảng CSV cũng làm Faster R-CNN phát sinh <code>NaN loss</code> ngay lập tức!
+              </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/det_box_eda_and_iou.py — EDA Kiểm Tra Hộp Lỗi Ngắn Gọn & Hàm IoU / NMS Cơ Bản</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/det_box_eda_and_iou.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/det_box_eda_and_iou.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="b0-6" /><span>Chạy <code>quick_bbox_eda</code> lọc sạch hộp suy biến và kiểm thử trọn luồng <code>DetectionDataset</code> + <code>greedy_nms_np</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./index.html" class="btn">← Về Trang Tổng Quan</a>
+        <a href="./stage-0.html" class="btn btn-primary">Tiếp theo: Giai đoạn 0 — Tách Khung Kiến Trúc Mô-đun Core →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

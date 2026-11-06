@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 0: Khung Thực Nghiệm Baseline Core — MasterCV Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link active"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 0 · Nền Móng Thực Nghiệm (2–3 Ngày Đầu)</div>
+        <h1 class="hero-title">Xây Dựng Khung Baseline Core — Chuẩn Hóa Quy Trình Trên Colab &amp; Kaggle</h1>
+        <p class="hero-desc">
+          Mọi tuyển thủ Olympic AI và Kaggle Grandmaster đều sở hữu một <strong>khung huấn luyện mô-đun chuẩn hóa</strong> trước khi thử nghiệm bất kỳ kiến trúc phức tạp nào. Khung này đảm bảo 3 nguyên tắc sống còn: <strong>(1) Local Validation phản ánh trung thực Private Leaderboard</strong>, <strong>(2) Mọi thành phần đều hoán đổi được trong 1 dòng lệnh</strong>, và <strong>(3) Tái lập kết quả chính xác 100%</strong>.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/3 mục</span>
+          <span class="meta-pill"><strong>Môi trường:</strong> Google Colab / Kaggle Notebooks</span>
+        </div>
+      </section>
+
+      <h2 class="section-title">1. Cấu Trúc Gói Mô-đun Tái Sử Dụng Xuyên Suốt 24 Tuần</h2>
+      <p style="color:var(--text-secondary);">
+        Lưu thư mục <code>mastercv/</code> này trên GitHub hoặc tải lên thành một Kaggle Dataset cá nhân để gắn trực tiếp vào mọi Notebook thi đấu (kể cả các cuộc thi tắt Internet trên Kaggle):
+      </p>
+
+      <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/ — Cấu trúc thư viện cá nhân dùng xuyên suốt Giai đoạn 0 → 6</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/package_tree.txt" target="_blank" rel="noopener">Mở file .txt ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/package_tree.txt"></pre>
+          </div>
+
+      <h2 class="section-title">2. Bài Tập Khởi Tạo: Chống Data Leakage &amp; Dựng Baseline v0 Trên Kaggle</h2>
+      <article class="week-block">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Bài Thực Hành Cốt Lõi · Tầng 01 → Tầng 05</div>
+            <h3>Thiết Kế Validation Không Rò Rỉ &amp; Chạy Baseline v0 Đối Chứng</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Data &amp; Validation</span>
+            <span class="mode-tag mode-kaggle">Thư Viện Chuẩn + Tự Build</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Vai trò của Baseline v0:</strong> Kết quả Fold 0 của <code>ResNet-34 + CrossEntropy + Argmax</code> trên bộ dữ liệu <em>Cassava Leaf Disease</em> dưới đây chính là cột mốc gốc để đối chứng mức cải thiện điểm số của toàn bộ 4 tuần trong Giai đoạn 1!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/cassava-leaf-disease-classification" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Late Submission</span>
+                  <span class="arena-title">Cassava Leaf Disease Classification</span>
+                  <span class="arena-subtitle">Identify the type of disease present on a Cassava Leaf image</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/cassava-leaf-disease-classification.jpg" alt="Cassava Leaf Disease Classification" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">21.397 ảnh lá sắn thực địa (5 lớp bệnh). Dùng để dựng Baseline v0 ngay trên Kaggle Notebook và nộp file lấy điểm chuẩn đầu tiên.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/petfinder-pawpularity-score" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Anti-Leakage Practice</span>
+                  <span class="arena-title">PetFinder.my - Pawpularity Contest</span>
+                  <span class="arena-subtitle">Predict the popularity of shelter pet photos</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/petfinder-pawpularity-score.jpg" alt="PetFinder.my - Pawpularity Contest" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Chứa nhiều ảnh chụp liên tiếp của cùng một thú cưng — bài tập chuẩn mực để gom cụm Perceptual Hash trước khi chia <code>StratifiedGroupKFold</code>.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Nguyên tắc chống rò rỉ dữ liệu (Anti-Data Leakage):</strong> Luôn kiểm tra 3 câu hỏi trước khi chia tập: (1) Nhãn có bị lệch không? (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> <code>StratifiedKFold</code>), (2) Nhiều ảnh có thuộc cùng 1 bệnh nhân / camera / video / vật thể trùng lặp không? (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> <code>StratifiedGroupKFold</code> đảm bảo <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">G</mi><mtext>train</mtext></msub><mo>∩</mo><msub><mi mathvariant="script">G</mi><mtext>val</mtext></msub><mo>=</mo><mi mathvariant="normal">∅</mi></mrow><annotation encoding="application/x-tex">\mathcal{G}_{\text{train}} \cap \mathcal{G}_{\text{val}} = \varnothing</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.0593em;">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3175em;"><span style="top:-2.55em;margin-left:-0.0593em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">train</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.0593em;">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0593em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">val</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6633em;vertical-align:-0.0817em;"></span><span class="mord amsrm">∅</span></span></span></span>), và (3) Tập Test có đến từ miền thiết bị khác hẳn không? (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> <code>LeaveOneGroupOut</code> theo miền).</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Dựng nhanh Baseline v0 bằng <code>scikit-learn</code> + <code>torchvision.models</code> (100% có sẵn trong OlpAI'25)</span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baseline_v0_library.py — Chia Validation Tổng Quát &amp; Khởi Tạo Mọi Kiến Trúc Với torchvision</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/baseline_v0_library.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/baseline_v0_library.py"></pre>
+          </div>
+
+          <!-- Toggleable From-Scratch Section -->
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự xây dựng khung <code>VisionSystem</code>, <code>train_epoch</code> (14 dòng) &amp; <code>eval_epoch</code> tổng quát dễ thuộc lòng</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Khi nào cần tự build?</strong> Khi bạn cần tách rời hoàn toàn <code>Backbone</code>, <code>Head</code>, <code>Loss</code> và <code>Evaluator</code> để cắm các mô-đun nâng cao ở Giai đoạn 1–6 (như Multi-Task PCGrad, ArcFace nhận thêm <code>target</code>, hay kiểm soát hoàn toàn Mixed Precision + Gradient Clipping):
+              </p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/core/pipeline.py — Khung Huấn Luyện Vạn Năng 32 Dòng (Dùng Chung Mọi Giai Đoạn)</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/core/pipeline.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/core/pipeline.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:24px 0 10px;">Checklist Mở Khóa Giai Đoạn 0:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s0-1" /><span>Thiết lập gói thư viện cá nhân <code>mastercv/</code> trên GitHub / Kaggle Dataset kèm <code>core/pipeline.py</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s0-2" /><span>Hoàn thiện <code>core/validation.py</code> (3 chế độ chia Val) và kiểm tra điều kiện chống rò rỉ nhóm <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">G</mi><mtext>train</mtext></msub><mo>∩</mo><msub><mi mathvariant="script">G</mi><mtext>val</mtext></msub><mo>=</mo><mi mathvariant="normal">∅</mi></mrow><annotation encoding="application/x-tex">\mathcal{G}_{\text{train}} \cap \mathcal{G}_{\text{val}} = \varnothing</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.0593em;">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3175em;"><span style="top:-2.55em;margin-left:-0.0593em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">train</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.0593em;">G</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0593em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">val</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6633em;vertical-align:-0.0817em;"></span><span class="mord amsrm">∅</span></span></span></span>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s0-3" /><span><strong>[Kaggle Thực Chiến]</strong> Mở Kaggle Notebook trên cuộc thi <em>Cassava Leaf Disease</em>, chạy <code>Baseline v0</code> Fold 0 và nộp Late Submission lấy cột mốc đối chứng đầu tiên.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./foundations.html" class="btn">← Quay lại: Phần Cơ Bản &amp; Kho Baseline</a>
+        <a href="./stage-1.html" class="btn btn-primary">Tiếp theo: Giai đoạn 1 (Tuần 1–4) — Inductive Bias, Loss &amp; MTL →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

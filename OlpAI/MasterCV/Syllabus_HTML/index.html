@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MasterCV — Lộ Trình Computer Vision Chuyên Sâu (OLP AI · VOAI · IOAI)</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li>
+            <a href="./index.html" class="nav-link active">
+              <span class="nav-badge">HUB</span>
+              <span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span>
+            </a>
+          </li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li>
+            <a href="./stage-0.html" class="nav-link">
+              <span class="nav-badge">CORE</span>
+              <span>Giai đoạn 0: Khung Baseline Core</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()" title="Đặt lại tiến độ">Reset</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">First-Principles &amp; Modular CV Engineering</div>
+        <h1 class="hero-title">Làm Chủ Bản Chất Computer Vision — Tự Thiết Kế Giải Pháp Cho Mọi Đề Thi Lạ</h1>
+        <p class="hero-desc">
+          Trong các kỳ thi <strong>OLP AI, VOAI và IOAI thực tế</strong>, đề bài không bao giờ gợi ý sẵn tên mô hình mà chỉ cung cấp tập dữ liệu thô, định dạng nộp bài và độ đo chấm điểm. Chương trình này tổ chức toàn bộ kiến thức CV quanh <strong>1 Khung Pipeline Chuẩn Hóa Duy Nhất</strong> gồm 5 tầng mô-đun độc lập, đi theo quy trình thực chiến 2 bước (<strong>dùng hàm có sẵn của thư viện chuẩn trước</strong> → <strong>bấm nút mở khóa Code Tự Build bên dưới khi cần hiểu sâu/tùy biến</strong>), gắn liền với các cuộc thi kinh điển trên <strong>Kaggle và kho đề chính thức IOAI</strong>.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill"><strong>5 Tầng Kiến Trúc:</strong> Data · Backbone · Head · Loss · Inference</span>
+          <span class="meta-pill"><strong>Lộ trình Code 2 Tầng:</strong> Thư viện chuẩn hiển thị sẵn → Tự Build ẩn/hiện tùy ý</span>
+          <span class="meta-pill"><strong>Đấu trường thực tế:</strong> Link trực tiếp Kaggle &amp; IOAI kèm hình minh họa bài toán</span>
+        </div>
+      </section>
+
+      <!-- 5 Modular Layers -->
+      <h2 class="section-title">1. Kiến Trúc 5 Tầng Mô-đun Kế Thừa Xuyên Suốt 24 Tuần</h2>
+      <p style="color:var(--text-secondary);">
+        Thay vì viết hàng chục notebook rời rạc cho từng bài toán, bạn khởi tạo <a href="./stage-0.html"><strong>Baseline Core (<code>core/pipeline.py</code>)</strong></a> ngay từ ngày đầu tiên. Ở mỗi tuần tiếp theo, bạn giữ nguyên toàn bộ hạ tầng huấn luyện và chỉ hoán đổi đúng mô-đun đang nghiên cứu để đo lường chính xác mức cải thiện hiệu năng (Ablation Study chuẩn mực):
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div><span class="mod-badge mod-1">01 · Data &amp; Validation</span></div>
+          <h3>Chiến lược Chia Tập &amp; Biến Đổi Tín Hiệu</h3>
+          <p>Kiểm soát hoàn toàn luồng dữ liệu đầu vào, ngăn chặn rò rỉ thông tin (Data Leakage) và phá vỡ học vẹt bằng Augmentation có chủ đích.</p>
+          <div style="font-size:0.83rem; color:var(--text-muted);">
+            <code>StratifiedGroupKFold</code> → <code>Mixup/CutMix</code> → <code>PK-Sampler</code> → <code>Gaussian Density</code> → <code>Tube Masking</code>.
+          </div>
+        </div>
+
+        <div class="card">
+          <div><span class="mod-badge mod-2">02 · Backbone &amp; Neck</span></div>
+          <h3>Trích Xuất Biểu Diễn &amp; Thiên Kiến Quy Nạp</h3>
+          <p>Ánh xạ ảnh/video thô thành bản đồ đặc trưng đa tỷ lệ có trường thụ cảm (Receptive Field) phù hợp với cấu trúc vật lý của đối tượng.</p>
+          <div style="font-size:0.83rem; color:var(--text-muted);">
+            <code>ResNet</code> → <code>ConvNeXt / Res2Net</code> → <code>FPN + Reverse Attention</code> → <code>MixStyle</code> → <code>DINOv2 / CLIP / LoRA</code> → <code>SlowFast</code>.
+          </div>
+        </div>
+
+        <div class="card">
+          <div><span class="mod-badge mod-3">03 · Pooling &amp; Head</span></div>
+          <h3>Hình Học Không Gian Đầu Ra</h3>
+          <p>Định hình cấu trúc toán học của không gian dự đoán: siêu phẳng phân lớp, mặt cầu đơn vị, truy vấn đối tượng hay bộ nhớ đối sánh.</p>
+          <div style="font-size:0.83rem; color:var(--text-muted);">
+            <code>GAP + Linear</code> → <code>Hierarchical MTL</code> → <code>GeM / NetVLAD + ArcFace</code> → <code>Prior-Bias / DETR</code> → <code>PatchCore Bank</code>.
+          </div>
+        </div>
+
+        <div class="card">
+          <div><span class="mod-badge mod-4">04 · Loss &amp; Optimization</span></div>
+          <h3>Động Học Gradient &amp; Xử Lý Bottleneck</h3>
+          <p>Điều tiết trực tiếp vector đạo hàm <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">∇</mi><mi>θ</mi></msub><mi mathvariant="script">L</mi></mrow><annotation encoding="application/x-tex">\nabla_\theta \mathcal{L}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord">∇</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathcal">L</span></span></span></span> để xử lý mất cân bằng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>10.000</mn></mrow><annotation encoding="application/x-tex">1:10.000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10.000</span></span></span></span>, biên đối tượng mờ nhạt, nhãn nhiễu và xung đột đa nhiệm.</p>
+          <div style="font-size:0.83rem; color:var(--text-muted);">
+            <code>CrossEntropy</code> → <code>Focal / LogitAdjust / PCGrad</code> → <code>Batch-Hard Triplet</code> → <code>Edge-Weighted IoU</code> → <code>Deep CORAL / Energy</code>.
+          </div>
+        </div>
+
+        <div class="card">
+          <div><span class="mod-badge mod-5">05 · Inference &amp; Metric</span></div>
+          <h3>Hiệu Chỉnh Quyết Định &amp; Hậu Xử Lý</h3>
+          <p>Chuyển hóa đầu ra liên tục của mạng nơ-ron thành quyết định tối ưu nhất trên độ đo chấm điểm rời rạc của từng kỳ thi.</p>
+          <div style="font-size:0.83rem; color:var(--text-muted);">
+            <code>Argmax</code> → <code>OOF Threshold + TTA</code> → <code>α-Query Expansion + Rerank</code> → <code>RLE + WBF</code> → <code>Free Energy OOD</code>.
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Architecture Composer -->
+      <h2 class="section-title">2. Bộ Chẩn Đoán &amp; Tổ Hợp Kiến Trúc Cho Đề Thi Lạ</h2>
+      <div class="composer-box" id="arch-composer">
+        <p style="margin-top:0; color:var(--text-secondary);">
+          Chọn một <strong>dạng bài toán thực chiến chưa biết trước mô hình</strong> dưới đây để xem cách phân tích nguyên nhân gốc rễ và kết nối 5 tầng mô-đun tương ứng:
+        </p>
+        <div class="scenario-buttons">
+          <button class="scenario-btn active" data-scenario="fgvc_hierarchy">1. Phân loại siêu chi tiết &amp; Đa nhiệm</button>
+          <button class="scenario-btn" data-scenario="blurry_segmentation">2. Phân đoạn biên mờ / Y sinh / Thép</button>
+          <button class="scenario-btn" data-scenario="imbalance_detection">3. Phát hiện vật thể lệch 1:10.000</button>
+          <button class="scenario-btn" data-scenario="dense_counting">4. Đếm vật thể chồng lấn (IOAI)</button>
+          <button class="scenario-btn" data-scenario="open_retrieval">5. Truy xuất &amp; Định danh hàng vạn lớp</button>
+          <button class="scenario-btn" data-scenario="domain_ood">6. Lệch miền Test &amp; Bắt mẫu lạ (OOD)</button>
+          <button class="scenario-btn" data-scenario="diffusion_steering">7. Điều khiển trọng số Diffusion (IOAI)</button>
+          <button class="scenario-btn" data-scenario="video_spatiotemporal">8. Sự kiện Video nhanh &amp; Tracking</button>
+        </div>
+
+        <div style="background:var(--bg-elevated); padding:18px 22px; border-radius:12px; border:1px solid var(--border-hairline);">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; align-items:center; margin-bottom:8px;">
+            <h3 id="comp-title" style="margin:0; font-size:1.06rem; color:var(--accent-secondary);"></h3>
+            <span id="comp-kaggle" class="mode-tag mode-kaggle"></span>
+          </div>
+          <p id="comp-diagnosis" style="margin:0; font-size:0.93rem; color:var(--text-secondary);"></p>
+        </div>
+
+        <div class="composer-pipeline" id="comp-pipeline"></div>
+      </div>
+
+      <!-- Roadmap Progression & Benchmarks Table -->
+      <h2 class="section-title">3. Lộ Trình Tiến Hóa Baseline &amp; Đấu Trường Luyện Tập (Kaggle / IOAI)</h2>
+      <table class="res-table">
+        <thead>
+          <tr>
+            <th style="width:14%;">Giai đoạn</th>
+            <th style="width:24%;">Baseline kế thừa đầu vào</th>
+            <th style="width:32%;">Thư viện chuẩn → Mô-đun Tự Build (Ẩn/Hiện)</th>
+            <th style="width:30%;">Đấu trường Kaggle &amp; IOAI Thực chiến</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="./foundations.html"><strong>Phần Cơ Bản</strong><br><small>Kho Baseline A–Z</small></a></td>
+            <td>Nhập môn từ con số 0 (chưa cần khung nâng cao)</td>
+            <td><code>quick_cv_eda</code> ngắn gọn (không vẽ hình) → 1 file Baseline tối giản cho Phân loại ảnh (<code>ResNet18</code>), Video 16f (<code>CRNN</code>) &amp; Detection (<code>Faster R-CNN</code>) → <code>submission.csv/.zip</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/plant-pathology-2021-fgvc8" target="_blank" rel="noopener">Plant Pathology ↗</a> · <a href="https://www.kaggle.com/competitions/asl-signs" target="_blank" rel="noopener">Sign Language ↗</a> · <a href="https://www.kaggle.com/competitions/global-wheat-detection" target="_blank" rel="noopener">Global Wheat ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-0.html"><strong>Giai đoạn 0</strong><br><small>Khởi tạo Core</small></a></td>
+            <td>Khởi tạo từ đầu trên Kaggle / Colab</td>
+            <td><code>sklearn</code> + <code>torchvision</code> → Tự build <code>VisionSystem</code>, <code>train_epoch</code> (14 dòng), <code>eval_epoch</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/cassava-leaf-disease-classification" target="_blank" rel="noopener">Cassava Leaf Disease ↗</a> · <a href="https://www.kaggle.com/competitions/petfinder-pawpularity-score" target="_blank" rel="noopener">PetFinder Pawpularity ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-1.html"><strong>Giai đoạn 1</strong><br><small>Tuần 1–4</small></a></td>
+            <td><code>Baseline Core</code> (ResNet + GAP + CE + Argmax)</td>
+            <td><code>torchvision</code> (<code>v2</code> / <code>ops</code>) + <code>scipy</code> → Tự build <code>ConvNeXtBlock</code>, <code>LogitAdjust</code>, <code>CutMix</code>, <code>PCGrad</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/plant-pathology-2021-fgvc8" target="_blank" rel="noopener">Plant Pathology FGVC8 ↗</a> · <a href="https://www.kaggle.com/competitions/bengaliai-cv19" target="_blank" rel="noopener">Bengali.AI ↗</a> · <a href="https://github.com/IOAI-official/IOAI-2025" target="_blank" rel="noopener">IOAI 2025 ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-2.html"><strong>Giai đoạn 2</strong><br><small>Tuần 5–7</small></a></td>
+            <td>Backbone &amp; Augmentation từ <strong>GĐ 1</strong> (tháo đầu Softmax đóng)</td>
+            <td><code>torch.nn</code> + <code>sklearn</code> (<code>NearestNeighbors</code> / <code>PCA</code>) → Tự build <code>GeM</code>, <code>NetVLAD</code>, <code>ArcFace</code>, <code>α-QE + Rerank</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/happy-whale-and-dolphin" target="_blank" rel="noopener">Happywhale (15k IDs) ↗</a> · <a href="https://www.kaggle.com/competitions/shopee-product-matching" target="_blank" rel="noopener">Shopee Matching ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-3.html"><strong>Giai đoạn 3</strong><br><small>Tuần 8–11</small></a></td>
+            <td>Multi-scale Backbone <strong>GĐ 1</strong> + <code>Focal Loss</code></td>
+            <td><code>transforms.v2</code> + <code>transformers</code> + <code>torchvision.ops</code> → Tự build <code>FPN</code>, <code>ReverseAttention</code>, <code>WBF</code>, <code>RLE</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/uw-madison-gi-tract-image-segmentation" target="_blank" rel="noopener">UW-Madison GI Tract ↗</a> · <a href="https://www.kaggle.com/competitions/vinbigdata-chest-xray-abnormalities-detection" target="_blank" rel="noopener">VinBigData X-ray ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-4.html"><strong>Giai đoạn 4</strong><br><small>Tuần 12–14</small></a></td>
+            <td>Classifier <strong>GĐ 1</strong> + Cosine Vector Search <strong>GĐ 2</strong></td>
+            <td><code>skimage</code> + <code>LedoitWolf</code> + <code>torchvision</code> → Tự build <code>MixStyle</code>, <code>DeepCORAL</code>, <code>FreeEnergy OOD</code>, <code>PatchCore</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/iwildcam2022-fgvc9" target="_blank" rel="noopener">iWildCam Domain Shift ↗</a> · <a href="https://www.kaggle.com/datasets/ipythonx/mvtec-ad" target="_blank" rel="noopener">MVTec Anomaly AD ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-5.html"><strong>Giai đoạn 5</strong><br><small>Tuần 15–18</small></a></td>
+            <td>Vector Search <strong>GĐ 2</strong> + Memory Cache <strong>GĐ 4</strong></td>
+            <td><code>transformers</code> (<code>Dinov2</code> / <code>CLIP</code>) → Tự build <code>DINO Loss</code>, <code>Tip-Adapter</code>, <code>U-Net Steering</code>, <code>inject_lora</code>.</td>
+            <td><a href="https://github.com/IOAI-official/IOAI-2024" target="_blank" rel="noopener">IOAI 2024 Diffusion ↗</a> · <a href="https://www.kaggle.com/competitions/planttraits2024" target="_blank" rel="noopener">PlantTraits2024 ↗</a></td>
+          </tr>
+          <tr>
+            <td><a href="./stage-6.html"><strong>Giai đoạn 6</strong><br><small>Tuần 19–24</small></a></td>
+            <td>Toàn bộ mô-đun 2D <strong>GĐ 1–5</strong> mở rộng lên chiều thời gian <code>T</code></td>
+            <td><code>torchvision.video</code> + <code>transformers</code> + <code>cv2</code> → Tự build <code>TSM/SlowFast</code>, <code>90% TubeMask</code>, <code>ByteTrack + RANSAC</code>.</td>
+            <td><a href="https://www.kaggle.com/competitions/dfl-bundesliga-data-shootout" target="_blank" rel="noopener">DFL Bundesliga ↗</a> · <a href="https://www.kaggle.com/competitions/nfl-player-contact-detection" target="_blank" rel="noopener">NFL Tracking ↗</a> · <a href="https://github.com/IOAI-official/IOAI-2026" target="_blank" rel="noopener">IOAI 2026 ↗</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-nav-footer">
+        <div></div>
+        <a href="./foundations.html" class="btn btn-primary">Bắt đầu: Phần Cơ Bản &amp; Kho Baseline Chuẩn A–Z →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

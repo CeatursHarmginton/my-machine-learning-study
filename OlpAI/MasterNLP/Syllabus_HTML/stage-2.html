@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 2 (Tuần 5–8): CRF, Nested NER, QA &amp; Trích Xuất Tuple — MasterNLP Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <line x1="8" y1="7" x2="16" y2="7"/>
+              <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+          </span>
+          <span>MasterNLP Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles NLP &amp; LLMs cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterCV/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterCV (Thị giác)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Biểu diễn, Loss &amp; Đa nhiệm</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link active"><span class="nav-badge">T5–8</span><span>GĐ 2: CRF, Nested NER &amp; QA</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link"><span class="nav-badge">T9–11</span><span>GĐ 3: Dense Retrieval &amp; RAG</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Seq2Seq, SimCLS &amp; Audio</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: LLM, LoRA, DPO &amp; Surgery</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: OOD, Ensemble &amp; Thi 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()" title="Đặt lại tiến độ">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 2 · Tuần 5 – 8 · Dự Đoán Cấu Trúc Cấp Độ Token, Đoạn (Span) &amp; Bộ Quan Hệ</div>
+        <h1 class="hero-title">Căn Chỉnh Subword-Ký Tự, Linear-Chain CRF, Biaffine Nested NER, QA &amp; Trích Xuất Tuple</h1>
+        <p class="hero-desc">
+          Sang Giai đoạn 2, ta giữ toàn bộ chuỗi biểu diễn <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>L</mi><mo>×</mo><mi>d</mi></mrow></msup></mrow><annotation encoding="application/x-tex">H \in \mathbb{R}^{L \times d}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7224em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathbb">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">L</span><span class="mbin mtight">×</span><span class="mord mathnormal mtight">d</span></span></span></span></span></span></span></span></span></span></span></span> để giải nhóm bài đòi hỏi chính xác tới từng ký tự chỉ với thư viện chuẩn <code>transformers</code> và <code>torch</code>: <strong>trích xuất bệnh án / PII dài hàng nghìn từ</strong>, <strong>bắt thực thể lồng nhau bằng 22 dòng Biaffine</strong>, <strong>hỏi đáp có bẫy vô nghiệm</strong> và <strong>sắp xếp thứ tự chuỗi (IOAI 2026)</strong>.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/8 mục</span>
+          <span class="meta-pill"><strong>Thư viện OlpAI'25:</strong> <code>transformers</code> · <code>torch</code> (Không phụ thuộc <code>pytorch-crf</code> rời)</span>
+          <span class="meta-pill"><strong>Đấu trường:</strong> NBME Clinical · PII Detection · Feedback Prize · AI4Code</span>
+        </div>
+      </section>
+
+      <!-- WEEK 5 -->
+      <article class="week-block" id="week-5">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 05 · Tầng 01 &amp; Tầng 03 (Offset Alignment &amp; Structured Sequence Tagging)</div>
+            <h3>Căn Chỉnh <code>offset_mapping</code> Tới Từng Ký Tự &amp; 34 Dòng Quy Hoạch Động <code>LinearChainCRF</code></h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Tokenizer &amp; Split</span>
+            <span class="mod-badge mod-3">03 · Pooler &amp; Span Head</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Vì sao phải thuộc lòng <code>LinearChainCRF</code> 34 dòng này?</strong> Trong danh sách thư viện OlpAI'25 <strong>không cài sẵn <code>pytorch-crf</code></strong>! Lớp <code>LinearChainCRF</code> rút gọn bên dưới gộp cả tính Partition Function trong hàm <code>forward</code> và giải mã Viterbi trong <code>decode</code> cực ngắn gọn, chạy mượt trên mọi phiên bản PyTorch.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/nbme-score-clinical-patient-notes" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Character-Level Micro F1</span>
+                  <span class="arena-title">NBME - Score Clinical Patient Notes</span>
+                  <span class="arena-subtitle">Identify Key Phrases in Patient Notes from Medical Licensing Exams</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/nbme-score-clinical-patient-notes.jpg" alt="NBME - Score Clinical Patient Notes" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Trích xuất triệu chứng lâm sàng từ bệnh án chấm F1 trực tiếp trên tập chỉ số ký tự.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Recall-Weighted F5 Score</span>
+                  <span class="arena-title">The Learning Agency Lab - PII Data Detection</span>
+                  <span class="arena-subtitle">Develop automated techniques to detect and remove PII from educational data.</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/pii-detection-removal-from-educational-data.jpg" alt="The Learning Agency Lab - PII Data Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phát hiện thông tin định danh cá nhân trong bài luận dài với độ đo F5 ưu tiên Recall.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Căn chỉnh qua <code>offset_mapping</code>:</strong> Khôi phục chính xác 100% khoảng <code>[char_start, char_end)</code> bất chấp từ bị tách thành nhiều subwords hay văn bản có nhiều dấu cách liên tiếp.</li>
+            <li><strong>Linear-Chain CRF:</strong> Cực đại hóa <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>log</mi><mo>⁡</mo><mi>P</mi><mo stretchy="false">(</mo><mi>y</mi><mo>∣</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mo>∑</mo><mi>t</mi></msub><mo stretchy="false">(</mo><msub><mi>E</mi><mrow><mi>t</mi><mo separator="true">,</mo><msub><mi>y</mi><mi>t</mi></msub></mrow></msub><mo>+</mo><msub><mi>T</mi><mrow><msub><mi>y</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>t</mi></msub></mrow></msub><mo stretchy="false">)</mo><mo>−</mo><mi>log</mi><mo>⁡</mo><msub><mo>∑</mo><msup><mi>y</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup></msub><mi>exp</mi><mo>⁡</mo><mi>s</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><msup><mi>y</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\log P(y \mid x) = \sum_t (E_{t, y_t} + T_{y_{t-1}, y_t}) - \log \sum_{y&#x27;} \exp s(x, y&#x27;)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0497em;vertical-align:-0.2997em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1308em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0576em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mpunct mtight">,</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2963em;"><span style="top:-2.357em;margin-left:-0.0359em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0418em;vertical-align:-0.2918em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3173em;"><span style="top:-2.357em;margin-left:-0.0359em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2025em;"><span></span></span></span></span></span></span><span class="mpunct mtight">,</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2963em;"><span style="top:-2.357em;margin-left:-0.0359em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2918em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1877em;vertical-align:-0.4358em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1783em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6828em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4358em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">exp</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">s</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> bằng <code>torch.logsumexp</code> và truy vết ngược Viterbi loại bỏ hoàn toàn nhãn gãy <code>O → I-ENT</code>.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Hàm <code>align_spans_to_bio</code> tổng quát 13 dòng căn chỉnh khoảng ký tự bằng <code>transformers</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>offset_bio_lib.py — Không Bao Giờ Lệch Chỉ Số Ký Tự Khi Tách Từ Phụ</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/offset_bio_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/offset_bio_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt trọn vẹn <code>LinearChainCRF</code> (Forward + Viterbi) chỉ trong 34 dòng PyTorch thuần</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Môi trường OlpAI'25 không cài sẵn <code>pytorch-crf</code>. Thuộc lòng 34 dòng vector hóa này giúp bạn lắp ngay tầng CRF vào bất kỳ bài NER / Chunking nào:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/heads/crf.py — Linear-Chain CRF Tối Giản &amp; Ổn Định Số Học</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/heads/crf.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/heads/crf.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n2-1" /><span>Kiểm thử hàm tổng quát <code>align_spans_to_bio</code> trên <em>NBME Patient Notes</em> đạt độ khớp khôi phục &gt; 0.999.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n2-2" /><span>Gõ lại và kiểm chứng lớp 34 dòng <code>LinearChainCRF</code> trên <em>PII Data Detection</em> không cần cài thư viện ngoài.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 6 -->
+      <article class="week-block" id="week-6">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 06 · Tầng 01 &amp; Tầng 03 (Nested Spans &amp; Long Context &gt; 2.048 Tokens)</div>
+            <h3>Ma Trận <code>BiaffineSpanHead</code> (22 Dòng) Cho Thực Thể Lồng Nhau &amp; Cửa Sổ Trượt Chồng Lấp</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Tokenizer &amp; Split</span>
+            <span class="mod-badge mod-3">03 · Pooler &amp; Span Head</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Sức mạnh của 1 dòng <code>torch.einsum("bid,cdk,bjk->bijc", hs, U, he)</code>:</strong> Thay vì vòng lặp phức tạp, 1 dòng <code>einsum</code> tính xong điểm số của toàn bộ mọi cặp đoạn <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">)</span></span></span></span> cho cả thực thể rời lẫn thực thể lồng nhau nhiều tầng!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/feedback-prize-2021" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Long Argumentative Spans</span>
+                  <span class="arena-title">Feedback Prize - Evaluating Student Writing</span>
+                  <span class="arena-subtitle">Analyze argumentative writing elements from students grade 6-12</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/feedback-prize-2021.jpg" alt="Feedback Prize - Evaluating Student Writing" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phân đoạn bài luận dài tới 1.600 từ thành 7 thành phần lập luận.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/coleridgeinitiative-show-us-the-data" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Scientific Mention Extraction</span>
+                  <span class="arena-title">Coleridge Initiative - Show US the Data</span>
+                  <span class="arena-subtitle">Discover how data is used for the public good</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/coleridgeinitiative-show-us-the-data.jpg" alt="Coleridge Initiative - Show US the Data" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phát hiện tên các bộ dữ liệu ẩn trong bài báo khoa học dài hàng chục nghìn từ.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Biaffine Span Matrix:</strong> Dự đoán trực tiếp nhãn của ô <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">)</span></span></span></span> trên vùng hợp lệ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>j</mi><mo>−</mo><mi>i</mi><mo>&lt;</mo><msub><mi>L</mi><mi>max</mi><mo>⁡</mo></msub></mrow><annotation encoding="application/x-tex">0 \le j - i &lt; L_{\max}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7804em;vertical-align:-0.136em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6986em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">m</span><span class="mtight">a</span><span class="mtight">x</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>:
+              <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>s</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow></msub><mo>=</mo><msup><msubsup><mi>h</mi><mi>i</mi><mi>s</mi></msubsup><mi mathvariant="normal">⊤</mi></msup><mi>U</mi><msubsup><mi>h</mi><mi>j</mi><mi>e</mi></msubsup><mo>+</mo><mi>W</mi><mo stretchy="false">[</mo><msubsup><mi>h</mi><mi>i</mi><mi>s</mi></msubsup><mo>⊕</mo><msubsup><mi>h</mi><mi>j</mi><mi>e</mi></msubsup><mo stretchy="false">]</mo><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">s_{i,j} = {h_i^s}^\top U h_j^e + W [h_i^s \oplus h_j^e] + b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3365em;vertical-align:-0.3831em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9534em;"><span style="top:-3.1673em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">⊤</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">e</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1331em;vertical-align:-0.3831em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">e</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3831em;"><span></span></span></span></span></span></span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span></span></li>
+            <li><strong>Sliding Window <code>stride=128</code>:</strong> Cắt tài liệu dài thành các cửa sổ chồng lấp và chỉ giữ dự đoán vùng trung tâm của mỗi cửa sổ khi hợp nhất.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Cắt tài liệu dài kèm <code>offset_mapping</code> bằng <code>sliding_window_tokenize</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>sliding_window_lib.py — Trượt Cửa Sổ Chồng Lấp Không Cắt Đứt Thực Thể Ở Biên</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/sliding_window_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/sliding_window_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>BiaffineSpanHead</code> trong 22 dòng dùng tích <code>torch.einsum</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Khi các thực thể trong đề bài lồng nhau hoặc chồng chéo khiến sơ đồ BIO không thể biểu diễn được:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/heads/biaffine.py — Ma Trận Đoạn Biaffine Ngắn Gọn Cho Nested NER</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/heads/biaffine.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/heads/biaffine.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n2-3" /><span>Kết hợp <code>sliding_window_tokenize</code> với lấy trung bình vùng lõi trên các bài luận dài &gt; 800 token của <em>Feedback Prize 2021</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n2-4" /><span>Huấn luyện <code>BiaffineSpanHead</code> bắt đồng thời thực thể bao ngoài và thực thể con lồng bên trong.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 7 -->
+      <article class="week-block" id="week-7">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 07 · Tầng 03 &amp; Tầng 05 (Extractive QA &amp; Sequence Ordering)</div>
+            <h3>Giải Mã QA Có Bẫy Vô Nghiệm (12 Dòng) &amp; Hàm Xếp Thứ Tự <code>kendall_order_loss</code> (AI4Code · IOAI 2026)</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-3">03 · Pooler &amp; Span Head</span>
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Ngắn mà sắc bén:</strong> Cả bộ giải mã QA ràng buộc khoảng cách kèm ngưỡng từ chối trả lời lẫn hàm mất mát sắp xếp lại trật tự đoạn văn/code đều chỉ gói gọn trong chưa đầy 12 dòng phép toán ma trận!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/chaii-hindi-and-tamil-question-answering" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Long-Context Cross-Lingual QA</span>
+                  <span class="arena-title">chaii - Hindi and Tamil Question Answering</span>
+                  <span class="arena-subtitle">Identify the answer to questions found in Indian language passages</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/chaii-hindi-and-tamil-question-answering.jpg" alt="chaii - Hindi and Tamil Question Answering" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Trích xuất câu trả lời từ tài liệu bách khoa rất dài bằng cửa sổ trượt giữ nguyên câu hỏi.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/AI4Code" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Kendall Tau Ordering</span>
+                  <span class="arena-title">Google AI4Code – Understand Code in Python Notebooks</span>
+                  <span class="arena-subtitle">Predict the relationship between code and comments</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/ai4code.jpg" alt="Google AI4Code – Understand Code in Python Notebooks" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Khôi phục thứ tự chính xác của các ô văn bản bị xáo trộn trong hơn 160.000 Notebook.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Null-Margin QA Decoding:</strong> Ma trận tổng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>i</mi><mtext>start</mtext></msubsup><mo>+</mo><msubsup><mi>s</mi><mi>j</mi><mtext>end</mtext></msubsup></mrow><annotation encoding="application/x-tex">s^{\text{start}}_i + s^{\text{end}}_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0522em;vertical-align:-0.2587em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">start</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2587em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.2439em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">end</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span></span></span></span> bị che <code>-1e9</code> tại mọi ô <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>&lt;</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">j &lt; i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> hoặc <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>−</mo><mi>i</mi><mo>≥</mo><msub><mi>L</mi><mi>max</mi><mo>⁡</mo></msub></mrow><annotation encoding="application/x-tex">j - i \ge L_{\max}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7955em;vertical-align:-0.136em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">m</span><span class="mtight">a</span><span class="mtight">x</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, sau đó so hiệu <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msubsup><mi>s</mi><mi>i</mi><mo>∗</mo></msubsup><mo>+</mo><msubsup><mi>s</mi><mi>j</mi><mo>∗</mo></msubsup><mo stretchy="false">)</mo><mo>−</mo><mo stretchy="false">(</mo><msubsup><mi>s</mi><mn>0</mn><mtext>start</mtext></msubsup><mo>+</mo><msubsup><mi>s</mi><mn>0</mn><mtext>end</mtext></msubsup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(s_i^* + s_j^*) - (s_0^{\text{start}} + s_0^{\text{end}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0087em;vertical-align:-0.2587em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2587em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1448em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6887em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0436em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7936em;"><span style="top:-2.4519em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">start</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2481em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-2.4519em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">end</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2481em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> với ngưỡng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi></mrow><annotation encoding="application/x-tex">\delta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span></span></span></span>.</li>
+            <li><strong>Sắp xếp thứ tự theo Kendall's <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mn>4</mn><mi>S</mi></mrow><mrow><mi>n</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\tau = 1 - \frac{4 S}{n(n-1)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.3923em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8723em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">4</span><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>:</strong> Hàm <code>kendall_order_loss</code> kết hợp hồi quy vị trí <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span> với phạt cặp nghịch thế vector hóa <code>F.relu(margin - (pred[:, None] - pred[None, :]))</code>.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Tạo cửa sổ Hỏi-Đáp bảo toàn câu hỏi với <code>truncation='only_second'</code> trong <code>transformers</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>qa_window_lib.py — Hỏi Đáp Trích Xuất Chuẩn Mực</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/qa_window_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/qa_window_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt <code>decode_qa_null_margin</code> (12 dòng) &amp; <code>kendall_order_loss</code> (6 dòng)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Khi đề QA có câu hỏi bẫy không có đáp án trong bài hoặc đề yêu cầu sắp xếp lại trật tự các câu/đoạn văn bị đảo lộn:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/inference/qa_and_order.py — Giải Mã QA Ràng Buộc &amp; Mất Mát Thứ Tự Kendall</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/inference/qa_and_order.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/inference/qa_and_order.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n2-5" /><span>Quét ngưỡng <code>margin</code> trong <code>decode_qa_null_margin</code> tối ưu hóa điểm Jaccard/F1 trên <em>chaii QA</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n2-6" /><span>Huấn luyện sắp xếp thứ tự ô văn bản với <code>kendall_order_loss</code> trên <em>Google AI4Code</em>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- WEEK 8 -->
+      <article class="week-block" id="week-8">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 08 · Tầng 03 &amp; Tầng 05 (Generalized Tuple &amp; ACOS Extraction)</div>
+            <h3>Trích Xuất Bộ Quan Hệ Tổng Quát (Cặp, Bộ Ba ASTE, Bộ Tứ ACOS): Lưới <code>PairGridHead</code> vs Tuyến Tính Hóa</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-3">03 · Pooler &amp; Span Head</span>
+            <span class="mod-badge mod-5">05 · Decoding &amp; Rerank</span>
+          </div>
+        </div>
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Thiết kế tham số <code>tags</code> tổng quát:</strong> Thay vì viết parser riêng cho bài rút trích 2 thành phần, 3 thành phần hay 4 thành phần (ACOS), cặp hàm <code>linearize_tuples</code> &amp; <code>parse_tuples</code> nhận danh sách thẻ đánh dấu <code>tags</code> bất kỳ — đổi đề chỉ cần đổi tham số <code>tags</code>!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/tweet-sentiment-extraction" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Support Phrase Extraction</span>
+                  <span class="arena-title">Tweet Sentiment Extraction</span>
+                  <span class="arena-subtitle">Extract support phrases for sentiment labels</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/tweet-sentiment-extraction.jpg" alt="Tweet Sentiment Extraction" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Trích xuất cụm từ bằng chứng cảm xúc trong văn bản mạng xã hội nhiễu ký tự.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/us-patent-phrase-to-phrase-matching" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Contextual Phrase Relation</span>
+                  <span class="arena-title">U.S. Patent Phrase to Phrase Matching</span>
+                  <span class="arena-subtitle">Help Identify Similar Phrases in U.S. Patents</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/us-patent-phrase-to-phrase-matching.jpg" alt="U.S. Patent Phrase to Phrase Matching" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đánh giá mức độ tương đồng cặp cụm từ kỹ thuật đặt trong ngữ cảnh phân loại sáng chế.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <ul>
+            <li><strong>Khi nào dùng <code>PairGridHead</code>, khi nào dùng <code>linearize_tuples</code>?</strong> Dùng lưới từ-đôi khi mọi thành phần đều nằm nguyên văn trong câu; dùng <code>T5 / ViT5 + linearize_tuples</code> khi đề bài có khía cạnh ẩn (Implicit Aspect) hoặc gán kèm nhóm danh mục trừu tượng.</li>
+          </ul>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Hàm <code>linearize_tuples</code> tổng quát 3 dòng cho mọi bài rút trích cấu trúc bằng <code>AutoModelForSeq2SeqLM</code></span>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>tuple_seq2seq_lib.py — Tuyến Tính Hóa Mọi Bộ Quan Hệ (2, 3 Hoặc 4 Thành Phần)</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/tuple_seq2seq_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/tuple_seq2seq_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự cài đặt lưới từ-đôi <code>PairGridHead</code> (11 dòng) &amp; bộ giải mã <code>parse_tuples</code> tổng quát</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Dùng <code>PairGridHead</code> để chặn đứng hiện tượng sinh từ ngoài câu gốc, và dùng <code>parse_tuples</code> để bóc tách chuỗi đầu ra an toàn không bao giờ văng ngoại lệ:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/heads/tuple_grid.py — Lưới Từ-Đôi GTS &amp; Parser Đa Năng</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/heads/tuple_grid.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/heads/tuple_grid.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="n2-7" /><span>Giải bài <em>Tweet Sentiment Extraction</em> chú ý bảo toàn khoảng trắng dẫn đầu khi giải mã khoảng ký tự.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="n2-8" /><span>Kiểm thử <code>linearize_tuples</code> + <code>parse_tuples</code> với cả bộ 3 <code>("[A]", "[O]", "[S]")</code> lẫn bộ 4 ACOS <code>("[A]", "[C]", "[O]", "[S]")</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-1.html" class="btn">← Giai đoạn 1: Biểu diễn, Loss &amp; Đa nhiệm</a>
+        <a href="./stage-3.html" class="btn btn-primary">Tiếp theo: Giai đoạn 3 (Tuần 9–11) — Dense Retrieval &amp; RAG →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

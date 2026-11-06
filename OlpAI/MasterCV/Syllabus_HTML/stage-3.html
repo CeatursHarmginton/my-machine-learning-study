@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giai đoạn 3 (Tuần 8–11): Dense Prediction — Phân Đoạn, Phát Hiện &amp; Đếm Mật Độ — MasterCV Syllabus</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-title">
+          <span class="brand-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </span>
+          <span>MasterCV Syllabus</span>
+        </div>
+        <div class="brand-subtitle">First-Principles Computer Vision cho OLP AI · VOAI · IOAI</div>
+        <a href="../../MasterNLP/Syllabus_HTML/index.html" class="cross-track-link">
+          <span>Chuyển sang MasterNLP (Ngôn ngữ)</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="progress-widget">
+        <div class="progress-header">
+          <span>Tiến độ Toàn Khóa</span>
+          <span id="global-progress-text">0/54 Mục (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Cấu trúc Hệ thống</div>
+        <ul class="nav-list">
+          <li><a href="./index.html" class="nav-link"><span class="nav-badge">HUB</span><span>Tổng quan &amp; Bộ Chẩn Đoán Đề</span></a></li>
+          <li><a href="./foundations.html" class="nav-link"><span class="nav-badge">BASE</span><span>Phần Cơ Bản &amp; Kho Baseline</span></a></li>
+          <li><a href="./stage-0.html" class="nav-link"><span class="nav-badge">CORE</span><span>Giai đoạn 0: Khung Baseline Core</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">6 Giai đoạn Chuyên sâu (24 Tuần)</div>
+        <ul class="nav-list">
+          <li><a href="./stage-1.html" class="nav-link"><span class="nav-badge">T1–4</span><span>GĐ 1: Inductive Bias, Loss &amp; MTL</span></a></li>
+          <li><a href="./stage-2.html" class="nav-link"><span class="nav-badge">T5–7</span><span>GĐ 2: Metric Learning &amp; Retrieval</span></a></li>
+          <li><a href="./stage-3.html" class="nav-link active"><span class="nav-badge">T8–11</span><span>GĐ 3: Dense Prediction &amp; Đếm</span></a></li>
+          <li><a href="./stage-4.html" class="nav-link"><span class="nav-badge">T12–14</span><span>GĐ 4: Domain Shift, OOD &amp; Anomaly</span></a></li>
+          <li><a href="./stage-5.html" class="nav-link"><span class="nav-badge">T15–18</span><span>GĐ 5: DINOv2, CLIP &amp; Diffusion</span></a></li>
+          <li><a href="./stage-6.html" class="nav-link"><span class="nav-badge">T19–24</span><span>GĐ 6: Video, 3D &amp; Đề Mở 6 Giờ</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn" id="theme-toggle-btn" onclick="toggleTheme()" style="flex:1;">Chế độ Sáng</button>
+        <button class="btn" onclick="resetAllProgress()">Reset</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <div class="hero-eyebrow">Giai đoạn 3 · Tuần 8 – 11 · Suy Luận Không Gian Mật Độ Cao</div>
+        <h1 class="hero-title">Dense Prediction: Phân Đoạn Biên Mờ, Phát Hiện Vật Thể &amp; Đếm Mật Độ</h1>
+        <p class="hero-desc">
+          Chỉ cần bật cờ <code>return_pyramid=True</code> trên <code>TorchvisionPyramidBackbone</code> (Giai đoạn 1), chúng ta chuyển sang dự đoán dày đặc bằng 100% thư viện chuẩn OlpAI'25 (<code>torchvision.transforms.v2</code>, <code>transformers.Segformer</code>, <code>torchvision.ops</code>, <code>cv2</code>, <code>scipy</code>), và mở khóa phần tự build cho các cơ chế biên mờ, mã hóa RLE và bảo toàn tích phân đám đông.
+        </p>
+        <div class="meta-strip">
+          <span class="meta-pill" id="page-progress-summary">Tiến độ giai đoạn này: 0/8 mục</span>
+          <span class="meta-pill"><strong>Kế thừa từ:</strong> <code>TimmMultiScaleBackbone(return_pyramid=True)</code> + <code>Focal Loss</code> (GĐ 1)</span>
+          <span class="meta-pill"><strong>Đấu trường:</strong> Kaggle Carvana · UW-Madison · Severstal · VinBigData · IOAI 2025</span>
+        </div>
+      </section>
+
+      <!-- ================= WEEK 8 ================= -->
+      <article class="week-block" id="week-8">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 08 · Tầng 02 (Feature Pyramid) &amp; Tầng 04 (Region + Boundary Loss)</div>
+            <h3>Kiến Trúc U-Net / FPN, Đồng Bộ Ảnh - Mask &amp; Hàm Mất Mát Ưu Tiên Đường Biên</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Backbone &amp; Neck</span>
+            <span class="mod-badge mod-4">04 · Loss &amp; Optimization</span>
+            <span class="mode-tag mode-kaggle">transforms.v2 + SegFormer + Tự Build</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Hợp nhất Ngữ nghĩa sâu (C5) và Định vị sắc nét (C2):</strong> Luôn đồng bộ phép biến đổi hình học giữa ảnh và mask bằng nội suy <code>cv2.INTER_NEAREST</code> cho mask để tránh sinh nhãn thập phân giả dọc đường biên!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/carvana-image-masking-challenge" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Classic Benchmark · High-Res Mask</span>
+                  <span class="arena-title">Carvana Image Masking Challenge</span>
+                  <span class="arena-subtitle">Automatically identify the boundaries of the car in an image</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/carvana-image-masking-challenge.jpg" alt="Carvana Image Masking Challenge" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Tách nền ô tô giữ trọn các chi tiết mảnh 1–2 pixel như cần ăng-ten (chấm Dice Coefficient đạt tới 0.997+).</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/tgs-salt-identification-challenge" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · IoU Threshold Sweep</span>
+                  <span class="arena-title">TGS Salt Identification Challenge</span>
+                  <span class="arena-subtitle">Segment salt deposits beneath the Earth&#x27;s surface</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/tgs-salt-identification-challenge.jpg" alt="TGS Salt Identification Challenge" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phân đoạn trầm tích muối địa chấn chấm theo mAP trên dải ngưỡng IoU khắt khe <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.50</mn><mo>:</mo><mn>0.05</mn><mo>:</mo><mn>0.95</mn></mrow><annotation encoding="application/x-tex">0.50 : 0.05 : 0.95</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.50</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.05</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.95</span></span></span></span>.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Đồng bộ biến đổi <code>(Image, Mask)</code> bằng <code>torchvision.transforms.v2</code> &amp; mô hình <code>SegFormer</code> (<code>transformers</code>)</span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>seg_v2_segformer_lib.py — Đồng Bộ (Image, Mask) Với transforms.v2 &amp; SegFormer Dựng Sẵn</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/seg_v2_segformer_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/seg_v2_segformer_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>TopDownFPNNeck</code> &amp; <code>EdgeWeightedStructureLoss</code> (nhân trọng số gấp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">6\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">6</span><span class="mord">×</span></span></span></span> dọc sát đường biên mảnh)</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/backbones/fpn_and_edge_loss.py — Tự Xây Dựng FPN &amp; Edge-Weighted BCE+IoU</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/backbones/fpn_and_edge_loss.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/backbones/fpn_and_edge_loss.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 8:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s3-1" /><span>Chạy thực nghiệm <code>SegFormer</code> + <code>torchvision.transforms.v2</code> trên Kaggle <em>Carvana</em> hoặc <em>TGS Salt</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s3-2" /><span>Đối sánh độ sắc nét viền mảnh khi thay Dice+BCE chuẩn bằng <code>EdgeWeightedStructureLoss</code> tự build.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 9 ================= -->
+      <article class="week-block" id="week-9">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 09 · Tầng 02 (Reverse Attention) &amp; Tầng 05 (RLE Submission Codec)</div>
+            <h3>Phân Đoạn Biên Mờ Y Sinh &amp; Công Nghiệp: Reverse Attention, Lọc Nhiễu Đốm &amp; Nén RLE</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-2">02 · Backbone &amp; Neck</span>
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">OpenCV + DeepLabV3 + Tự Build RLE/RA</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Khi đối tượng hòa lẫn vào nền:</strong> Khử nhiễu các đốm dương tính giả nhỏ li ti bằng phân tích thành phần liên thông (Connected Components) và xuất định dạng nộp bài chuẩn 1-indexed <strong>Run-Length Encoding (RLE)</strong>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/uw-madison-gi-tract-image-segmentation" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Medical Competition · Blurry MRI</span>
+                  <span class="arena-title">UW-Madison GI Tract Image Segmentation</span>
+                  <span class="arena-subtitle">Track healthy organs in medical scans to improve cancer treatment</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/uw-madison-gi-tract-image-segmentation.jpg" alt="UW-Madison GI Tract Image Segmentation" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phân đoạn nội tạng biên nhòe chấm <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.4</mn><mo>×</mo><mtext>Dice</mtext><mo>+</mo><mn>0.6</mn><mo>×</mo><mtext>3D Hausdorff</mtext></mrow><annotation encoding="application/x-tex">0.4 \times \text{Dice} + 0.6 \times \text{3D Hausdorff}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord text"><span class="mord">Dice</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.6</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">3D Hausdorff</span></span></span></span></span> và nộp kết quả dạng chuỗi RLE.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/severstal-steel-defect-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Industrial Competition · Micro-Defects</span>
+                  <span class="arena-title">Severstal: Steel Defect Detection</span>
+                  <span class="arena-subtitle">Can you detect and classify defects in steel?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/severstal-steel-defect-detection.jpg" alt="Severstal: Steel Defect Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phân đoạn 4 loại khuyết tật bề mặt thép tương phản thấp — lọc ngưỡng diện tích đốm nhỏ giúp tăng vọt điểm Private LB!</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Sử dụng <code>deeplabv3_resnet50</code> (<code>torchvision</code>) &amp; khử đốm nhiễu rời bằng <code>cv2.connectedComponentsWithStats</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>seg_deeplab_opencv.py — DeepLabV3 Đa Lớp &amp; Lọc Thành Phần Liên Thông Bằng OpenCV</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/seg_deeplab_opencv.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/seg_deeplab_opencv.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết khối <code>ReverseAttentionRefiner</code> (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>σ</mi><mo stretchy="false">(</mo><mi>P</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">1 - \sigma(P)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mclose">)</span></span></span></span>) &amp; Bộ nén nộp bài Vectorized <code>rle_encode / rle_decode</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/inference/reverse_attn_and_rle.py — Chú Ý Ngược &amp; Vectorized RLE 1-Indexed</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/inference/reverse_attn_and_rle.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/inference/reverse_attn_and_rle.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 9:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s3-3" /><span>Nộp thành công file RLE trên Kaggle <em>UW-Madison GI Tract</em> hoặc <em>Severstal Steel</em> kèm hậu xử lý <code>remove_small_blobs_cv2</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s3-4" /><span>Kiểm chứng <code>ReverseAttentionRefiner</code> + Deep Supervision và kiểm tra chu trình khép kín <code>rle_decode(rle_encode(m)) == m</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 10 ================= -->
+      <article class="week-block" id="week-10">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 10 · Tầng 03 (Detector Heads) &amp; Tầng 05 (Weighted Boxes Fusion)</div>
+            <h3>Object Detection: RetinaNet / RT-DETR, Tiên Nghiệm Lớp Hiếm &amp; Hợp Nhất Hộp WBF</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-3">03 · Pooling &amp; Head</span>
+            <span class="mod-badge mod-5">05 · Inference &amp; Metric</span>
+            <span class="mode-tag mode-kaggle">torchvision.ops + Tự Build WBF</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Khi kết hợp dự đoán của 5 Folds trên bài toán Detection:</strong> Không dùng NMS (vì NMS vứt bỏ các hộp dự đoán đồng thuận). <strong>Weighted Boxes Fusion (WBF)</strong> tính trung bình tọa độ có trọng số theo điểm tự tin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mtext>wbf</mtext></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><msub><mi>s</mi><mi>k</mi></msub><msub><mi>x</mi><mi>k</mi></msub></mrow><mrow><mo>∑</mo><msub><mi>s</mi><mi>k</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">x_{\text{wbf}} = \frac{\sum s_k x_k}{\sum s_k}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">wbf</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.53em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop op-symbol small-op mtight" style="position:relative;top:0em;">∑</span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mord mtight"><span class="mord mathnormal mtight">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop op-symbol small-op mtight" style="position:relative;top:0em;">∑</span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mord mtight"><span class="mord mathnormal mtight">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> giúp hộp bao khớp sát biên vật thể thật hơn hẳn!
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/vinbigdata-chest-xray-abnormalities-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Vietnamese Flagship · mAP@0.4</span>
+                  <span class="arena-title">VinBigData Chest X-ray Abnormalities Detection</span>
+                  <span class="arena-subtitle">Automatically localize and classify thoracic abnormalities from chest radiographs</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/vinbigdata-chest-xray-abnormalities-detection.jpg" alt="VinBigData Chest X-ray Abnormalities Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">18.000 phim X-quang lồng ngực được gán nhãn bởi nhiều bác sĩ độc lập — bài thi chuẩn mực của WBF + Bộ lọc 2 giai đoạn!</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/rsna-pneumonia-detection-challenge" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Medical Detection · High Negative Rate</span>
+                  <span class="arena-title">RSNA Pneumonia Detection Challenge</span>
+                  <span class="arena-subtitle">Can you build an algorithm that automatically detects potential pneumonia cases?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/rsna-pneumonia-detection-challenge.jpg" alt="RSNA Pneumonia Detection Challenge" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Phát hiện vùng mờ viêm phổi trên tập dữ liệu có tỷ lệ lớn phim bình thường (không có hộp bao).</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Sử dụng <code>retinanet_resnet50_fpn_v2</code> &amp; <code>batched_nms</code> / <code>generalized_box_iou_loss</code> của <code>torchvision.ops</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>detector_torchvision_lib.py — RetinaNet-FPN-v2 Đa Lớp &amp; Batched NMS (torchvision.ops)</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/detector_torchvision_lib.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/detector_torchvision_lib.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>init_rare_prior_bias</code> (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mo>−</mo><mi>log</mi><mo>⁡</mo><mfrac><mrow><mn>1</mn><mo>−</mo><mi>π</mi></mrow><mi>π</mi></mfrac></mrow><annotation encoding="application/x-tex">b = -\log\frac{1-\pi}{\pi}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord">−</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>), <code>generalized_box_iou_loss</code> &amp; Thuật toán <code>weighted_boxes_fusion_torch</code> đa lớp tổng quát trong 22 dòng</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/inference/wbf_scratch.py — Prior Bias Init &amp; Weighted Boxes Fusion Đa Lớp (22 Dòng)</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/inference/wbf_scratch.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/inference/wbf_scratch.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 10:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s3-5" /><span>Huấn luyện Detector + Bộ phân loại lọc ảnh rỗng trên Kaggle <em>VinBigData Chest X-ray</em>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s3-6" /><span>So sánh trực tiếp mAP giữa <code>NMS</code> và <code>WBF</code> (cả thư viện lẫn bản tự code NumPy) trên dự đoán đa Fold.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= WEEK 11 ================= -->
+      <article class="week-block" id="week-11">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Tuần 11 · Tầng 01 (Density Map) &amp; Tầng 03 (Integral Crowd Counting)</div>
+            <h3>Đếm Đám Đông &amp; Vật Thể Chồng Lấn: Hồi Quy Tích Phân Bản Đồ Mật Độ</h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-1">01 · Data &amp; Validation</span>
+            <span class="mod-badge mod-3">03 · Pooling &amp; Head</span>
+            <span class="mode-tag mode-kaggle">SciPy + SegFormer + Đề Thi IOAI 2025</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Bài thi phân loại Huy chương Vàng tại IOAI 2025:</strong> Khi vật thể chụm sát nhau khiến <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>IoU</mtext><mo>&gt;</mo><mn>0.75</mn></mrow><annotation encoding="application/x-tex">\text{IoU} \gt 0.75</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7224em;vertical-align:-0.0391em;"></span><span class="mord text"><span class="mord">IoU</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.75</span></span></span></span>, NMS xóa nhầm hàng loạt cá thể thật. Chuyển sang hồi quy bản đồ mật độ <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mo>≥</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D(x, y) \ge 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> giúp đếm chính xác qua phép lấy tổng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>N</mi><mo>^</mo></mover><mo>=</mo><msub><mo>∑</mo><mrow><mi>x</mi><mo separator="true">,</mo><mi>y</mi></mrow></msub><mover accent="true"><mi>D</mi><mo>^</mo></mover><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\hat{N} = \sum_{x,y} \hat{D}(x, y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9468em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1667em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3826em;vertical-align:-0.4358em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0017em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4358em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://github.com/IOAI-official/IOAI-2025" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Official IOAI 2025 Task · Individual Round</span>
+                  <span class="arena-title">Chicken Counting (Đề Thi Chính Thức IOAI 2025) (IOAI 2025)</span>
+                  <span class="arena-subtitle">Official competition tasks and datasets from the 2nd International Olympiad in Artificial Intelligence</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/gh_ioai-official_ioai-2025.jpg" alt="IOAI 2025 Official Tasks (Beijing, China)" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đếm số lượng gà con tụm dày đặc dưới che khuất nặng và biến thiên chiều cao góc máy quay.</span>
+                <span class="arena-cta">Mở kho đề IOAI 2025 ↗</span>
+              </div>
+            </a>
+
+            <a class="arena-card" href="https://www.kaggle.com/competitions/global-wheat-detection" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Agricultural Competition · Dense Heads</span>
+                  <span class="arena-title">Global Wheat Detection</span>
+                  <span class="arena-subtitle">Can you help identify wheat heads using image analysis?</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/global-wheat-detection.jpg" alt="Global Wheat Detection" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Đếm và định vị bông lúa mì chồng lấn từ nhiều châu lục — đối sánh ranh giới hiệu quả giữa Detection và Density Regression.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Dùng Thư Viện Chuẩn</span>
+            <span>Tạo nhanh bản đồ mật độ bằng <code>scipy.ndimage.gaussian_filter</code> &amp; đầu hồi quy không âm <code>SegFormer</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>crowd_counting_scipy_hf.py — Baseline Đếm Đám Đông Nhanh Với SciPy &amp; SegFormer</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/recipes/crowd_counting_scipy_hf.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/recipes/crowd_counting_scipy_hf.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · Tự Build (From Scratch)</span>
+                <span class="scratch-btn-label">Tự viết <code>generate_integral_preserving_density_map</code> (chuẩn hóa từng cá thể sát mép ảnh) &amp; <code>MultiScaleCountLoss</code></span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Vì sao bản tự build chính xác hơn <code>gaussian_filter</code> toàn cục?</strong> Nếu tái chuẩn hóa trên toàn ảnh, các vật thể ở giữa ảnh sẽ bị thổi phồng biên độ để bù phần hụt của vật thể sát rìa! Hàm dưới đây bảo toàn tổng bằng đúng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.0</mn></mrow><annotation encoding="application/x-tex">1.0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.0</span></span></span></span> trên <em>từng hạt nhân cá thể riêng biệt</em>:
+              </p>
+              <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>mastercv/data/density_map.py — Bảo Toàn Tích Phân Từng Cá Thể &amp; Multi-Scale Count Loss</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/mastercv/data/density_map.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/mastercv/data/density_map.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <h4 style="margin:20px 0 10px;">Checklist Hoàn Thành Tuần 11:</h4>
+          <ul class="checklist">
+            <li class="check-item"><input type="checkbox" data-check-id="s3-7" /><span>Giải bài thi chính thức <em>Chicken Counting</em> của IOAI 2025 và đối sánh MAE với hướng Object Detection.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="s3-8" /><span>Kiểm chứng <code>generate_integral_preserving_density_map</code> bảo toàn tổng chính xác tuyệt đối với các điểm sát mép biên.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="page-nav-footer">
+        <a href="./stage-2.html" class="btn">← Trước: Giai đoạn 2 (Metric Learning &amp; Retrieval)</a>
+        <a href="./stage-4.html" class="btn btn-primary">Tiếp theo: Giai đoạn 4 (Tuần 12–14) — Domain Shift, OOD &amp; Anomaly →</a>
+      </div>
+    </main>
+  </div>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
+  <script src="./code/code_registry.js"></script>
+  <script src="./js/code-loader.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
