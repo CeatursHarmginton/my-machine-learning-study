@@ -367,6 +367,14 @@
           const rendered = renderCodeString(rawText);
           pre.dataset.rawCode = rendered.raw;
           pre.innerHTML = rendered.html;
+          const container = pre.closest('.code-container');
+          const actions = container ? container.querySelector('.code-header-actions') : null;
+          if (actions && !actions.querySelector('.code-line-count') && rendered.raw) {
+            const countEl = document.createElement('span');
+            countEl.className = 'code-line-count';
+            countEl.textContent = `${rendered.raw.split('\n').length} dòng`;
+            actions.insertBefore(countEl, actions.firstChild);
+          }
         } catch (err) {
           pre.textContent = `# Lỗi nạp file ${src}: ${err.message}`;
         }

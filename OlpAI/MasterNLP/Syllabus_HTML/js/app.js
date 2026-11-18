@@ -1,11 +1,36 @@
 /* ==========================================================================
    MasterNLP — First-Principles Natural Language Processing & LLM Engine
-   Progress Sync, Theme Switcher, Code Copy, Scratch Drawers & NLP Composer
+   Progress Sync, Theme Switcher, Top Context Bar, ScrollSpy & NLP Composer
    ========================================================================== */
 
 const STORAGE_KEY_PROGRESS = 'masternlp_progress_v1';
 const STORAGE_KEY_THEME = 'masternlp_theme_v1';
 const TOTAL_SYLLABUS_CHECKPOINTS = 54;
+const TRACK_SHORT_NAME = 'MasterNLP';
+
+const STAGE_CHECK_SPECS = {
+  'foundations.html': { prefix: 'nb0-', total: 6 },
+  'stage-0.html': { prefix: 'n0-', total: 3 },
+  'stage-1.html': { prefix: 'n1-', total: 8 },
+  'stage-2.html': { prefix: 'n2-', total: 8 },
+  'stage-3.html': { prefix: 'n3-', total: 6 },
+  'stage-4.html': { prefix: 'n4-', total: 6 },
+  'stage-5.html': { prefix: 'n5-', total: 8 },
+  'stage-6.html': { prefix: 'n6-', total: 9 }
+};
+
+const ICONS = {
+  sun: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+  moon: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+  reset: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>',
+  menu: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>',
+  code: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  copy: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+  check: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  chevronDown: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  chevronUp: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>',
+  arrowUp: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>'
+};
 
 /* 1. Theme Switcher */
 function initTheme() {
@@ -23,17 +48,28 @@ function toggleTheme() {
 }
 
 function updateThemeButtonLabel(theme) {
+  const isDark = theme === 'dark';
   const btn = document.getElementById('theme-toggle-btn');
   if (btn) {
-    btn.textContent = theme === 'dark' ? 'Chế độ Sáng' : 'Chế độ Tối';
+    btn.innerHTML = `${isDark ? ICONS.sun : ICONS.moon}<span>${isDark ? 'Giao diện Sáng' : 'Giao diện Tối'}</span>`;
+  }
+  const topBtn = document.getElementById('topbar-theme-btn');
+  if (topBtn) {
+    topBtn.innerHTML = isDark ? ICONS.sun : ICONS.moon;
+    topBtn.setAttribute('title', isDark ? 'Chuyển sang Giao diện Sáng' : 'Chuyển sang Giao diện Tối');
+  }
+  const resetBtn = document.querySelector('.sidebar-footer button[onclick*="resetAllProgress"]');
+  if (resetBtn && !resetBtn.dataset.iconified) {
+    resetBtn.dataset.iconified = '1';
+    resetBtn.innerHTML = `${ICONS.reset}<span>Đặt lại</span>`;
   }
 }
 
-/* 2. Persistent Checklists */
+/* 2. Persistent Checklists & Sidebar Stage Stats */
 function getCheckedMap() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || '{}');
-  } catch (e) {
+  } catch (_e) {
     return {};
   }
 }
@@ -71,6 +107,30 @@ function initChecklists() {
   updateGlobalProgressUI();
 }
 
+function updateSidebarStageStats(checkedMap) {
+  const keys = Object.keys(checkedMap);
+  document.querySelectorAll('.sidebar .nav-link').forEach((link) => {
+    const href = (link.getAttribute('href') || '').replace(/^\.\//, '').split('#')[0];
+    const spec = STAGE_CHECK_SPECS[href];
+    if (!spec) return;
+
+    const doneCount = keys.filter((k) => k.startsWith(spec.prefix)).length;
+    let statEl = link.querySelector('.nav-stage-stat');
+    if (!statEl) {
+      statEl = document.createElement('span');
+      statEl.className = 'nav-stage-stat';
+      link.appendChild(statEl);
+    }
+    statEl.textContent = `${doneCount}/${spec.total}`;
+    statEl.classList.remove('has-progress', 'is-complete');
+    if (doneCount >= spec.total) {
+      statEl.classList.add('is-complete');
+    } else if (doneCount > 0) {
+      statEl.classList.add('has-progress');
+    }
+  });
+}
+
 function updateGlobalProgressUI() {
   const checkedMap = getCheckedMap();
   const completedCount = Object.keys(checkedMap).length;
@@ -79,15 +139,17 @@ function updateGlobalProgressUI() {
   const fillEl = document.getElementById('global-progress-fill');
   const textEl = document.getElementById('global-progress-text');
   if (fillEl) fillEl.style.width = pct + '%';
-  if (textEl) textEl.textContent = `${completedCount}/${TOTAL_SYLLABUS_CHECKPOINTS} Mục (${pct}%)`;
+  if (textEl) textEl.textContent = `${completedCount}/${TOTAL_SYLLABUS_CHECKPOINTS} (${pct}%)`;
 
   const localBoxes = document.querySelectorAll('input[type="checkbox"][data-check-id]');
   const localSummary = document.getElementById('page-progress-summary');
   if (localSummary && localBoxes.length > 0) {
     let localDone = 0;
     localBoxes.forEach((b) => { if (b.checked) localDone++; });
-    localSummary.textContent = `Tiến độ giai đoạn này: ${localDone}/${localBoxes.length} mục`;
+    localSummary.textContent = `Hoàn thành trang này: ${localDone}/${localBoxes.length} mục`;
   }
+
+  updateSidebarStageStats(checkedMap);
 }
 
 function resetAllProgress() {
@@ -121,27 +183,45 @@ function initTabs() {
   });
 }
 
+function setScratchDrawerState(drawer, isOpen) {
+  const btn = drawer.querySelector('.scratch-toggle-btn');
+  const actionSpan = drawer.querySelector('.scratch-btn-action');
+  drawer.classList.toggle('open', isOpen);
+  if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  if (actionSpan) {
+    actionSpan.innerHTML = isOpen
+      ? `<span>Ẩn Code Tự Build</span>${ICONS.chevronUp}`
+      : `<span>Hiện Code Tự Build</span>${ICONS.chevronDown}`;
+  }
+}
+
 function initScratchToggles() {
   document.querySelectorAll('.scratch-drawer').forEach((drawer) => {
     const btn = drawer.querySelector('.scratch-toggle-btn');
-    const actionSpan = drawer.querySelector('.scratch-btn-action');
     if (!btn) return;
+    setScratchDrawerState(drawer, drawer.classList.contains('open'));
 
     btn.addEventListener('click', () => {
-      const isOpen = drawer.classList.toggle('open');
-      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      if (actionSpan) {
-        actionSpan.textContent = isOpen ? 'Ẩn Code Tự Build ▴' : 'Hiện Code Tự Build ▾';
-      }
+      const nextOpen = !drawer.classList.contains('open');
+      setScratchDrawerState(drawer, nextOpen);
+      syncExpandAllButtonLabel();
     });
   });
 }
 
-/* 4. Enhance Code Headers & Clean Clipboard Copy */
+function syncExpandAllButtonLabel() {
+  const expandBtn = document.getElementById('expand-all-scratch-btn');
+  if (!expandBtn) return;
+  const drawers = Array.from(document.querySelectorAll('.scratch-drawer'));
+  const allOpen = drawers.length > 0 && drawers.every((d) => d.classList.contains('open'));
+  expandBtn.innerHTML = `${ICONS.code}<span>${allOpen ? 'Thu gọn Tự Build' : 'Mở tất cả Tự Build'}</span>`;
+}
+
+/* 4. Enhance Code Headers, Copy Buttons & Table Scroll Wrappers */
 function initCodeBlocks() {
   document.querySelectorAll('.code-header').forEach((header) => {
     const firstSpan = header.querySelector('span');
-    if (firstSpan && !header.querySelector('.window-dots')) {
+    if (firstSpan && !firstSpan.classList.contains('code-header-left') && !header.querySelector('.window-dots')) {
       const leftWrap = document.createElement('div');
       leftWrap.className = 'code-header-left';
       leftWrap.innerHTML = '<span class="window-dots"><i></i><i></i><i></i></span>';
@@ -151,20 +231,178 @@ function initCodeBlocks() {
   });
 
   document.querySelectorAll('.copy-btn').forEach((btn) => {
+    btn.innerHTML = `${ICONS.copy}<span>Sao chép</span>`;
     btn.addEventListener('click', () => {
       const container = btn.closest('.code-container');
       const pre = container ? container.querySelector('pre') : null;
       if (!pre) return;
       navigator.clipboard.writeText(pre.dataset.rawCode || pre.textContent).then(() => {
-        const orig = btn.textContent;
-        btn.textContent = 'Đã chép ✓';
-        setTimeout(() => { btn.textContent = orig; }, 1600);
+        btn.classList.add('copied');
+        btn.innerHTML = `${ICONS.check}<span>Đã chép</span>`;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `${ICONS.copy}<span>Sao chép</span>`;
+        }, 1600);
       });
     });
   });
+
+  document.querySelectorAll('.res-table').forEach((tbl) => {
+    if (!tbl.parentElement || tbl.parentElement.classList.contains('table-scroll-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'table-scroll-wrap';
+    tbl.parentNode.insertBefore(wrap, tbl);
+    wrap.appendChild(tbl);
+  });
 }
 
-/* 5. Interactive NLP Architecture Composer (index.html) */
+/* 5. Top Context Bar, Quick-Jump ScrollSpy, Mobile Drawer & Back-to-Top */
+function extractShortJumpLabel(el, idx) {
+  if (el.matches('article.week-block')) {
+    const numEl = el.querySelector('.week-num');
+    const raw = numEl ? numEl.textContent.trim() : '';
+    const mWeek = raw.match(/^(Tuần\s*\d+(?:\s*[–-]\s*\d+)?)/i);
+    if (mWeek) return mWeek[1];
+    const mBase = raw.match(/^Bài\s+Cơ\s+Bản\s+(\d+)/i);
+    if (mBase) return `Bài ${mBase[1]}`;
+    const firstSeg = raw.split('·')[0].trim();
+    if (firstSeg && firstSeg.length <= 22) return firstSeg;
+    return `Phần ${idx + 1}`;
+  }
+  const text = el.textContent.trim();
+  const mSec = text.match(/^(\d+)\.\s*(.+)$/);
+  if (mSec) {
+    const shortTitle = mSec[2].split(/[—(&]/)[0].trim();
+    return shortTitle.length <= 24 ? `${mSec[1]}. ${shortTitle}` : `Mục ${mSec[1]}`;
+  }
+  return `Mục ${idx + 1}`;
+}
+
+function initReadingShell() {
+  const main = document.querySelector('.main-content');
+  const sidebar = document.querySelector('.sidebar');
+  if (!main || !sidebar) return;
+
+  const progBar = document.createElement('div');
+  progBar.className = 'reading-progress-bar';
+  progBar.innerHTML = '<div class="reading-progress-fill" id="reading-progress-fill"></div>';
+  document.body.appendChild(progBar);
+
+  const scrim = document.createElement('div');
+  scrim.className = 'sidebar-scrim';
+  document.body.appendChild(scrim);
+
+  const closeMobileMenu = () => {
+    sidebar.classList.remove('mobile-open');
+    scrim.classList.remove('open');
+  };
+  scrim.addEventListener('click', closeMobileMenu);
+  sidebar.querySelectorAll('.nav-link').forEach((l) => l.addEventListener('click', closeMobileMenu));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileMenu();
+  });
+
+  let targets = Array.from(main.querySelectorAll('article.week-block[id]'));
+  if (targets.length < 2) {
+    const secs = Array.from(main.querySelectorAll('h2.section-title'));
+    secs.forEach((h2, idx) => {
+      if (!h2.id) h2.id = `section-${idx + 1}`;
+    });
+    targets = secs;
+  }
+
+  const activeNav = sidebar.querySelector('.nav-link.active span:nth-child(2)');
+  const currentTitle = activeNav ? activeNav.textContent.trim() : 'Tổng quan';
+
+  const topbar = document.createElement('header');
+  topbar.className = 'top-context-bar';
+
+  const hasScratch = document.querySelectorAll('.scratch-drawer').length > 0;
+  const jumpsHtml = targets
+    .map((el, i) => `<a class="jump-pill${i === 0 ? ' active' : ''}" href="#${el.id}" data-jump-target="${el.id}">${extractShortJumpLabel(el, i)}</a>`)
+    .join('');
+
+  topbar.innerHTML = `
+    <div class="topbar-left">
+      <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Mở danh mục">${ICONS.menu}</button>
+      <div class="topbar-crumb">
+        <strong>${TRACK_SHORT_NAME}</strong>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-sub">${currentTitle}</span>
+      </div>
+    </div>
+    <nav class="topbar-jumps" aria-label="Mục lục trang">${jumpsHtml}</nav>
+    <div class="topbar-actions">
+      ${hasScratch ? `<button type="button" class="topbar-icon-btn" id="expand-all-scratch-btn">${ICONS.code}<span>Mở tất cả Tự Build</span></button>` : ''}
+      <button type="button" class="topbar-icon-btn" id="topbar-theme-btn" aria-label="Đổi giao diện"></button>
+    </div>
+  `;
+
+  main.insertBefore(topbar, main.firstChild);
+
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('mobile-open');
+      scrim.classList.toggle('open', open);
+    });
+  }
+
+  const topThemeBtn = document.getElementById('topbar-theme-btn');
+  if (topThemeBtn) {
+    topThemeBtn.addEventListener('click', toggleTheme);
+  }
+
+  const expandAllBtn = document.getElementById('expand-all-scratch-btn');
+  if (expandAllBtn) {
+    expandAllBtn.addEventListener('click', () => {
+      const drawers = Array.from(document.querySelectorAll('.scratch-drawer'));
+      const shouldOpen = !drawers.every((d) => d.classList.contains('open'));
+      drawers.forEach((d) => setScratchDrawerState(d, shouldOpen));
+      syncExpandAllButtonLabel();
+    });
+  }
+
+  const backBtn = document.createElement('button');
+  backBtn.type = 'button';
+  backBtn.className = 'back-to-top-btn';
+  backBtn.setAttribute('aria-label', 'Lên đầu trang');
+  backBtn.setAttribute('title', 'Lên đầu trang');
+  backBtn.innerHTML = ICONS.arrowUp;
+  backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  document.body.appendChild(backBtn);
+
+  const jumpPills = Array.from(topbar.querySelectorAll('.jump-pill'));
+  const progFill = document.getElementById('reading-progress-fill');
+
+  const onScroll = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = docHeight > 20 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+    if (progFill) progFill.style.width = `${ratio}%`;
+    backBtn.classList.toggle('visible', scrollTop > 420);
+
+    if (targets.length > 0 && jumpPills.length > 0) {
+      let activeId = targets[0].id;
+      const offset = scrollTop + 130;
+      for (const t of targets) {
+        if (t.offsetTop <= offset) {
+          activeId = t.id;
+        }
+      }
+      jumpPills.forEach((p) => {
+        p.classList.toggle('active', p.getAttribute('data-jump-target') === activeId);
+      });
+    }
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  updateThemeButtonLabel(document.documentElement.getAttribute('data-theme') || 'dark');
+}
+
+/* 6. Interactive NLP Architecture Composer (index.html) */
 const PROBLEM_ARCHETYPES = {
   multitask_affect: {
     title: 'Dạng 1: Phân loại đa nhãn, Cảm xúc liên tục (Valence-Arousal) & Đa nhiệm xung đột (VD: Feedback Prize, Jigsaw, MXH)',
@@ -284,8 +522,8 @@ function renderArchetype(key) {
     <div class="pipeline-stage">
       <div class="pipeline-stage-label">${s.num}</div>
       <div><span class="mod-badge ${s.cls}">${s.item.tag}</span></div>
-      <div style="font-size:0.87rem; font-weight:600; color:var(--text-primary); line-height:1.45;">${s.item.name}</div>
-      <a href="./${s.item.link}" style="font-size:0.78rem; margin-top:auto;">Đi tới bài học →</a>
+      <div class="pipeline-stage-name">${s.item.name}</div>
+      <a href="./${s.item.link}" class="pipeline-stage-link">Đi tới bài học →</a>
     </div>
   `).join('');
 
@@ -305,13 +543,14 @@ function initMathRendering(rootEl) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
+  initReadingShell();
   initChecklists();
   initTabs();
   initScratchToggles();
   if (typeof window.initExternalCodeLoader === 'function') {
-    window.initExternalCodeLoader();
+    await window.initExternalCodeLoader();
   }
   initCodeBlocks();
   initComposer();
