@@ -57,17 +57,21 @@ def eval_seq2seq_loss(model, loader, device: str) -> float:
     return loss_sum / max(len(loader), 1)
 
 
-def fit_seq2seq(model, tr_loader, va_loader, epochs: int = 5, lr: float = 3e-5, device: str = "cuda", ckpt_path: str = "best_seq2seq.pth") -> float:
+def fit_seq2seq(model, tr_loader, va_loader, epochs: int = 5, lr: float = 3e-5, patience: int = 3, device: str = "cuda", ckpt_path: str = "best_seq2seq.pth") -> float:
     model.to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
-    best_loss = float("inf")
+    best_loss, wait = float("inf"), 0
     for ep in range(1, epochs + 1):
         tr_l = train_seq2seq_epoch(model, tr_loader, opt, device)
         va_l = eval_seq2seq_loss(model, va_loader, device)
         print(f"Epoch {ep:02d} | TrLoss: {tr_l:.4f} | VaLoss: {va_l:.4f}")
         if va_l < best_loss:
-            best_loss = va_l
+            best_loss, wait = va_l, 0
             torch.save(model.state_dict(), ckpt_path)
+        else:
+            wait += 1
+            if wait >= patience:
+                break
     return best_loss
 
 
@@ -81,7 +85,9 @@ def generate_texts(model, tokenizer, loader, device: str = "cuda", max_new_token
     return preds
 
 
-def predict_seq2seq_csv(model, tokenizer, loader, ids: list, device: str = "cuda", max_new_tokens: int = 128, out_csv: str = "./outputs/submission.csv") -> pd.DataFrame:
+def predict_seq2seq_csv(model, tokenizer, loader, ids: list, device: str = "cuda", max_new_tokens: int = 128, ckpt_path: str = "best_seq2seq.pth", out_csv: str = "./outputs/submission.csv") -> pd.DataFrame:
+    if Path(ckpt_path).exists():
+        model.load_state_dict(torch.load(ckpt_path, map_location=device, weights_only=True))
     preds = generate_texts(model, tokenizer, loader, device=device, max_new_tokens=max_new_tokens)
     Path(out_csv).parent.mkdir(parents=True, exist_ok=True)
     sub = pd.DataFrame({"id": ids, "prediction": preds})

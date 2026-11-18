@@ -16,6 +16,13 @@ def symmetric_ce_loss(logits: torch.Tensor, targets: torch.Tensor, alpha: float 
     rce = (-torch.sum(probs * torch.log(y_oh), dim=-1)).mean()
     return alpha * F.cross_entropy(logits, targets) + beta * rce
 
+def kd_distill_loss(s_logits: torch.Tensor, t_logits: torch.Tensor, targets: torch.Tensor,
+                    temp: float = 4.0, alpha: float = 0.5, smooth: float = 0.05) -> torch.Tensor:
+    """Chưng cất tri thức (Knowledge Distillation) + Label Smoothing nén ensemble lớn vào 1 mạng nhẹ chạy kịp giờ thi."""
+    ce = F.cross_entropy(s_logits, targets, label_smoothing=smooth)
+    kl = F.kl_div(F.log_softmax(s_logits / temp, dim=-1), F.softmax(t_logits.detach() / temp, dim=-1), reduction="batchmean") * (temp ** 2)
+    return (1.0 - alpha) * ce + alpha * kl
+
 def tune_oof_multipliers(oof_probs: np.ndarray, y_true: np.ndarray, n_rounds: int = 3) -> np.ndarray:
     """Coordinate Ascent 12 dòng tối ưu trực tiếp Macro-F1 mà không cần đạo hàm."""
     mult = np.ones(oof_probs.shape[1], dtype=np.float64)

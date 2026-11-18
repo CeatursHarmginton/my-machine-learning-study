@@ -6,7 +6,8 @@ from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights, fas
 from torchvision.ops import box_iou
 
 # 1. Phát hiện vật thể bằng Faster R-CNN v2 (torchvision) + Ghép quỹ đạo Hungarian bằng SciPy (không cần ultralytics!):
-detector = fasterrcnn_resnet50_fpn_v2(weights=FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT).cuda().eval()
+def load_detector_tv(device: str = "cuda"):
+    return fasterrcnn_resnet50_fpn_v2(weights=FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT).to(device).eval()
 
 def match_detections_scipy(prev_boxes: torch.Tensor, cur_boxes: torch.Tensor, iou_thr: float = 0.3):
     iou = box_iou(prev_boxes, cur_boxes).cpu().numpy()

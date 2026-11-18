@@ -13,6 +13,7 @@ MEAN, STD = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
 
 
 class TransformDataset(Dataset):
+    """Bọc Subset từ random_split để áp dụng riêng train_tf (có augment) và val_tf (không augment)."""
     def __init__(self, subset, tf):
         self.subset, self.tf = subset, tf
 
@@ -59,9 +60,10 @@ def get_dataloaders(cfg):
     tr_sub, va_sub = random_split(raw_ds, [len(raw_ds) - val_len, val_len], generator=gen)
 
     train_tf, val_tf = get_transforms(cfg.IMG_SIZE)
-    tr_loader = DataLoader(TransformDataset(tr_sub, train_tf), batch_size=cfg.BATCH_SIZE, shuffle=True)
-    va_loader = DataLoader(TransformDataset(va_sub, val_tf), batch_size=cfg.BATCH_SIZE, shuffle=False)
-    te_loader = DataLoader(TestDataset(cfg.TEST_DIR, val_tf), batch_size=cfg.BATCH_SIZE, shuffle=False)
+    nw = getattr(cfg, "NUM_WORKERS", 2)
+    tr_loader = DataLoader(TransformDataset(tr_sub, train_tf), batch_size=cfg.BATCH_SIZE, shuffle=True, num_workers=nw)
+    va_loader = DataLoader(TransformDataset(va_sub, val_tf), batch_size=cfg.BATCH_SIZE, shuffle=False, num_workers=nw)
+    te_loader = DataLoader(TestDataset(cfg.TEST_DIR, val_tf), batch_size=cfg.BATCH_SIZE, shuffle=False, num_workers=nw)
     return raw_ds.classes, raw_ds.targets, tr_sub.indices, tr_loader, va_loader, te_loader
 
 

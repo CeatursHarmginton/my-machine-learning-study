@@ -4,15 +4,15 @@ baselines/                        # Kho Baseline NLP cơ bản tối giản & ED
 ├── text_cls_baseline.py          # Phân loại văn bản khép kín A–Z: DynamicPad -> AutoModel -> submission.csv
 ├── custom_meanpool_head.py       # MeanPoolClassifier cơ bản & báo cáo F1 từng lớp
 ├── ner_token_cls_baseline.py     # quick_ner_eda() & TokenClsDataset căn chỉnh word_ids() -> -100
-├── ner_bio_span_decoder.py       # decode_bio_spans() & compute_strict_span_f1() cơ bản
+├── ner_bio_span_decoder.py       # decode_bio_spans() (tự khôi phục I-tag) & compute_strict_span_f1()
 ├── seq2seq_baseline.py           # quick_seq2seq_eda() & AutoModelForSeq2SeqLM -> submission.csv
 └── basic_sentence_chunker.py     # split_long_text() chia câu cơ bản cho tài liệu dài vượt max_src
 
 masternlp/                        # Khung 5 tầng mô-đun nâng cao cho Giai đoạn 0–6 (100% thư viện chuẩn OlpAI'25)
 ├── core/
-│   ├── pipeline.py               # get_llrd_groups() & train_epoch() tổng quát cho mọi tác vụ
-│   └── validation.py             # make_group_folds() chống rò rỉ văn bản gần trùng lặp
-├── encoders/                     # build_encoder(), dynamic_mlm_mask(), inject_lora(), apply_rope()
+│   ├── pipeline.py               # train_bpe_merges(), get_llrd_groups(), ModelEMA & train_epoch(grad_accum)
+│   └── validation.py             # make_group_folds() chống rò rỉ văn bản gần trùng lặp (G_tr ∩ G_va = ∅)
+├── encoders/                     # build_encoder(), dynamic_mlm_mask(), eda_augment_text(), inject_lora(), apply_rope()
 ├── heads/                        # MaskPooler, LinearChainCRF, BiaffineSpanHead, PairGridHead
 ├── losses/                       # ccc_loss, asymmetric_focal_loss, FGMAttack, pcgrad_step, infonce_loss, dpo_loss
 └── inference/                    # tune_thresholds, rrf_fuse, char_span_ensemble, QWKRounder, check_submission

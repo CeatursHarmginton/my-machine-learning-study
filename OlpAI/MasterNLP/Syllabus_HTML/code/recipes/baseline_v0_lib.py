@@ -1,5 +1,7 @@
 import os, random
+import datasets, evaluate
 import numpy as np
+import pandas as pd
 import torch
 from scipy.sparse.csgraph import connected_components
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -28,10 +30,15 @@ def make_group_folds(texts: list[str], y: np.ndarray, n_splits: int = 5, sim_th:
 tfidf = TfidfVectorizer(ngram_range=(1, 3), sublinear_tf=True, max_features=60000)
 fast_clf = RidgeClassifier(alpha=1.0)
 
-# 2. Huấn luyện bộ tách từ BPE mới cho ngôn ngữ lạ (IOAI 2024) trực tiếp từ transformers (chỉ 1 dòng!):
-# custom_tok = AutoTokenizer.from_pretrained("gpt2").train_new_from_iterator(texts, vocab_size=8000)
+# 2. Tận dụng bộ đôi thư viện chuẩn datasets + evaluate sẵn có trong OlpAI'25:
+def build_hf_dataset_and_metric(df: pd.DataFrame, tok, text_col: str = "text", max_len: int = 256):
+    ds = datasets.Dataset.from_pandas(df).map(lambda b: tok(b[text_col], truncation=True, max_length=max_len), batched=True)
+    f1_metric = evaluate.load("f1")
+    return ds, f1_metric
 
 # 3. Baseline v0.2 Neural chuẩn mực với Dynamic Padding (nhanh gấp 4 lần đệm tĩnh):
-tok = AutoTokenizer.from_pretrained("microsoft/deberta-v3-small")
-pad_collate = DataCollatorWithPadding(tok, pad_to_multiple_of=8)
-model_v0 = AutoModelForSequenceClassification.from_pretrained("microsoft/deberta-v3-small", num_labels=2)
+def build_deberta_v0(ckpt: str = "microsoft/deberta-v3-small", num_labels: int = 2):
+    tok = AutoTokenizer.from_pretrained(ckpt)
+    pad_collate = DataCollatorWithPadding(tok, pad_to_multiple_of=8)
+    model_v0 = AutoModelForSequenceClassification.from_pretrained(ckpt, num_labels=num_labels)
+    return tok, pad_collate, model_v0

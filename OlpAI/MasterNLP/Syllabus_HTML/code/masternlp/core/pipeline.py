@@ -1,4 +1,5 @@
 from collections import Counter
+import copy
 import torch
 import torch.nn as nn
 
@@ -30,22 +31,38 @@ def get_llrd_groups(model: nn.Module, lr: float = 2e-5, head_lr: float = 1e-4, d
             groups.append({"params": [p], "lr": cur_lr, "weight_decay": 0.0 if any(k in name for k in no_wd) else 0.01})
     return groups
 
-def train_epoch(model: nn.Module, loader, optimizer, loss_fn, scheduler=None, device: str = "cuda") -> float:
-    """Vòng lặp huấn luyện vạn năng 14 dòng: dùng chung cho Phân loại, Hồi quy, NER, QA, Retrieval & Seq2Seq."""
+class ModelEMA:
+    """Trung bình trượt trọng số hàm mũ (EMA) 10 dòng — ổn định mạnh mẽ cho DeBERTa / RoBERTa."""
+    def __init__(self, model: nn.Module, decay: float = 0.999):
+        self.ema = copy.deepcopy(model).eval().requires_grad_(False)
+        self.decay = decay
+
+    @torch.no_grad()
+    def update(self, model: nn.Module) -> None:
+        for es, ms in zip(self.ema.state_dict().values(), model.state_dict().values()):
+            es.copy_(self.decay * es + (1.0 - self.decay) * ms if es.is_floating_point() else ms)
+
+def train_epoch(model: nn.Module, loader, optimizer, loss_fn, scheduler=None,
+                grad_accum: int = 1, ema: ModelEMA | None = None, device: str = "cuda") -> float:
+    """Vòng lặp huấn luyện vạn năng hỗ trợ AMP, Gradient Accumulation, Clipping & EMA cho mọi bài NLP."""
     model.train()
     scaler = torch.amp.GradScaler("cuda", enabled=(device == "cuda"))
+    optimizer.zero_grad(set_to_none=True)
     total_loss = 0.0
-    for batch in loader:
+    for step, batch in enumerate(loader, 1):
         batch = {k: (v.to(device) if torch.is_tensor(v) else v) for k, v in batch.items()}
-        optimizer.zero_grad(set_to_none=True)
         with torch.amp.autocast("cuda", enabled=(device == "cuda")):
-            loss = loss_fn(model, batch)
+            loss = loss_fn(model, batch) / grad_accum
         scaler.scale(loss).backward()
-        scaler.unscale_(optimizer)
-        nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        scaler.step(optimizer)
-        scaler.update()
-        if scheduler is not None:
-            scheduler.step()
-        total_loss += loss.item()
+        if step % grad_accum == 0 or step == len(loader):
+            scaler.unscale_(optimizer)
+            nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            scaler.step(optimizer)
+            scaler.update()
+            optimizer.zero_grad(set_to_none=True)
+            if ema is not None:
+                ema.update(model)
+            if scheduler is not None:
+                scheduler.step()
+        total_loss += loss.item() * grad_accum
     return total_loss / max(1, len(loader))

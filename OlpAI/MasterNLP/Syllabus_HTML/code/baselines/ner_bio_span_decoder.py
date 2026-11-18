@@ -17,6 +17,7 @@ def decode_bio_spans(tags: list[str]) -> set[tuple[str, int, int]]:
                 spans.add((cur_type, start, i - 1))
             cur_type, start = ent, i
         elif prefix == "I":
+            # Tự động sửa lỗi (repair): nếu gặp I-X mồ côi sau O hoặc khác loại thực thể đang mở, mở thực thể mới
             if cur_type != ent:
                 if cur_type:
                     spans.add((cur_type, start, i - 1))

@@ -22,4 +22,6 @@ class BiaffineSpanHead(nn.Module):
         return logits, valid
 
 def biaffine_span_loss(logits: torch.Tensor, gold_grid: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
+    if not valid.any():
+        return logits.sum() * 0.0
     return F.cross_entropy(logits[valid], gold_grid[valid])

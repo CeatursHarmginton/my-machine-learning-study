@@ -15,9 +15,9 @@ class LoRALinear(nn.Module):
         return self.base(x) + (x @ self.a.to(x.dtype).T @ self.b.to(x.dtype).T) * self.scale
 
 def inject_lora_vision(model: nn.Module, targets: tuple[str, ...] = ("query", "value", "qkv", "proj"), r: int = 8) -> nn.Module:
-    """Đệ quy 7 dòng gắn LoRA tự động vào MỌI mạng ViT / Swin / DINOv2 của transformers hoặc torchvision!"""
+    """Đệ quy 7 dòng gắn LoRA tự động vào đúng các tầng Linear mục tiêu của ViT / Swin / DINOv2."""
     for name, child in list(model.named_children()):
-        if isinstance(child, nn.Linear) and any(t in name for t in targets):
+        if isinstance(child, nn.Linear) and any(name == t or name.endswith(f"_{t}") for t in targets):
             setattr(model, name, LoRALinear(child, r=r, alpha=float(2 * r)))
         else:
             inject_lora_vision(child, targets=targets, r=r)

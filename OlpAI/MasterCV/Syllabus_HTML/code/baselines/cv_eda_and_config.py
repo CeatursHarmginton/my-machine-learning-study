@@ -20,6 +20,7 @@ class CFG:
     LR: float = 3e-4
     VAL_RATIO: float = 0.2
     PATIENCE: int = 5
+    NUM_WORKERS: int = 2
     TRAIN_DIR: str = "./dataset/train"
     TEST_DIR: str = "./dataset/test"
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
@@ -27,9 +28,12 @@ class CFG:
 
 def seed_everything(seed: int = 42) -> None:
     random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def scan_folder_samples(root_dir: str) -> tuple[list[Path], list[str]]:

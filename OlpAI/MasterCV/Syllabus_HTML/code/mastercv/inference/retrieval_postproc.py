@@ -18,11 +18,13 @@ def alpha_query_expansion(queries: torch.Tensor, gallery: torch.Tensor, topk: in
 
 @torch.no_grad()
 def reciprocal_jaccard_rerank(embs: torch.Tensor, k1: int = 20, lam: float = 0.3) -> torch.Tensor:
-    """Tái xếp hạng láng giềng thuận nghịch hai chiều R(i, k1) khử nhiễu hub trong 10 dòng."""
+    """Tái xếp hạng láng giềng thuận nghịch hai chiều R(i, k1) khử nhiễu hub (tính theo hàng, không tràn RAM)."""
     z = F.normalize(embs.float(), dim=1)
     dist = (1.0 - z @ z.T).clamp_min(0.0)
     adj = torch.zeros_like(dist).scatter_(1, torch.argsort(dist, dim=1)[:, :k1], 1.0)
     v = (adj * adj.T) * torch.exp(-dist)
-    inter = torch.minimum(v[:, None, :], v[None, :, :]).sum(-1)
-    union = torch.maximum(v[:, None, :], v[None, :, :]).sum(-1).clamp_min(1e-6)
-    return (1.0 - lam) * (1.0 - inter / union) + lam * dist
+    jaccard = torch.stack([
+        1.0 - torch.minimum(v[i : i + 1], v).sum(-1) / torch.maximum(v[i : i + 1], v).sum(-1).clamp_min(1e-6)
+        for i in range(len(v))
+    ])
+    return (1.0 - lam) * jaccard + lam * dist

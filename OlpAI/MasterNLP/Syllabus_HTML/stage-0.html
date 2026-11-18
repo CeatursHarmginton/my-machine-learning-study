@@ -179,13 +179,23 @@
               <p style="margin-top:0; color:var(--text-secondary);"><strong>Khi nào cần tự build?</strong> Khi đề thi yêu cầu tự hiện thực thuật toán tách từ BPE hoặc khi bạn cần vòng lặp huấn luyện linh hoạt truyền bất kỳ hàm <code>loss_fn(model, batch)</code> nào vào kèm tốc độ học suy giảm theo tầng <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>l</mi></msub><mo>=</mo><msub><mi>η</mi><mn>0</mn></msub><mo>⋅</mo><msup><mi>ξ</mi><mrow><mi>L</mi><mo>−</mo><mi>l</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\eta_l = \eta_0 \cdot \xi^{L-l}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0435em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.04601em;">ξ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">L</span><span class="mbin mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span></span></span></span></span></span></span></span>:</p>
           <div class="code-container">
             <div class="code-header">
-              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/core/pipeline.py — BPE Tối Giản, LLRD Tự Động &amp; Vòng Huấn Luyện Vạn Năng</span></span>
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/core/pipeline.py — BPE Tối Giản, LLRD, ModelEMA &amp; Vòng Huấn Luyện Vạn Năng</span></span>
               <div class="code-header-actions">
                 <a class="open-file-btn" href="./code/masternlp/core/pipeline.py" target="_blank" rel="noopener">Mở file .py ↗</a>
                 <button type="button" class="copy-btn">Sao chép</button>
               </div>
             </div>
             <pre data-code-src="./code/masternlp/core/pipeline.py"></pre>
+          </div>
+          <div class="code-container" style="margin-top:14px;">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>masternlp/core/validation.py — Gom Cụm Văn Bản Gần Trùng Lặp &amp; Kiểm Chứng Chống Rò Rỉ Nhóm</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/masternlp/core/validation.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/masternlp/core/validation.py"></pre>
           </div>
             </div>
           </div>

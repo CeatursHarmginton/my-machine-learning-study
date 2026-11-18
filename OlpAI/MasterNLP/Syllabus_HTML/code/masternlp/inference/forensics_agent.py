@@ -34,4 +34,5 @@ def safe_math_eval(expr: str) -> float | None:
         return None
 
 def majority_vote(answers: list) -> object:
-    return Counter(a for a in answers if a is not None).most_common(1)[0][0]
+    valid = [a for a in answers if a is not None]
+    return Counter(valid).most_common(1)[0][0] if valid else None

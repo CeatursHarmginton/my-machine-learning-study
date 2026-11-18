@@ -28,6 +28,10 @@ class _GradReverse(torch.autograd.Function):
     def backward(ctx, grad_out: torch.Tensor):
         return -ctx.lambd * grad_out, None
 
+def grad_reverse(x: torch.Tensor, lambd: float = 1.0) -> torch.Tensor:
+    """Đảo dấu đạo hàm -lambda * grad cho nhánh phân biệt miền đối kháng (DANN)."""
+    return _GradReverse.apply(x, lambd)
+
 def deep_coral_loss(f_src: torch.Tensor, f_tgt: torch.Tensor) -> torch.Tensor:
     """Căn chỉnh ma trận hiệp phương sai bậc hai giữa miền nguồn và miền đích trong 4 dòng."""
     cs, ct = f_src.float() - f_src.float().mean(0), f_tgt.float() - f_tgt.float().mean(0)

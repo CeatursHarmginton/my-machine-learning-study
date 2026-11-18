@@ -387,8 +387,7 @@
           </div>
 
           <ul class="checklist" style="margin-top:20px;">
-            <li class="check-item"><input type="checkbox" data-check-id="b0-4" /><span>Nắm vững hàm <code>load_video_tensor</code> (tách 3 bước đọc, lấy mẫu, chuẩn hóa) chuẩn hóa mọi clip bất kỳ về tensor <code>(16, 3, 224, 224)</code>.</span></li>
-            <li class="check-item"><input type="checkbox" data-check-id="b0-5" /><span>Chạy kiểm thử <code>CRNN</code> + quy trình ghi <code>submission.csv</code> nén vào <code>submission.zip</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="b0-4" /><span>Nắm vững hàm <code>load_video_tensor</code> (чуẩn hóa clip về <code>(16, 3, 224, 224)</code>), huấn luyện <code>CRNN</code> và nén <code>submission.zip</code>.</span></li>
           </ul>
         </div>
       </article>
@@ -448,7 +447,7 @@
 
           <div class="impl-section-head">
             <span class="impl-pill impl-lib">Bước 1 · Khuôn Mẫu Cơ Bản Nhất</span>
-            <span><code>DetectionDataset</code>, <code>build_fasterrcnn</code>, huấn luyện 1 epoch &amp; quy đổi hộp gốc xuất <code>submission.csv</code></span>
+            <span><code>DetectionDataset</code>, <code>build_fasterrcnn</code>, huấn luyện &amp; quy đổi hộp gốc xuất <code>submission.csv</code></span>
           </div>
 
           <div class="code-container">
@@ -466,13 +465,13 @@
             <button type="button" class="scratch-toggle-btn" aria-expanded="false">
               <span class="scratch-btn-left">
                 <span class="impl-pill impl-scratch">Bước 2 · EDA Hộp Bao &amp; Tự Build IoU / NMS</span>
-                <span class="scratch-btn-label">Hàm <code>quick_bbox_eda</code> (bắt hộp suy biến <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>≤</mo><mn>0</mn><mo separator="true">,</mo><mi>h</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w \le 0, h \le 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7719em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>) &amp; tự viết <code>box_iou_np</code> + <code>greedy_nms_np</code></span>
+                <span class="scratch-btn-label">Hàm <code>quick_bbox_eda</code> (bắt hộp suy biến $w \le 0, h \le 0$) &amp; tự viết <code>box_iou_np</code> + <code>greedy_nms_np</code></span>
               </span>
               <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
             </button>
             <div class="scratch-drawer-body">
               <p style="margin-top:0; color:var(--text-secondary);">
-                <strong>Luôn chạy <code>quick_bbox_eda</code> trước khi train Detection:</strong> Chỉ cần 1 hộp bị lỗi <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>max</mi><mo>⁡</mo></msub><mo>≤</mo><msub><mi>x</mi><mi>min</mi><mo>⁡</mo></msub></mrow><annotation encoding="application/x-tex">x_{\max} \le x_{\min}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.786em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">m</span><span class="mtight">a</span><span class="mtight">x</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3175em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mop mtight"><span class="mtight">m</span><span class="mtight">i</span><span class="mtight">n</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> trong bảng CSV cũng làm Faster R-CNN phát sinh <code>NaN loss</code> ngay lập tức!
+                <strong>Luôn chạy <code>quick_bbox_eda</code> trước khi train Detection:</strong> Chỉ cần 1 hộp bị lỗi $x_{\max} \le x_{\min}$ trong bảng CSV cũng làm Faster R-CNN phát sinh <code>NaN loss</code> ngay lập tức!
               </p>
           <div class="code-container">
             <div class="code-header">
@@ -488,7 +487,107 @@
           </div>
 
           <ul class="checklist" style="margin-top:20px;">
-            <li class="check-item"><input type="checkbox" data-check-id="b0-6" /><span>Chạy <code>quick_bbox_eda</code> lọc sạch hộp suy biến và kiểm thử trọn luồng <code>DetectionDataset</code> + <code>greedy_nms_np</code>.</span></li>
+            <li class="check-item"><input type="checkbox" data-check-id="b0-5" /><span>Chạy <code>quick_bbox_eda</code> lọc sạch hộp suy biến và kiểm thử trọn luồng <code>DetectionDataset</code> + <code>greedy_nms_np</code>.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- ================= BASE 5 ================= -->
+      <article class="week-block" id="base-5">
+        <div class="week-header">
+          <div class="week-title-group">
+            <div class="week-num">Bài Cơ Bản 05 · Baseline Phân Đoạn Ảnh Cơ Bản Nhất (Image Segmentation)</div>
+            <h3><code>SegDataset</code> Đồng Bộ Ảnh-Mask → <code>FCN / MiniUNet</code> → <code>BCE + Dice Loss</code> → Mã Hóa <code>RLE CSV</code></h3>
+          </div>
+          <div class="week-badges">
+            <span class="mod-badge mod-3">03 · Segmentation Baseline</span>
+            <span class="mode-tag mode-kaggle">Tách Nền &amp; Vùng Tổn Thương</span>
+          </div>
+        </div>
+
+        <div class="week-body">
+          <div class="baseline-link-box">
+            <strong>Khuôn mẫu khép kín cho mọi đề tô mặt nạ pixel (Segmentation):</strong> Co giãn ảnh bằng nội suy song tuyến (<code>BILINEAR</code>) nhưng bắt buộc co giãn mặt nạ nhãn bằng láng giềng gần nhất (<code>Image.NEAREST</code>) để không sinh giá trị mờ ở biên, tối ưu tổng <code>0.5 * BCE + 0.5 * DiceLoss</code> và nén mặt nạ nhị phân thành chuỗi <code>Run-Length Encoding (RLE)</code> nộp bài.
+          </div>
+
+          <div class="practice-arena">
+            <a class="arena-card" href="https://www.kaggle.com/competitions/carvana-image-masking-challenge" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Classic · Binary Segmentation</span>
+                  <span class="arena-title">Carvana Image Masking Challenge</span>
+                  <span class="arena-subtitle">AutomaticallySegment the background of car images</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/carvana-image-masking-challenge.jpg" alt="Carvana Image Masking Challenge" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Bài toán tách nền chuẩn mực chấm bằng hệ số Dice và nộp kết quả dưới định dạng chuỗi nén RLE.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+            <a class="arena-card" href="https://www.kaggle.com/competitions/tgs-salt-identification-challenge" target="_blank" rel="noopener">
+              <div class="arena-kaggle-hero">
+                <div class="arena-kaggle-head">
+                  <span class="arena-source">Kaggle Competition · Seismic Masking</span>
+                  <span class="arena-title">TGS Salt Identification Challenge</span>
+                  <span class="arena-subtitle">Segment salt deposits beneath the Earth's surface</span>
+                </div>
+                <div class="arena-thumb">
+                  <img src="./assets/kaggle_headers/tgs-salt-identification-challenge.jpg" alt="TGS Salt Identification Challenge" loading="lazy" />
+                </div>
+              </div>
+              <div class="arena-body">
+                <span class="arena-desc">Chứa nhiều mặt nạ rỗng (0% tiền cảnh) — bài tập lý tưởng để chạy quick_mask_eda và thử nghiệm MiniUNet 24 dòng.</span>
+                <span class="arena-cta">Mở cuộc thi trên Kaggle ↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="impl-section-head">
+            <span class="impl-pill impl-lib">Bước 1 · Khuôn Mẫu Cơ Bản Nhất</span>
+            <span><code>SegDataset</code>, <code>fcn_resnet50</code>, <code>bce_dice_loss</code> &amp; nén <code>rle_encode_mask</code> xuất <code>submission.csv</code></span>
+          </div>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/seg_unet_baseline.py — Baseline Phân Đoạn Ảnh Khép Kín A–Z Xuất Chuỗi RLE</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/seg_unet_baseline.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/seg_unet_baseline.py"></pre>
+          </div>
+
+          <div class="scratch-drawer">
+            <button type="button" class="scratch-toggle-btn" aria-expanded="false">
+              <span class="scratch-btn-left">
+                <span class="impl-pill impl-scratch">Bước 2 · EDA Mặt Nạ &amp; Tự Build MiniUNet 24 Dòng</span>
+                <span class="scratch-btn-label">Hàm <code>quick_mask_eda</code> (đo tỷ lệ diện tích vật thể &amp; mặt nạ rỗng) + mạng <code>MiniUNet</code> tự viết từ đầu</span>
+              </span>
+              <span class="scratch-btn-action">Hiện Code Tự Build ▾</span>
+            </button>
+            <div class="scratch-drawer-body">
+              <p style="margin-top:0; color:var(--text-secondary);">
+                <strong>Hiểu thấu đáo cấu trúc Encoder-Decoder đối xứng:</strong> Khi không cần tải trọng số lớn hoặc ảnh đầu vào là ảnh y sinh/vệ tinh 1 kênh xám, mạng <code>MiniUNet</code> 24 dòng với cầu nối tắt (Skip-Connections) dưới đây hội tụ cực nhanh và giữ biên sắc nét:
+              </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-header-left"><span class="window-dots"><i></i><i></i><i></i></span><span>baselines/seg_mask_eda_and_dice.py — EDA Mặt Nạ Phân Đoạn &amp; Mạng MiniUNet Tối Giản</span></span>
+              <div class="code-header-actions">
+                <a class="open-file-btn" href="./code/baselines/seg_mask_eda_and_dice.py" target="_blank" rel="noopener">Mở file .py ↗</a>
+                <button type="button" class="copy-btn">Sao chép</button>
+              </div>
+            </div>
+            <pre data-code-src="./code/baselines/seg_mask_eda_and_dice.py"></pre>
+          </div>
+            </div>
+          </div>
+
+          <ul class="checklist" style="margin-top:20px;">
+            <li class="check-item"><input type="checkbox" data-check-id="b0-6" /><span>Chạy <code>quick_mask_eda</code> kiểm tra tỷ lệ pixel tiền cảnh và nắm vững quy trình <code>SegDataset</code> + <code>MiniUNet</code> + <code>rle_encode_mask</code>.</span></li>
           </ul>
         </div>
       </article>

@@ -17,7 +17,8 @@ def load_wav_16k(path: str) -> tuple[np.ndarray, np.ndarray]:
 
 # 2. AutoProcessor của Wav2Vec2 & Whisper tự trích xuất đặc trưng âm thanh trực tiếp từ mảng NumPy 16kHz:
 ctc_criterion = nn.CTCLoss(blank=0, zero_infinity=True)
-w2v_proc = AutoProcessor.from_pretrained("facebook/wav2vec2-base-960h")
-w2v_net = AutoModelForCTC.from_pretrained("facebook/wav2vec2-base-960h")
-wh_proc = WhisperProcessor.from_pretrained("openai/whisper-small")
-wh_net = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
+
+def load_asr_models(w2v_ckpt: str = "facebook/wav2vec2-base-960h", wh_ckpt: str = "openai/whisper-small"):
+    w2v = (AutoProcessor.from_pretrained(w2v_ckpt), AutoModelForCTC.from_pretrained(w2v_ckpt))
+    wh = (WhisperProcessor.from_pretrained(wh_ckpt), WhisperForConditionalGeneration.from_pretrained(wh_ckpt))
+    return w2v, wh

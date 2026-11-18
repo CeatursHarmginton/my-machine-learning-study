@@ -3,9 +3,11 @@ from sklearn.linear_model import LogisticRegression
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # 1. Tải cặp Policy LM và Reference LM (đóng băng) bằng trực tiếp transformers:
-tok = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
-policy_lm = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
-ref_lm = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct").eval().requires_grad_(False)
+def load_dpo_pair(ckpt: str = "Qwen/Qwen2.5-0.5B-Instruct"):
+    tok = AutoTokenizer.from_pretrained(ckpt)
+    policy_lm = AutoModelForCausalLM.from_pretrained(ckpt)
+    ref_lm = AutoModelForCausalLM.from_pretrained(ckpt).eval().requires_grad_(False)
+    return tok, policy_lm, ref_lm
 
 # 2. Ước lượng điểm sức mạnh Bradley-Terry từ bảng kết quả thắng/thua cặp bằng LogisticRegression chuẩn:
 def fit_bradley_terry_scores(n_models: int, pairs: np.ndarray, a_wins: np.ndarray) -> np.ndarray:

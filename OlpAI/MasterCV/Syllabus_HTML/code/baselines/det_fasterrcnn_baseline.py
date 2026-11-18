@@ -75,21 +75,26 @@ def eval_det_loss(model, loader, device: str) -> float:
     return loss_sum / max(len(loader), 1)
 
 
-def fit_detector(model, tr_loader, va_loader, epochs: int = 10, lr: float = 1e-4, device: str = "cuda", ckpt_path: str = "best_det.pth") -> float:
+def fit_detector(model, tr_loader, va_loader, epochs: int = 10, lr: float = 1e-4, patience: int = 4, device: str = "cuda", ckpt_path: str = "best_det.pth") -> float:
     model.to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
-    best_loss = float("inf")
+    best_loss, wait = float("inf"), 0
     for ep in range(1, epochs + 1):
         tr_l = train_det_epoch(model, tr_loader, opt, device)
         va_l = eval_det_loss(model, va_loader, device)
         print(f"Epoch {ep:02d} | TrLoss: {tr_l:.4f} | VaLoss: {va_l:.4f}")
         if va_l < best_loss:
-            best_loss = va_l
+            best_loss, wait = va_l, 0
             torch.save(model.state_dict(), ckpt_path)
+        else:
+            wait += 1
+            if wait >= patience:
+                break
     return best_loss
 
 
 def format_prediction_string(boxes: list, scores: list, sx: float, sy: float, score_thr: float = 0.5) -> str:
+    """Định dạng chuỗi nộp bài chuẩn Kaggle Detection: 'score x_min y_min width height ...'."""
     parts = [
         f"{sc:.4f} {b[0]*sx:.1f} {b[1]*sy:.1f} {(b[2]-b[0])*sx:.1f} {(b[3]-b[1])*sy:.1f}"
         for b, sc in zip(boxes, scores)

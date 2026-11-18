@@ -24,7 +24,8 @@ def solve_dlt_homography(src: np.ndarray, dst: np.ndarray) -> np.ndarray:
         c = p.mean(0)
         s = np.sqrt(2.0) / (np.linalg.norm(p - c, axis=1).mean() + 1e-8)
         t = np.array([[s, 0.0, -s * c[0]], [0.0, s, -s * c[1]], [0.0, 0.0, 1.0]])
-        return (p - c) * s, t
+        p_hom = np.column_stack([p, np.ones(len(p))]) @ t.T
+        return p_hom[:, :2], t
     sn, ts = _norm(src)
     dn, td = _norm(dst)
     x, y, u, v = sn[:, 0], sn[:, 1], dn[:, 0], dn[:, 1]

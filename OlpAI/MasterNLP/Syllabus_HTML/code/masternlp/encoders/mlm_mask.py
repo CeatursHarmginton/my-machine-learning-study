@@ -1,3 +1,4 @@
+import random
 import torch
 
 def dynamic_mlm_mask(input_ids: torch.Tensor, special_ids: list[int],
@@ -13,5 +14,18 @@ def dynamic_mlm_mask(input_ids: torch.Tensor, special_ids: list[int],
     rnd = torch.rand_like(p_mat)
     x[masked & (rnd < 0.8)] = mask_id
     rand_pos = masked & (rnd >= 0.8) & (rnd < 0.9)
-    x[rand_pos] = torch.randint(0, vocab_size, x.shape, device=x.device)[rand_pos]
+    x[rand_pos] = torch.randint(0, vocab_size, (int(rand_pos.sum().item()),), device=x.device)
     return x, labels
+
+def eda_augment_text(text: str, p_del: float = 0.1, p_swap: float = 0.1, seed: int | None = None) -> str:
+    """Tăng cường dữ liệu văn bản EDA (Random Deletion + Word Swap) 10 dòng chống quá khớp khi tập Train ít mẫu."""
+    rng = random.Random(seed)
+    words = text.split()
+    if len(words) <= 2:
+        return text
+    kept = [w for w in words if rng.random() > p_del] or [rng.choice(words)]
+    for _ in range(max(1, int(len(kept) * p_swap))):
+        if len(kept) >= 2:
+            i, j = rng.sample(range(len(kept)), 2)
+            kept[i], kept[j] = kept[j], kept[i]
+    return " ".join(kept)

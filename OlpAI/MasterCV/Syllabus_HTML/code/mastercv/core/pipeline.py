@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import torch
 import torch.nn as nn
@@ -11,24 +12,40 @@ class VisionSystem(nn.Module):
     def forward(self, x: torch.Tensor, **kwargs):
         return self.head(self.backbone(x), **kwargs)
 
-def train_epoch(model: nn.Module, loader, optimizer, loss_fn, scheduler=None, device: str = "cuda") -> float:
-    """Vòng lặp huấn luyện vạn năng 14 dòng với Mixed Precision AMP & Gradient Clipping."""
+class ModelEMA:
+    """Trung bình trượt hàm mũ (EMA) 10 dòng — tăng 0.5–1.5% F1/mAP miễn phí mà không tốn thêm thời gian suy luận."""
+    def __init__(self, model: nn.Module, decay: float = 0.999):
+        self.ema = copy.deepcopy(model).eval().requires_grad_(False)
+        self.decay = decay
+
+    @torch.no_grad()
+    def update(self, model: nn.Module) -> None:
+        for es, ms in zip(self.ema.state_dict().values(), model.state_dict().values()):
+            es.copy_(self.decay * es + (1.0 - self.decay) * ms if es.is_floating_point() else ms)
+
+def train_epoch(model: nn.Module, loader, optimizer, loss_fn, scheduler=None,
+                grad_accum: int = 1, ema: ModelEMA | None = None, device: str = "cuda") -> float:
+    """Vòng lặp huấn luyện vạn năng hỗ trợ Mixed Precision AMP, Gradient Accumulation, Clipping & EMA."""
     model.train()
     scaler = torch.amp.GradScaler("cuda", enabled=(device == "cuda"))
+    optimizer.zero_grad(set_to_none=True)
     total_loss = 0.0
-    for batch in loader:
+    for step, batch in enumerate(loader, 1):
         batch = {k: (v.to(device, non_blocking=True) if torch.is_tensor(v) else v) for k, v in batch.items()}
-        optimizer.zero_grad(set_to_none=True)
         with torch.amp.autocast("cuda", enabled=(device == "cuda")):
-            loss = loss_fn(model, batch)
+            loss = loss_fn(model, batch) / grad_accum
         scaler.scale(loss).backward()
-        scaler.unscale_(optimizer)
-        nn.utils.clip_grad_norm_(model.parameters(), 2.0)
-        scaler.step(optimizer)
-        scaler.update()
-        if scheduler is not None:
-            scheduler.step()
-        total_loss += loss.item()
+        if step % grad_accum == 0 or step == len(loader):
+            scaler.unscale_(optimizer)
+            nn.utils.clip_grad_norm_(model.parameters(), 2.0)
+            scaler.step(optimizer)
+            scaler.update()
+            optimizer.zero_grad(set_to_none=True)
+            if ema is not None:
+                ema.update(model)
+            if scheduler is not None:
+                scheduler.step()
+        total_loss += loss.item() * grad_accum
     return total_loss / max(1, len(loader))
 
 @torch.no_grad()

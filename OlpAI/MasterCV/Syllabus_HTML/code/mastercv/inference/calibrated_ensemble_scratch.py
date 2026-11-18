@@ -19,7 +19,12 @@ class TemperatureLogOddsBlender(nn.Module):
         x = torch.tensor(np.stack(oof_logits, axis=0), dtype=torch.float32)
         y = torch.tensor(y_true, dtype=torch.long)
         opt = torch.optim.LBFGS(self.parameters(), lr=0.25, max_iter=steps)
-        opt.step(lambda: (opt.zero_grad(), loss := F.nll_loss(self(x), y), loss.backward(), loss)[-1])
+        def _closure():
+            opt.zero_grad()
+            loss = F.nll_loss(self(x), y)
+            loss.backward()
+            return loss
+        opt.step(_closure)
         return self
 
 def rank_average_ensemble(preds_list: list[np.ndarray], weights: list[float] | None = None) -> np.ndarray:

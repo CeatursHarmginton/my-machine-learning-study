@@ -12,7 +12,8 @@ def beam_search_wu(step_fn, bos_id: int, eos_id: int, k: int = 4, max_len: int =
             if done:
                 cands.append((seq, lp, True))
                 continue
-            vals, ids = torch.topk(step_fn(torch.tensor([seq]))[0], k)
+            log_probs = F.log_softmax(step_fn(torch.tensor([seq]))[0], dim=-1)
+            vals, ids = torch.topk(log_probs, k)
             cands.extend((seq + [i], lp + v, i == eos_id) for v, i in zip(vals.tolist(), ids.tolist()))
         beams = sorted(cands, key=lambda x: norm(x[1], len(x[0])), reverse=True)[:k]
         if all(d for _, _, d in beams):
