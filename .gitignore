@@ -1,7 +1,14 @@
 **/outputs/ 
 .venv/ 
 venv/ 
-__pycache__/ 
+__pycache__/ # Allow Syllabus_HTML Python source packages (override **/data/)
+!OlpAI/MasterCV/Syllabus_HTML/code/mastercv/data/
+!OlpAI/MasterCV/Syllabus_HTML/code/mastercv/data/**
+!OlpAI/MasterNLP/Syllabus_HTML/code/masternlp/data/
+!OlpAI/MasterNLP/Syllabus_HTML/code/masternlp/data/**
+
+# Exclude bulk archive of exam PDFs/DOCXs from Git LFS bloat
+OlpAI/MasterCV/Exams-*/
 
 # === [Monorepo Manager] Auto-managed patterns ===
 # Dataset files
@@ -51,12 +58,3 @@ env/
 # Manager state
 Manager Projects/.monorepo_state.json
 # === [/Monorepo Manager] ===
-
-# Allow Syllabus_HTML Python source packages (override **/data/)
-!OlpAI/MasterCV/Syllabus_HTML/code/mastercv/data/
-!OlpAI/MasterCV/Syllabus_HTML/code/mastercv/data/**
-!OlpAI/MasterNLP/Syllabus_HTML/code/masternlp/data/
-!OlpAI/MasterNLP/Syllabus_HTML/code/masternlp/data/**
-
-# Exclude bulk archive of exam PDFs/DOCXs from Git LFS bloat
-OlpAI/MasterCV/Exams-*/
